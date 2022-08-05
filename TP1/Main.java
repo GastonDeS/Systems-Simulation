@@ -9,12 +9,14 @@ public class Main {
         particles.add(new Particle(0.0, 0.0));
         particles.add(new Particle(0.1, .5));
         particles.add(new Particle(.3, .3));
-        particles.add(new Particle(.8, .2));
+        particles.add(new Particle(.0, .2));
         particles.add(new Particle(.7, .2));
 
         IndexTable index = new IndexTable(0.1, 1.0);
         index.index(particles);
 
         index.printTable();
+        List<Particle> nearParticles = index.findCloseParticles(particles.get(0), 0.3);
+        System.out.println(nearParticles.get(0).toString());
     }
 }

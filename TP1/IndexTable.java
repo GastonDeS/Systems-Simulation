@@ -20,6 +20,35 @@ public class IndexTable {
         }
     }
 
+    public List<Particle> findCloseParticles( Particle particle, Double distance) {
+        boolean finded = false;
+        int i =0,j =0;
+        for (; i < this.cellAmount && !finded; i++) {
+            for (; j < this.cellAmount && !finded; j++) {
+                for ( Particle particleAux: this.indexTable.get(i).get(j)) {
+                    if (particleAux.equals(particle)) {
+                        finded = true;
+                    }
+                }
+            }
+        }
+        List<Particle> particles = new ArrayList<>();
+        if (!finded ) return particles;
+        int xf = i+1;
+        int jf = j+1;
+        for (i = i -1; i <= xf; i++){
+            for (j = j-1; j <= jf ; j++) {
+                for ( Particle particleAux: this.indexTable.get(i).get(j)) {
+                    if ( particleAux.distance(particle) <= distance ) {
+                        particles.add(particleAux);
+                    }
+                }
+            }
+        }
+        particles.removeIf((value) -> value.equals(particle));
+        return particles;
+    }
+
     public void printTable() {
         for (int i = 0; i < this.cellAmount; i++) {
             for (int j = 0; j < this.cellAmount; j++) {

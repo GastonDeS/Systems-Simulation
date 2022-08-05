@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Particle {
     private Double x,y;
 
@@ -19,6 +21,14 @@ public class Particle {
         return x;
     }
 
+    @Override
+    public String toString() {
+        return "Particle{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
     public void setX(Double x) {
         this.x = x;
     }
@@ -29,5 +39,19 @@ public class Particle {
 
     public void setY(Double y) {
         this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Particle particle = (Particle) o;
+        return Objects.equals(x, particle.x) &&
+                Objects.equals(y, particle.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

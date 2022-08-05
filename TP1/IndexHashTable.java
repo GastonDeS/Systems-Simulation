@@ -1,23 +1,27 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class IndexTable {
-    private List<List<List<Particle>>> indexTable;
+public class IndexHashTable {
+    private HashMap< String, List<Particle>> indexTable;
     private Double cellLength;
     private Integer cellAmount;
 
-    public IndexTable(Double cellLength, Double L) {
+    public IndexHashTable(Double cellLength, Double L) {
         Integer M = (int) Math.ceil((double) L / cellLength);
-        this.indexTable = new ArrayList<>(M);
+        this.indexTable = new HashMap<>();
         this.cellLength = cellLength;
         this.cellAmount = M;
 
         for (int i = 0; i < this.cellAmount; i++) {
-            this.indexTable.add(new ArrayList<>(M));
             for (int j = 0; j < this.cellAmount; j++) {
-                this.indexTable.get(i).add(new ArrayList<>());
+                this.indexTable.put(hashIndex(i, j), new ArrayList<>());
             }
         }
+    }
+
+    private String hashIndex(int i, int j) {
+        return String.format("%d%d",i,j);
     }
 
     public List<Particle> findCloseParticles( Particle particle, Double distance) {
@@ -26,7 +30,7 @@ public class IndexTable {
         int sum = 0;
         for (i=0; i < this.cellAmount && !finded; i++) {
             for (j=0; j < this.cellAmount && !finded; j++) {
-                for ( Particle particleAux: this.indexTable.get(i).get(j)) {
+                for ( Particle particleAux: this.indexTable.get(hashIndex(i, j))) {
                     if (particleAux.equals(particle)) {
                         finded = true;
                     }
@@ -39,7 +43,7 @@ public class IndexTable {
 
         for (ii = (i-1 <0 )? 0 : i; ii < i +1 && ii < cellAmount; ii++){
             for (fi = (j-1 <0)? 0 : i; fi < j+1 && fi < cellAmount ; fi++) {
-                for ( Particle particleAux: this.indexTable.get(ii).get(fi)) {
+                for ( Particle particleAux: this.indexTable.get(hashIndex(ii,fi))) {
                     if ( particleAux.distance(particle) <= distance ) {
                         particles.add(particleAux);
                     }
@@ -53,7 +57,7 @@ public class IndexTable {
     public void printTable() {
         for (int i = 0; i < this.cellAmount; i++) {
             for (int j = 0; j < this.cellAmount; j++) {
-                System.out.print(this.indexTable.get(i).get(j).size()+ " ");
+                System.out.print(this.indexTable.get(hashIndex(i, j)).size()+ " ");
             }
             System.out.println();
         }
@@ -65,7 +69,7 @@ public class IndexTable {
                 for (int j = 0; j < this.cellAmount; j++) {
                     if (i * cellLength <= particle.getX() && (i + 1) * cellLength > particle.getX()) {
                         if (j * cellLength <= particle.getY() && (j + 1) * cellLength > particle.getY()) {
-                            indexTable.get(i).get(j).add(particle);
+                            indexTable.get(hashIndex(i,j)).add(particle);
                         }
                     }
                 }

@@ -8,18 +8,33 @@ public class IndexTable {
 
     public IndexTable(Double cellLength, Double L) {
         Integer M = (int) Math.ceil((double) L / cellLength);
-        this.indexTable = (new ArrayList<>());
+        this.indexTable = new ArrayList<>(M);
         this.cellLength = cellLength;
         this.cellAmount = M;
+
+        for (int i = 0; i < this.cellAmount; i++) {
+            this.indexTable.add(new ArrayList<>(M));
+            for (int j = 0; j < this.cellAmount; j++) {
+                this.indexTable.get(i).add(new ArrayList<>());
+            }
+        }
+    }
+
+    public void printTable() {
+        for (int i = 0; i < this.cellAmount; i++) {
+            for (int j = 0; j < this.cellAmount; j++) {
+                System.out.print(this.indexTable.get(i).get(j).size()+ " ");
+            }
+            System.out.println();
+        }
     }
 
     public void index(List<Particle> particles) {
-        for (int m = 0; m < particles.size() ; m++) {
+        for (Particle particle : particles) {
             for (int i = 0; i < this.cellAmount; i++) {
                 for (int j = 0; j < this.cellAmount; j++) {
-                    Particle particle = particles.get(m);
-                    if ( i * cellLength < particle.getY() && (i + 1) * cellLength > particle.getY() ) {
-                        if ( j * cellLength < particle.getX() && ( j + 1) * cellLength > particle.getX() ) {
+                    if (i * cellLength <= particle.getX() && (i + 1) * cellLength > particle.getX()) {
+                        if (j * cellLength <= particle.getY() && (j + 1) * cellLength > particle.getY()) {
                             indexTable.get(i).get(j).add(particle);
                         }
                     }

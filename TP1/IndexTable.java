@@ -23,8 +23,9 @@ public class IndexTable {
     public List<Particle> findCloseParticles( Particle particle, Double distance) {
         boolean finded = false;
         int i =0,j =0;
-        for (; i < this.cellAmount && !finded; i++) {
-            for (; j < this.cellAmount && !finded; j++) {
+        int sum = 0;
+        for (i=0; i < this.cellAmount && !finded; i++) {
+            for (j=0; j < this.cellAmount && !finded; j++) {
                 for ( Particle particleAux: this.indexTable.get(i).get(j)) {
                     if (particleAux.equals(particle)) {
                         finded = true;
@@ -34,11 +35,11 @@ public class IndexTable {
         }
         List<Particle> particles = new ArrayList<>();
         if (!finded ) return particles;
-        int xf = i+1;
-        int jf = j+1;
-        for (i = i -1; i <= xf; i++){
-            for (j = j-1; j <= jf ; j++) {
-                for ( Particle particleAux: this.indexTable.get(i).get(j)) {
+        int ii, fi;
+
+        for (ii = (i-1 <0 )? 0 : i; ii < i +1; ii++){
+            for (fi = (j-1 <0)? 0 : i; fi < j+1 ; fi++) {
+                for ( Particle particleAux: this.indexTable.get(ii).get(fi)) {
                     if ( particleAux.distance(particle) <= distance ) {
                         particles.add(particleAux);
                     }

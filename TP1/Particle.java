@@ -1,11 +1,17 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Particle {
+    private String label;
     private Double x,y;
+    private List<Particle> nearParticles;
 
-    public Particle(Double x, Double y) {
+    public Particle(Double x, Double y, String label) {
         this.x = x;
         this.y = y;
+        this.nearParticles = new ArrayList<>();
+        this.label = label;
     }
 
     public Double distance(Particle particle) {
@@ -15,6 +21,26 @@ public class Particle {
     public void move(Double distX, Double distY) {
         this.x += distX;
         this.y += distY;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public List<Particle> getNearParticles() {
+        return nearParticles;
+    }
+
+    public void setNearParticles(List<Particle> nearParticles) {
+        this.nearParticles = nearParticles;
+    }
+
+    public void addNearParticle(Particle particle) {
+        this.nearParticles.add(particle);
     }
 
     public Double getX() {

@@ -68,7 +68,7 @@ public class IndexHashTable {
         if (j >= 0 && i < cellAmount && j < cellAmount && i >= 0) {
             List<Particle> particles = this.indexTable.get(hashIndex(i, j));
             for (int k = 0; k < particles.size(); k++) {
-                if (particles.get(k).distance(particle) < distance) {
+                if (particles.get(k).distanceToBorder(particle) < distance) {
                     mutualAdd(particles.get(k), particle);
                 }
             }
@@ -95,7 +95,7 @@ public class IndexHashTable {
                         continue;
                     }
                     particles.addAll(this.indexTable.get(hashIndex(ii, fi)).stream()
-                            .filter((particle1 -> particle1.distance(particle) <= distance))
+                            .filter((particle1 -> particle1.distanceToBorder(particle) <= distance))
                             .collect(Collectors.toList()));
                 }
             }

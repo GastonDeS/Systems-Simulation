@@ -5,12 +5,14 @@ public class IndexHashTable {
     private HashMap< String, List<Particle>> indexTable;
     private Double cellLength;
     private Integer cellAmount;
+    public Integer skipped;
 
     public IndexHashTable(Double cellLength, Double L) {
         Integer M = (int) Math.ceil((double) L / cellLength);
         this.indexTable = new HashMap<>();
         this.cellLength = cellLength;
         this.cellAmount = M;
+        this.skipped=0;
 
         for (int i = 0; i < this.cellAmount; i++) {
             for (int j = 0; j < this.cellAmount; j++) {
@@ -51,9 +53,9 @@ public class IndexHashTable {
         int i = ij.get().getValue1();
         int j = ij.get().getValue2();
         // donde estoy parado
-        for (Particle p: this.indexTable.get(hashIndex(i, j))) {
-            particle.addNearParticle(p);
-        }
+        particle.addNearParticles(this.indexTable.get(hashIndex(i, j)));
+        // removeSelf
+        particle.getNearParticles().remove(particle);
         // arriba
         addCorners(particle,distance,i-1, j);
         // diagonal abajo
@@ -76,6 +78,8 @@ public class IndexHashTable {
     }
 
     public void mutualAdd(Particle particle1, Particle particle2) {
+        if (particle1.getLabel().equals("1"))
+            System.out.println("adding mutual");
         particle1.addNearParticle(particle2);
         particle2.addNearParticle(particle1);
     }
@@ -87,19 +91,26 @@ public class IndexHashTable {
         int i = ij.get().getValue1();
         int j = ij.get().getValue2();
         int ii, fi;
-        for (ii = (i-1 <0 )? 0 : i; ii < i +1 && ii < cellAmount; ii++){
-            for (fi = (j-1 <0)? 0 : i; fi < j+1 && fi < cellAmount ; fi++) {
-                if (i == ii && j == fi) {
-                    particles.addAll(this.indexTable.get(hashIndex(ii,fi)));
-                    continue;
+        for (ii = i-1; ii <= i +1 ; ii++){
+            for (fi = j-1; fi <= j+1 ; fi++) {
+                if (ii >= 0 && ii < cellAmount && fi < cellAmount && fi >= 0) {
+                    if (i == ii && j == fi) {
+                        this.skipped++;
+                        particles.addAll(this.indexTable.get(hashIndex(ii, fi)));
+                        continue;
+                    }
+                    particles.addAll(this.indexTable.get(hashIndex(ii, fi)).stream()
+                            .filter((particle1 -> particle1.distance(particle) <= distance))
+                            .collect(Collectors.toList()));
                 }
-                particles.addAll(this.indexTable.get(hashIndex(ii,fi)).stream()
-                        .filter((particle1 -> particle1.distance(particle) <= distance))
-                        .collect(Collectors.toList()));
             }
         }
         particles.removeIf((value) -> value.equals(particle));
         return particles;
+    }
+
+    public HashMap<String, List<Particle>> getIndexTable() {
+        return indexTable;
     }
 
     public void printTable() {
@@ -113,13 +124,11 @@ public class IndexHashTable {
 
     public void index(List<Particle> particles) {
         for (Particle particle : particles) {
-            for (int i = 0; i < this.cellAmount; i++) {
-                for (int j = 0; j < this.cellAmount; j++) {
-                    if (i * cellLength <= particle.getX() && (i + 1) * cellLength > particle.getX()) {
-                        if (j * cellLength <= particle.getY() && (j + 1) * cellLength > particle.getY()) {
-                            indexTable.get(hashIndex(i,j)).add(particle);
-                        }
-                    }
+            int i = (int) Math.floor(particle.getX() / cellLength);
+            int j = (int) Math.floor(particle.getY()/ cellLength);
+            if (i * cellLength <= particle.getX() && (i + 1) * cellLength > particle.getX()) {
+                if (j * cellLength <= particle.getY() && (j + 1) * cellLength > particle.getY()) {
+                    indexTable.get(hashIndex(i,j)).add(particle);
                 }
             }
         }

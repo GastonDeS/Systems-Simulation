@@ -39,6 +39,10 @@ public class Particle {
         this.nearParticles = nearParticles;
     }
 
+    public void addNearParticles(List<Particle> particles) {
+        this.nearParticles.addAll(particles);
+    }
+
     public void addNearParticle(Particle particle) {
         this.nearParticles.add(particle);
     }

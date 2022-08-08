@@ -5,14 +5,12 @@ public class IndexHashTable {
     private HashMap< String, List<Particle>> indexTable;
     private Double cellLength;
     private Integer cellAmount;
-    public Integer skipped;
 
     public IndexHashTable(Double cellLength, Double L) {
         Integer M = (int) Math.ceil((double) L / cellLength);
         this.indexTable = new HashMap<>();
         this.cellLength = cellLength;
         this.cellAmount = M;
-        this.skipped=0;
 
         for (int i = 0; i < this.cellAmount; i++) {
             for (int j = 0; j < this.cellAmount; j++) {
@@ -67,7 +65,7 @@ public class IndexHashTable {
     }
 
     private void addCorners(Particle particle, Double distance, int i , int j) {
-        if (j >= 0 && i < cellAmount && j < cellLength && i >= 0) {
+        if (j >= 0 && i < cellAmount && j < cellAmount && i >= 0) {
             List<Particle> particles = this.indexTable.get(hashIndex(i, j));
             for (int k = 0; k < particles.size(); k++) {
                 if (particles.get(k).distance(particle) < distance) {
@@ -78,8 +76,6 @@ public class IndexHashTable {
     }
 
     public void mutualAdd(Particle particle1, Particle particle2) {
-        if (particle1.getLabel().equals("1"))
-            System.out.println("adding mutual");
         particle1.addNearParticle(particle2);
         particle2.addNearParticle(particle1);
     }
@@ -95,7 +91,6 @@ public class IndexHashTable {
             for (fi = j-1; fi <= j+1 ; fi++) {
                 if (ii >= 0 && ii < cellAmount && fi < cellAmount && fi >= 0) {
                     if (i == ii && j == fi) {
-                        this.skipped++;
                         particles.addAll(this.indexTable.get(hashIndex(ii, fi)));
                         continue;
                     }

@@ -51,9 +51,9 @@ public class IndexHashTable {
         int i = ij.get().getValue1();
         int j = ij.get().getValue2();
         // donde estoy parado
-        for (Particle p: this.indexTable.get(hashIndex(i, j))) {
-            particle.addNearParticle(p);
-        }
+        particle.addNearParticles(this.indexTable.get(hashIndex(i, j)));
+        // removeSelf
+        particle.getNearParticles().remove(particle);
         // arriba
         addCorners(particle,distance,i-1, j);
         // diagonal abajo
@@ -65,10 +65,10 @@ public class IndexHashTable {
     }
 
     private void addCorners(Particle particle, Double distance, int i , int j) {
-        if (j >= 0 && i < cellAmount && j < cellLength && i >= 0) {
+        if (j >= 0 && i < cellAmount && j < cellAmount && i >= 0) {
             List<Particle> particles = this.indexTable.get(hashIndex(i, j));
             for (int k = 0; k < particles.size(); k++) {
-                if (particles.get(k).distance(particle) < distance) {
+                if (particles.get(k).distanceToBorder(particle) < distance) {
                     mutualAdd(particles.get(k), particle);
                 }
             }
@@ -87,19 +87,25 @@ public class IndexHashTable {
         int i = ij.get().getValue1();
         int j = ij.get().getValue2();
         int ii, fi;
-        for (ii = (i-1 <0 )? 0 : i; ii < i +1 && ii < cellAmount; ii++){
-            for (fi = (j-1 <0)? 0 : i; fi < j+1 && fi < cellAmount ; fi++) {
-                if (i == ii && j == fi) {
-                    particles.addAll(this.indexTable.get(hashIndex(ii,fi)));
-                    continue;
+        for (ii = i-1; ii <= i +1 ; ii++){
+            for (fi = j-1; fi <= j+1 ; fi++) {
+                if (ii >= 0 && ii < cellAmount && fi < cellAmount && fi >= 0) {
+                    if (i == ii && j == fi) {
+                        particles.addAll(this.indexTable.get(hashIndex(ii, fi)));
+                        continue;
+                    }
+                    particles.addAll(this.indexTable.get(hashIndex(ii, fi)).stream()
+                            .filter((particle1 -> particle1.distanceToBorder(particle) <= distance))
+                            .collect(Collectors.toList()));
                 }
-                particles.addAll(this.indexTable.get(hashIndex(ii,fi)).stream()
-                        .filter((particle1 -> particle1.distance(particle) <= distance))
-                        .collect(Collectors.toList()));
             }
         }
         particles.removeIf((value) -> value.equals(particle));
         return particles;
+    }
+
+    public HashMap<String, List<Particle>> getIndexTable() {
+        return indexTable;
     }
 
     public void printTable() {
@@ -113,13 +119,11 @@ public class IndexHashTable {
 
     public void index(List<Particle> particles) {
         for (Particle particle : particles) {
-            for (int i = 0; i < this.cellAmount; i++) {
-                for (int j = 0; j < this.cellAmount; j++) {
-                    if (i * cellLength <= particle.getX() && (i + 1) * cellLength > particle.getX()) {
-                        if (j * cellLength <= particle.getY() && (j + 1) * cellLength > particle.getY()) {
-                            indexTable.get(hashIndex(i,j)).add(particle);
-                        }
-                    }
+            int i = (int) Math.floor(particle.getX() / cellLength);
+            int j = (int) Math.floor(particle.getY()/ cellLength);
+            if (i * cellLength <= particle.getX() && (i + 1) * cellLength > particle.getX()) {
+                if (j * cellLength <= particle.getY() && (j + 1) * cellLength > particle.getY()) {
+                    indexTable.get(hashIndex(i,j)).add(particle);
                 }
             }
         }

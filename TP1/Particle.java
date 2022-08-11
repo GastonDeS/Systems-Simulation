@@ -6,16 +6,23 @@ public class Particle {
     private String label;
     private Double x,y;
     private List<Particle> nearParticles;
+    private Double radius;
 
-    public Particle(Double x, Double y, String label) {
+    public Particle(Double x, Double y, Double radius, String label) {
         this.x = x;
         this.y = y;
         this.nearParticles = new ArrayList<>();
         this.label = label;
+        this.radius = radius;
     }
 
     public Double distance(Particle particle) {
         return Math.sqrt(Math.pow(this.x - particle.getX(), 2) + Math.pow(this.y - particle.getY(), 2));
+    }
+
+
+    public Double distanceToBorder(Particle particle) {
+        return Math.sqrt(Math.pow(this.x - particle.getX(), 2) + Math.pow(this.y - particle.getY(), 2)) - this.radius - particle.getRadius();
     }
 
     public void move(Double distX, Double distY) {
@@ -39,6 +46,10 @@ public class Particle {
         this.nearParticles = nearParticles;
     }
 
+    public void addNearParticles(List<Particle> particles) {
+        this.nearParticles.addAll(particles);
+    }
+
     public void addNearParticle(Particle particle) {
         this.nearParticles.add(particle);
     }
@@ -53,6 +64,14 @@ public class Particle {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    public Double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
     }
 
     public void setX(Double x) {

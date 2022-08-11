@@ -1,10 +1,13 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
 
     public static void main(String args[]) {
-        List<Particle> particles = generateRandomParticles(100000);
+        List<Particle> particles = generateRandomParticles(100);
 
         System.out.println("test 1");
         long time1 = System.currentTimeMillis();
@@ -55,5 +58,29 @@ public class Main {
             randomParticles.add(new Particle(Math.random(),Math.random(), ""+i));
         }
         return randomParticles;
+    }
+
+    private static void printResults(List<Particle> particles) throws IOException {
+        File positions = new File("positions.csv");
+        File neighbors = new File("neighbors.csv");
+        FileWriter positionsFile = new FileWriter(positions);
+        FileWriter neighborsFile = new FileWriter(neighbors);
+
+        for (Particle p : particles) {
+            positionsFile.write(p.getX().toString() + "," + p.getY().toString() + "\n");
+            if (p.getNearParticles().size() > 0) {
+                StringBuilder labels = new StringBuilder();
+                labels.append(p.getLabel()).append(",");
+                for (int i = 0; i < p.getNearParticles().size(); i++) {
+                    labels.append(p.getNearParticles().get(i).getLabel());
+                    if (i != p.getNearParticles().size() - 1) labels.append(",");
+                }
+                labels.append("\n");
+                neighborsFile.write(labels.toString());
+            }
+        }
+
+        positionsFile.close();
+        neighborsFile.close();
     }
 }

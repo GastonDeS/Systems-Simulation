@@ -34,8 +34,8 @@ public class IndexHashTable {
     public Optional<Pair<Integer, Integer>> findParticle(Particle particle) {
         int i = (int) Math.floor(particle.getX() / cellLength);
         int j = (int) Math.floor(particle.getY()/ cellLength);
-        boolean finded = this.indexTable.get(hashIndex(i, j)).stream().anyMatch(particle::equals);
-        return Optional.ofNullable(finded? new Pair<>(i ,j): null);
+        boolean found = this.indexTable.get(hashIndex(i, j)).stream().anyMatch(particle::equals);
+        return Optional.ofNullable(found? new Pair<>(i ,j): null);
     }
 
     public List<Particle> addNearParticlesWithFastAlgo(List<Particle> particles, double distance) {

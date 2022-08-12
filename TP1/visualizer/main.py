@@ -29,7 +29,7 @@ while not exit_loop:
     plt.clf()
     plt.figure(figsize=(9, 8), dpi=80)
     for idx, elem in enumerate(particles):
-        if idx == 20:
+        if idx == DOTS_QTY:
             break
         if idx == inp or idx in neighbors[inp]:
             plt.plot(elem[0], elem[1], 'go', markersize=elem[2] * DOT_RADIUS_MULTIPLIER)

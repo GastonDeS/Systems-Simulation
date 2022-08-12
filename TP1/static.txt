@@ -1,4 +1,4 @@
-PARTICLES_QTY = 20
-Rc = 0.1
-L = 1
-M = 10
+PARTICLES_QTY=50
+Rc=0.1
+L=1
+M=10

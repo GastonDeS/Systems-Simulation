@@ -1,31 +1,47 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import jdk.nashorn.internal.parser.JSONParser;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        //TODO: amount not fixed but read from constants file
-        List<Particle> particles = generateRandomParticles(100);
-        Double Rd = 0.1;
+        int particlesQty = 0;
+        Double Rc = 0.0, L = 0.0;
+        File file = new File("TP1/static.txt");
+        Scanner sc = new Scanner(file);
+        sc.useDelimiter("=|\\n");
+        while (sc.hasNext()) {
+            String token = sc.next();
+            if (token.equals("PARTICLES_QTY")) particlesQty = Integer.parseInt(sc.next());
+            if (token.equals("Rc")) Rc = Double.parseDouble(sc.next());
+            if (token.equals("L")) L = Double.parseDouble(sc.next());
+        }
+
+        List<Particle> particles = generateRandomParticles(particlesQty);
 
         List<Double> radiusSorted = particles.stream().map(Particle::getRadius).sorted(Comparator.naturalOrder()).collect(Collectors.toList());
         Double maxRadius1 = radiusSorted.get(radiusSorted.size()-1);
         Double maxRadius2 = radiusSorted.get(radiusSorted.size()-2);
+        particles.add(new Particle(.01,0.1, 0.05, ""+particles.size()));
+        particles.add(new Particle(.99,0.1, 0.05, ""+particles.size()));
 
-        Double cellLength = Rd+maxRadius1+maxRadius2;
+
+        Double cellLength = Rc + maxRadius1 + maxRadius2;
+        boolean isCircular = true;
 
         long time1 = System.currentTimeMillis();
-        IndexHashTable indexHash = new IndexHashTable(cellLength, 1.0);
+        IndexHashTable indexHash = new IndexHashTable(cellLength, L);
         indexHash.index(particles);
-//        indexHash.printTable();
-        for (Particle value : particles) {
-//            if (i % 100 == 0) System.out.println(i);
-            value.setNearParticles(indexHash.findCloseParticles(value, 0.1));
+        for (int i = 0; i < particles.size(); i++) {
+            if (isCircular) {
+                particles.get(i).setNearParticles(indexHash.findCloseParticlesCircular(particles.get(i), 0.1));
+            } else
+                particles.get(i).setNearParticles(indexHash.findCloseParticles(particles.get(i), 0.1));
         }
         System.out.printf("time1: %d\n", System.currentTimeMillis() - time1);
         System.out.printf("sumCheck: %d\n", particles.stream()
@@ -35,11 +51,11 @@ public class Main {
 //        indexHash.resetIndex();
 
 //        List<Particle> check = new ArrayList<>(particles.get(0).getNearParticles());
-        particles.forEach(particle -> particle.setNearParticles(new ArrayList<>()));
+        //particles.forEach(particle -> particle.setNearParticles(new ArrayList<>()));
 
         long time2 = System.currentTimeMillis();
 //        indexHash.index(particles);
-        particles = indexHash.addNearParticlesWithFastAlgo(particles, 0.1);
+        //particles = indexHash.addNearParticlesWithFastAlgo(particles, 0.1);
         System.out.printf("time2: %d\n", System.currentTimeMillis() - time2);
 
 //        int repeatedCount = particles.stream().map(p -> countRepeated(p.getNearParticles())).reduce(0, Integer::sum) ;

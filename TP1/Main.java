@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        //TODO: amount not fixed but read from constants file
         List<Particle> particles = generateRandomParticles(100);
         Double Rd = 0.1;
 
@@ -22,9 +23,9 @@ public class Main {
         IndexHashTable indexHash = new IndexHashTable(cellLength, 1.0);
         indexHash.index(particles);
 //        indexHash.printTable();
-        for (int i = 0; i < particles.size(); i++) {
+        for (Particle value : particles) {
 //            if (i % 100 == 0) System.out.println(i);
-            particles.get(i).setNearParticles(indexHash.findCloseParticles(particles.get(i), 0.1));
+            value.setNearParticles(indexHash.findCloseParticles(value, 0.1));
         }
         System.out.printf("time1: %d\n", System.currentTimeMillis() - time1);
         System.out.printf("sumCheck: %d\n", particles.stream()

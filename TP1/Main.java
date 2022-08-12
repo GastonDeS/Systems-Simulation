@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    public static void main(String[] args) {
-        List<Particle> particles = generateRandomParticles(10000);
+    public static void main(String[] args) throws IOException {
+        List<Particle> particles = generateRandomParticles(100);
         Double Rd = 0.1;
 
         List<Double> radiusSorted = particles.stream().map(Particle::getRadius).sorted(Comparator.naturalOrder()).collect(Collectors.toList());
@@ -48,6 +48,8 @@ public class Main {
                 .reduce(0, Integer::sum));
 //        System.out.println(particles.get(0).getNearParticles().stream().map(Particle::getLabel).sorted(Comparator.comparingInt(Integer::parseInt)).collect(Collectors.toList()));
 //        System.out.println(check.stream().map(Particle::getLabel).collect(Collectors.toList()));
+
+        printResults(particles);
     }
 
     private static int countRepeated(List<Particle> particles) {
@@ -76,7 +78,7 @@ public class Main {
         FileWriter neighborsFile = new FileWriter(neighbors);
 
         for (Particle p : particles) {
-            positionsFile.write(p.getX().toString() + "," + p.getY().toString() + "\n");
+            positionsFile.write(p.getX().toString() + "," + p.getY().toString() + "," + p.getRadius() + "\n");
             if (p.getNearParticles().size() > 0) {
                 StringBuilder labels = new StringBuilder();
                 labels.append(p.getLabel()).append(",");

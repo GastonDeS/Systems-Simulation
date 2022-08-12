@@ -5,7 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TP1/IndexHashTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP1/IndexHashTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TP1/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP1/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TP1/Particle.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP1/Particle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP1/static.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TP1/static.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,17 +30,6 @@
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="Systems-Simulation" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>

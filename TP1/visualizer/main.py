@@ -13,8 +13,8 @@ exit_loop = False
 for idx, elem in enumerate(particles):
     if idx == DOTS_QTY:
         break
-    plt.plot(elem[0], elem[1], 'bo', markersize=elem[2] * DOT_RADIUS_MULTIPLIER)
-    plt.text(elem[0] - LABEL_COORDINATES_FIX, elem[1] - LABEL_COORDINATES_FIX, str(idx), color="black", fontsize=14)
+    plt.plot(elem[0], elem[1], 'o', color='#FFAAAF', markersize=elem[2] * DOT_RADIUS_MULTIPLIER)
+    plt.text(elem[0] - LABEL_COORDINATES_FIX, elem[1] - LABEL_COORDINATES_FIX, str(idx), color="black", fontsize=15)
 plt.show()
 while not exit_loop:
     inp = input("Chose dot or type exit to quit\n")
@@ -34,9 +34,9 @@ while not exit_loop:
         if idx == inp or idx in neighbors[inp]:
             plt.plot(elem[0], elem[1], 'go', markersize=elem[2] * DOT_RADIUS_MULTIPLIER)
             plt.text(elem[0] - LABEL_COORDINATES_FIX, elem[1] - LABEL_COORDINATES_FIX, str(idx), color="black",
-                     fontsize=14)
+                     fontsize=15)
         else:
-            plt.plot(elem[0], elem[1], 'bo', markersize=elem[2] * DOT_RADIUS_MULTIPLIER)
+            plt.plot(elem[0], elem[1], 'o', color='#FFAAAF', markersize=elem[2] * DOT_RADIUS_MULTIPLIER)
             plt.text(elem[0] - LABEL_COORDINATES_FIX, elem[1] - LABEL_COORDINATES_FIX, str(idx), color="black",
-                     fontsize=14)
+                     fontsize=15)
     plt.show()

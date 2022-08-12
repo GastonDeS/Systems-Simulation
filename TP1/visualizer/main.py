@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 from parser import *
 
-DOTS_QTY = int(open('../static.txt', 'r').readline().rsplit('=')[1].strip())
 LABEL_COORDINATES_FIX = 0.01
 DOT_RADIUS_MULTIPLIER = 450
 
@@ -12,7 +11,7 @@ plt.figure(figsize=(9, 8), dpi=80)
 exit_loop = False
 # Is there a way to make this iterator to reach only to size - 1?
 for idx, elem in enumerate(particles):
-    if idx == 20:
+    if idx == DOTS_QTY:
         break
     plt.plot(elem[0], elem[1], 'bo', markersize=elem[2] * DOT_RADIUS_MULTIPLIER)
     plt.text(elem[0] - LABEL_COORDINATES_FIX, elem[1] - LABEL_COORDINATES_FIX, str(idx), color="black", fontsize=14)

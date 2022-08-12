@@ -1,5 +1,7 @@
+DOTS_QTY = int(open('../static.txt', 'r').readline().rsplit('=')[1].strip())
+
 def parse_neighbors(path):
-    neighbors = [[]] * 20
+    neighbors = [[]] * DOTS_QTY
     with open(path, 'r') as f:
         while True:
             line = f.readline()
@@ -12,9 +14,9 @@ def parse_neighbors(path):
 
 def parse_particles(path):
     i = 0
-    particles = [[]] * 20
+    particles = [[]] * DOTS_QTY
     with open(path, 'r') as f:
-        while i < 20:
+        while i < DOTS_QTY:
             line = f.readline()
             if not line:
                 break

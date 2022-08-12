@@ -1,0 +1,4 @@
+PARTICLES_QTY = 20
+Rc = 0.1
+L = 1
+M = 10

@@ -32,9 +32,9 @@ while not exit_loop:
             break
         print(inp, idx)
         if idx == inp or idx in neighbors[inp]:
-            plt.plot(elem[0], elem[1], 'go', markersize=MARKER_SIZE)
+            plt.plot(elem[0], elem[1], 'go', markersize=elem[2]*500)
             plt.text(elem[0] - TEXT_COORD_FIX, elem[1] - TEXT_COORD_FIX, str(idx), color="black", fontsize=12)
         else:
-            plt.plot(elem[0], elem[1], 'bo', markersize=MARKER_SIZE)
+            plt.plot(elem[0], elem[1], 'bo', markersize=elem[2]*500)
             plt.text(elem[0] - TEXT_COORD_FIX, elem[1] - TEXT_COORD_FIX, str(idx), color="white", fontsize=12)
     plt.show()

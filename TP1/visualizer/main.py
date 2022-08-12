@@ -1,14 +1,17 @@
 import matplotlib.pyplot as plt
+from parser import *
 
-MARKER_SIZE = 18
-DOTS_QTY = 4
-TEXT_COORD_FIX = 0.035
-particles = [[1, 1], [1.4, 1.6], [1.2, 4], [3.1, 2.2]]
-
-print("Hello")
+MARKER_SIZE = 36
+DOTS_QTY = 200
+TEXT_COORD_FIX = 0.01
+particles = parse_particles('../../positions.csv')
+neighbors = parse_neighbors('../../neighbors.csv')
+plt.figure(figsize=(9, 8), dpi=80)
 
 exit_loop = False
 for idx, elem in enumerate(particles):
+    if idx == 20:
+        break
     plt.plot(elem[0], elem[1], 'bo', markersize=MARKER_SIZE)
     plt.text(elem[0] - TEXT_COORD_FIX, elem[1] - TEXT_COORD_FIX, str(idx), color="white", fontsize=12)
 plt.show()
@@ -23,14 +26,15 @@ while not exit_loop:
         inp = input("Particle not found, try again: ")
         inp = int(inp)
     plt.clf()
+    plt.figure(figsize=(9, 8), dpi=80)
     for idx, elem in enumerate(particles):
-        print(elem, idx)
-        if idx == inp:
+        if idx == 20:
+            break
+        print(inp, idx)
+        if idx == inp or idx in neighbors[inp]:
             plt.plot(elem[0], elem[1], 'go', markersize=MARKER_SIZE)
             plt.text(elem[0] - TEXT_COORD_FIX, elem[1] - TEXT_COORD_FIX, str(idx), color="black", fontsize=12)
         else:
             plt.plot(elem[0], elem[1], 'bo', markersize=MARKER_SIZE)
             plt.text(elem[0] - TEXT_COORD_FIX, elem[1] - TEXT_COORD_FIX, str(idx), color="white", fontsize=12)
     plt.show()
-
-

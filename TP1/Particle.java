@@ -20,9 +20,14 @@ public class Particle {
         return Math.sqrt(Math.pow(this.x - particle.getX(), 2) + Math.pow(this.y - particle.getY(), 2));
     }
 
-
     public Double distanceToBorder(Particle particle) {
         return Math.sqrt(Math.pow(this.x - particle.getX(), 2) + Math.pow(this.y - particle.getY(), 2)) - this.radius - particle.getRadius();
+    }
+
+    public Double circularDistance(Particle particle, Double L) {
+        Double distX = Math.abs(this.x - particle.getX());
+        Double distY = Math.abs(this.y - particle.getY());
+        return Math.sqrt(Math.pow(Math.min(distX, L - distX), 2) + Math.pow(Math.min(distY, L - distY), 2)) - this.radius - particle.getRadius();
     }
 
     public void move(Double distX, Double distY) {

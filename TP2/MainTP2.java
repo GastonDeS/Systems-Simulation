@@ -2,9 +2,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MainTP2 {
     final static Integer AGENTS_AMOUNT = 1000;
@@ -32,18 +30,20 @@ public class MainTP2 {
     private static List<Agent> generateRandomParticles(int amount, double speed) {
         List<Agent> randomAgents = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            double angle = Math.random() * 360;
+            double angle = Math.random() *2 * Math.PI;
+            System.out.println(speed(new Pair<>(speed * Math.cos(angle) , speed * Math.sin(angle))));
             randomAgents.add(new Agent( Math.random(), Math.random(), 0., speed, angle, ""+i));
         }
         return randomAgents;
     }
 
-    private static void printResults(List<Agent> particles, int iteration) throws IOException {
-        File positions = new File("./TP2/position/positions"+iteration+".csv");
+    private static void printResults(List<Agent> agents, int iteration) throws IOException {
+        File positions = new File("./TP2/position/positions"+iteration+".txt");
         FileWriter positionsFile = new FileWriter(positions);
 
-        for (Agent p : particles) {
-            positionsFile.write(p.getX().toString() + "," + p.getY().toString() + "," + p.getRadius() + "\n");
+        positionsFile.write(agents.size()+"\n\n");
+        for (Agent p : agents) {
+            positionsFile.write(p.getX().toString() + " " + p.getY().toString() + " " + p.getRadius() + "\n");
         }
 
         positionsFile.close();

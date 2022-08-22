@@ -37,6 +37,7 @@ public class Agent {
     public void nextStep() {
         double eta = 0.1;
         angle = promNearAngles() + (Math.random() * eta) - eta;
+        System.out.println(angle);
         this.move(speed + Math.cos(angle), speed + Math.sin(angle));
     }
 

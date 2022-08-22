@@ -28,42 +28,32 @@ public class Main {
 
         List<Double> radiusSorted = particles.stream().map(Particle::getRadius).sorted(Comparator.naturalOrder()).collect(Collectors.toList());
         Double maxRadius1 = radiusSorted.get(radiusSorted.size()-1);
-        Double maxRadius2 = radiusSorted.get(radiusSorted.size()-2);
 
 
-        Double cellLength = Rc + maxRadius1 + maxRadius2;
+        Double cellLength = Rc + maxRadius1 *2;
 
-        long time1 = System.currentTimeMillis();
+//        long time1 = System.currentTimeMillis();
         IndexHashTable indexHash = new IndexHashTable(cellLength, L);
         indexHash.index(particles);
-        for (int i = 0; i < particles.size(); i++) {
-            if (isCircular) {
-                particles.get(i).setNearParticles(indexHash.findCloseParticlesCircular(particles.get(i), Rc));
-            } else
-                particles.get(i).setNearParticles(indexHash.findCloseParticles(particles.get(i), Rc));
-        }
-        System.out.printf("time1: %d\n", System.currentTimeMillis() - time1);
-        System.out.printf("sumCheck: %d\n", particles.stream()
-                .map(particle -> particle.getNearParticles().size())
-                .reduce(0, Integer::sum));
-//        indexHash.printTable();
-//        indexHash.resetIndex();
+//        for (int i = 0; i < particles.size(); i++) {
+//            if (isCircular) {
+//                particles.get(i).setNearParticles(indexHash.findCloseParticlesCircular(particles.get(i), Rc));
+//            } else
+//                particles.get(i).setNearParticles(indexHash.findCloseParticles(particles.get(i), Rc));
+//        }
+//        System.out.printf("time1: %d\n", System.currentTimeMillis() - time1);
 
 //        List<Particle> check = new ArrayList<>(particles.get(0).getNearParticles());
-        //particles.forEach(particle -> particle.setNearParticles(new ArrayList<>()));
+//        particles.forEach(particle -> particle.setNearParticles(new ArrayList<>()));
 
-        long time2 = System.currentTimeMillis();
-        indexHash.index(particles);
+//        long time2 = System.currentTimeMillis();
+//        indexHash.index(particles);
         particles = indexHash.addNearParticlesWithFastAlgo(particles, Rc, isCircular);
-        System.out.printf("time2: %d\n", System.currentTimeMillis() - time2);
 
-//        int repeatedCount = particles.stream().map(p -> countRepeated(p.getNearParticles())).reduce(0, Integer::sum) ;
-//        System.out.printf("repeatedCheck: %d\n", repeatedCount);
-        System.out.printf("sumCheck: %d\n", particles.stream()
-                .map(particle -> particle.getNearParticles().size())
-                .reduce(0, Integer::sum));
-//        System.out.println(particles.get(0).getNearParticles().stream().map(Particle::getLabel).sorted(Comparator.comparingInt(Integer::parseInt)).collect(Collectors.toList()));
-//        System.out.println(check.stream().map(Particle::getLabel).collect(Collectors.toList()));
+//        System.out.printf("time2: %d\n", System.currentTimeMillis() - time2);
+//        System.out.printf("sumCheck: %d\n", particles.stream()
+//                .map(particle -> particle.getNearParticles().size())
+//                .reduce(0, Integer::sum));
 
         printResults(particles);
     }
@@ -82,14 +72,14 @@ public class Main {
     private static List<Particle> generateRandomParticles(int amount) {
         List<Particle> randomParticles = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            randomParticles.add(new Particle(Math.random(),Math.random(), Math.random()/4, ""+i));
+            randomParticles.add(new Particle(Math.random(),Math.random(), 0.1, ""+i));
         }
         return randomParticles;
     }
 
     private static void printResults(List<Particle> particles) throws IOException {
-        File positions = new File("positions.csv");
-        File neighbors = new File("neighbors.csv");
+        File positions = new File("./TP1/positions.csv");
+        File neighbors = new File("./TP1/neighbors.csv");
         FileWriter positionsFile = new FileWriter(positions);
         FileWriter neighborsFile = new FileWriter(neighbors);
 

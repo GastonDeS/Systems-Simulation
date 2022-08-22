@@ -54,34 +54,34 @@ public class IndexHashTable {
         particle.addNearParticles(this.indexTable.get(hashIndex(i, j)));
         // removeSelf
         particle.getNearParticles().remove(particle);
-        if (!circular) {
-            // arriba
-            addCorners(particle, distance, i - 1, j);
-            // diagonal abajo
-            addCorners(particle, distance, i - 1, j + 1);
-            // derecha
-            addCorners(particle, distance, i, j + 1);
-            // diagonal arriba
-            addCorners(particle, distance, i + 1, j + 1);
-        } else {
-            // arriba
-            addCorners(particle, distance, (i - 1) % cellAmount, j);
-            // diagonal abajo
-            addCorners(particle, distance, (i - 1) % cellAmount, (j + 1) % cellAmount);
-            // derecha
-            addCorners(particle, distance, i, (j + 1) % cellAmount);
-            // diagonal arriba
-            addCorners(particle, distance, (i + 1) % cellAmount, (j + 1) % cellAmount);
+
+        // arriba
+        addCorners(particle, distance, (i - 1) , j, circular);
+        // diagonal abajo
+        addCorners(particle, distance, (i - 1) , (j + 1) , circular);
+        // derecha
+        addCorners(particle, distance, i, (j + 1) , circular);
+        // diagonal arriba
+        addCorners(particle, distance, (i + 1) , (j + 1), circular);
+    }
+
+    private void addCorners(Particle particle, Double distance, int i , int j, boolean circular) {
+        if (circular) {
+            listMutualAdd( particle, distance, (i+cellAmount) % cellAmount, (j+cellAmount) % cellAmount);
+        } else if ( j >= 0 && i < cellAmount && j < cellAmount && i >= 0) {
+            listMutualAdd( particle, distance, i , j);
         }
     }
 
-    private void addCorners(Particle particle, Double distance, int i , int j) {
-        if (j >= 0 && i < cellAmount && j < cellAmount && i >= 0) {
-            List<Particle> particles = this.indexTable.get(hashIndex(i, j));
-            for (int k = 0; k < particles.size(); k++) {
-                if (particles.get(k).distanceToBorder(particle) < distance) {
-                    mutualAdd(particles.get(k), particle);
-                }
+    private void listMutualAdd(Particle particle, Double distance, int i , int j) {
+        List<Particle> particles = this.indexTable.get(hashIndex(i, j));
+        if (particles == null)  {
+            System.out.println("i: "+i+ " j: "+j);
+            return;
+        }
+        for (int k = 0; k < particles.size(); k++) {
+            if (particles.get(k).distanceToBorder(particle) < distance) {
+                mutualAdd(particles.get(k), particle);
             }
         }
     }
@@ -91,7 +91,7 @@ public class IndexHashTable {
         particle2.addNearParticle(particle1);
     }
 
-    public List<Particle> findCloseParticles(Particle particle, Double distance, boolean circular) {
+    public List<Particle> findCloseParticles(Particle particle, Double distance) {
         Optional<Pair<Integer, Integer>> ij = this.findParticle(particle);
         List<Particle> particles = new ArrayList<>();
         if (!ij.isPresent()) return particles;

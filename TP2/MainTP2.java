@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainTP2 {
-    final static Integer AGENTS_AMOUNT = 1000;
+    final static Integer AGENTS_AMOUNT = 10;
     final static Double SPEED = 0.03;
     final static Double R_C = 0.1;
 
@@ -20,9 +20,9 @@ public class MainTP2 {
             index.index(agentList);
             index.addNearAgentsWithFastAlgo(agentList, R_C, true);
 
+            agentList.forEach(Agent::nextStep);
             index.resetIndex();
             agentList.forEach(Agent::resetNearAgents);
-            agentList.forEach(Agent::nextStep);
         }
 
     }
@@ -30,8 +30,7 @@ public class MainTP2 {
     private static List<Agent> generateRandomParticles(int amount, double speed) {
         List<Agent> randomAgents = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            double angle = Math.random() *2 * Math.PI;
-            System.out.println(speed(new Pair<>(speed * Math.cos(angle) , speed * Math.sin(angle))));
+            double angle = Math.random() * 2 * Math.PI;
             randomAgents.add(new Agent( Math.random(), Math.random(), 0., speed, angle, ""+i));
         }
         return randomAgents;

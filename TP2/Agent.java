@@ -7,13 +7,15 @@ public class Agent {
     private Double x,y;
     private List<Agent> nearAgents;
     private Double radius;
-    private Pair<Double, Double> velocity;
+    private Double speed;
+    private Double angle;
 
-    public Agent(Double x, Double y, Double radius, Pair<Double, Double> velocity, String label) {
+    public Agent(Double x, Double y, Double radius, Double speed, Double angle, String label) {
         this.x = x;
         this.y = y;
         this.nearAgents = new ArrayList<>();
-        this.velocity = velocity;
+        this.speed = speed;
+        this.angle = angle;
         this.label = label;
         this.radius = radius;
     }
@@ -33,7 +35,15 @@ public class Agent {
     }
     
     public void nextStep() {
-        this.move(velocity.getValue1(), velocity.getValue2());
+        double eta = 0.1;
+        angle = promNearAngles() + (Math.random() * eta) - eta;
+        this.move(speed + Math.cos(angle), speed + Math.sin(angle));
+    }
+
+    private double promNearAngles() {
+        double sinProm = nearAgents.stream().map((agent) -> Math.sin(angle)).reduce( 0., Double::sum) / nearAgents.size();
+        double cosProm = nearAgents.stream().map((agent) -> Math.cos(angle)).reduce( 0., Double::sum) / nearAgents.size();
+        return Math.atan2(sinProm, cosProm);
     }
 
     public void move(Double distX, Double distY) {
@@ -56,6 +66,8 @@ public class Agent {
     public void setNearAgents(List<Agent> nearAgents) {
         this.nearAgents = nearAgents;
     }
+
+    public void resetNearAgents() {this.nearAgents = new ArrayList<>();}
 
     public void addNearAgents(List<Agent> Agents) {
         this.nearAgents.addAll(Agents);

@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Agent {
     private String label;
@@ -36,20 +37,22 @@ public class Agent {
     
     public void nextStep() {
         double eta = 0.1;
-        angle = promNearAngles() + (Math.random() * eta) - eta;
-        System.out.println(angle);
-        this.move(speed + Math.cos(angle), speed + Math.sin(angle));
+        angle = promNearAngles() + ((Math.random() * eta) - eta/2);
+        this.move(speed * Math.cos(angle), speed * Math.sin(angle));
     }
 
     private double promNearAngles() {
-        double sinProm = nearAgents.stream().map((agent) -> Math.sin(angle)).reduce( 0., Double::sum) / nearAgents.size();
-        double cosProm = nearAgents.stream().map((agent) -> Math.cos(angle)).reduce( 0., Double::sum) / nearAgents.size();
+        if (nearAgents.size() == 0) return angle;
+        Double sinProm = nearAgents.stream().map((agent) -> Math.sin(agent.angle)).reduce( 0., Double::sum) / nearAgents.size();
+        Double cosProm = nearAgents.stream().map((agent) -> Math.cos(agent.angle)).reduce( 0., Double::sum) / nearAgents.size();
+//        if (sinProm < 0) sinProm += Math.PI *2;
+//        if (cosProm < 0) cosProm += Math.PI *2;
         return Math.atan2(sinProm, cosProm);
     }
 
     public void move(Double distX, Double distY) {
-        this.x += distX;
-        this.y += distY;
+        this.x = ((this.x + distX) % 1) >= 0 ? (this.x + distX) % 1 : (this.x + distX) % 1 + 1;
+        this.y = ((this.y + distY) % 1) >= 0 ? (this.y + distY) % 1 : (this.y + distY) % 1 + 1;
     }
 
     public String getLabel() {

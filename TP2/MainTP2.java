@@ -17,8 +17,8 @@ public class MainTP2 {
         List<Agent> agentList = generateRandomParticles(AGENTS_AMOUNT, SPEED);
 
         Index index = new Index(R_C, 1.);
-        for (int i = 0; i < 10000; i++) {
-            printResults(agentList);
+        for (int i = 0; i < 100; i++) {
+            printResults(agentList, i);
             index.index(agentList);
             index.addNearAgentsWithFastAlgo(agentList, R_C, true);
 
@@ -38,8 +38,8 @@ public class MainTP2 {
         return randomAgents;
     }
 
-    private static void printResults(List<Agent> particles) throws IOException {
-        File positions = new File("./TP2/positions.csv");
+    private static void printResults(List<Agent> particles, int iteration) throws IOException {
+        File positions = new File("./TP2/position/positions"+iteration+".csv");
         FileWriter positionsFile = new FileWriter(positions);
 
         for (Agent p : particles) {

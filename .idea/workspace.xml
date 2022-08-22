@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="90b2f280-0b0d-4b07-a0f8-a38733678470" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/TP2/Index.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TP2/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/Agent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TP2/MainTP2.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/MainTP2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

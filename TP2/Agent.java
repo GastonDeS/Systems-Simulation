@@ -56,6 +56,14 @@ public class Agent {
         this.y = ((this.y + distY) % 1) >= 0 ? (this.y + distY) % 1 : (this.y + distY) % 1 + 1;
     }
 
+    public Double getAngle() {
+        return angle;
+    }
+
+    public void setAngle(Double angle) {
+        this.angle = angle;
+    }
+
     public String getLabel() {
         return label;
     }

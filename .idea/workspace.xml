@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90b2f280-0b0d-4b07-a0f8-a38733678470" name="Default Changelist" comment="feat: eta from static">
+    <list default="true" id="90b2f280-0b0d-4b07-a0f8-a38733678470" name="Default Changelist" comment="feat: parser, static file and ovito static square">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP2/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP2/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/Agent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP2/MainTP2.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/MainTP2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,30 +34,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/agustin/Desktop/faq/SS/TP2&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
-  }
-}</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
+  <component name="RunManager" selected="Application.MainTP2">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="Systems-Simulation" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -66,13 +54,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="Systems-Simulation" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.MainTP2" />
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -88,7 +75,7 @@
       <workItem from="1661174056354" duration="2971000" />
       <workItem from="1661205356375" duration="403000" />
       <workItem from="1661382894994" duration="36000" />
-      <workItem from="1661519596316" duration="4177000" />
+      <workItem from="1661519596316" duration="3791000" />
     </task>
     <task id="LOCAL-00001" summary="feat: parser, static file and ovito static square">
       <created>1661522392659</created>
@@ -97,14 +84,7 @@
       <option name="project" value="LOCAL" />
       <updated>1661522392659</updated>
     </task>
-    <task id="LOCAL-00002" summary="feat: eta from static">
-      <created>1661523766095</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1661523766095</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -120,11 +100,17 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: parser, static file and ovito static square" />
-    <MESSAGE value="feat: eta from static" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: eta from static" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: parser, static file and ovito static square" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="653" y="213" key="#com.intellij.ide.util.MemberChooser" timestamp="1661524560432">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="653" y="213" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1661524560432" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

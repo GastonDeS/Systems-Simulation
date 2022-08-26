@@ -4,3 +4,4 @@ out/*
 *.xml
 .DS_Store
 TP2/position
+/.idea/workspace.xml

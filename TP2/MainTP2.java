@@ -1,13 +1,29 @@
+import utils.Parser;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainTP2 {
-    final static Integer AGENTS_AMOUNT = 10;
-    final static Double SPEED = 0.03;
-    final static Double R_C = 0.1;
+
+    static List<String> tokens;
+
+    static {
+        try {
+            tokens = Parser.parse("TP2/static.txt");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final static Integer AGENTS_AMOUNT = Integer.valueOf(tokens.get(Constants.AGENTS_QTY.ordinal()));
+    final static Double SPEED = Double.valueOf(tokens.get(Constants.SPEED.ordinal()));
+    final static Double R_C = Double.valueOf(tokens.get(Constants.R_C.ordinal()));
+    final static Integer STEPS = Integer.valueOf(tokens.get(Constants.STEPS.ordinal()));
+
 
     public static void main(String[] args) throws IOException {
         System.out.println("TP2");
@@ -15,7 +31,7 @@ public class MainTP2 {
         List<Agent> agentList = generateRandomParticles(AGENTS_AMOUNT, SPEED);
 
         Index index = new Index(R_C, 1.);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < STEPS; i++) {
             printResults(agentList, i);
             index.index(agentList);
             index.addNearAgentsWithFastAlgo(agentList, R_C, true);
@@ -40,7 +56,9 @@ public class MainTP2 {
         File positions = new File("./TP2/position/positions"+iteration+".txt");
         FileWriter positionsFile = new FileWriter(positions);
 
-        positionsFile.write(agents.size()+"\n\n");
+        positionsFile.write(agents.size()+"\n" +
+                "Lattice=\"1 0.0 0.0 0.0 1 0.0 0.0 0.0 1\"" +
+                "\n");
         for (Agent p : agents) {
             positionsFile.write(p.getX().toString() + " " + p.getY().toString() + " " + p.getRadius() + "\n");
         }

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="90b2f280-0b0d-4b07-a0f8-a38733678470" name="Default Changelist" comment="">
+    <list default="true" id="90b2f280-0b0d-4b07-a0f8-a38733678470" name="Default Changelist" comment="fix: workspace">
+      <change afterPath="$PROJECT_DIR$/TP2/Constants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TP2/static.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TP2/utils/Parser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TP2/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/Agent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TP2/MainTP2.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/MainTP2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -15,29 +20,49 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2D4z2wOXykU2t9ZyWc5wjpmhUK5" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/agustin/Desktop/faq/SS/TP2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="" />
     </key>
   </component>
   <component name="RunManager" selected="Application.MainTP2">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="Systems-Simulation" />
@@ -48,17 +73,6 @@
     <configuration name="MainTP2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="MainTP2" />
       <module name="Systems-Simulation" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -82,6 +96,9 @@
       <workItem from="1659992855616" duration="1111000" />
       <workItem from="1661106346988" duration="156000" />
       <workItem from="1661174056354" duration="2971000" />
+      <workItem from="1661205356375" duration="403000" />
+      <workItem from="1661382894994" duration="36000" />
+      <workItem from="1661519596316" duration="1974000" />
     </task>
     <servers />
   </component>
@@ -98,65 +115,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="-1496" y="169" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1659972809284">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state x="-1496" y="169" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1659972809284" />
-    <state x="-1147" y="215" key="#com.intellij.ide.util.MemberChooser" timestamp="1659977504160">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state x="-1147" y="215" key="#com.intellij.ide.util.MemberChooser/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1659977504160" />
-    <state x="-1222" y="261" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1661175123280">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state x="-1222" y="261" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661175123280" />
-    <state width="1878" height="229" key="GridCell.Tab.0.bottom" timestamp="1661185531563">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state width="1878" height="229" key="GridCell.Tab.0.bottom/-1861.-5.1861.1055/0.25.1680.1025@-1861.-5.1861.1055" timestamp="1661183892477" />
-    <state width="1878" height="229" key="GridCell.Tab.0.bottom/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661185531563" />
-    <state width="1638" height="295" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1660320112040" />
-    <state width="1878" height="229" key="GridCell.Tab.0.center" timestamp="1661185531562">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state width="1878" height="229" key="GridCell.Tab.0.center/-1861.-5.1861.1055/0.25.1680.1025@-1861.-5.1861.1055" timestamp="1661183892476" />
-    <state width="1878" height="229" key="GridCell.Tab.0.center/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661185531562" />
-    <state width="1638" height="295" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1660320112040" />
-    <state width="1878" height="229" key="GridCell.Tab.0.left" timestamp="1661185531562">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state width="1878" height="229" key="GridCell.Tab.0.left/-1861.-5.1861.1055/0.25.1680.1025@-1861.-5.1861.1055" timestamp="1661183892476" />
-    <state width="1878" height="229" key="GridCell.Tab.0.left/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661185531562" />
-    <state width="1638" height="295" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1660320112039" />
-    <state width="1878" height="229" key="GridCell.Tab.0.right" timestamp="1661185531562">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state width="1878" height="229" key="GridCell.Tab.0.right/-1861.-5.1861.1055/0.25.1680.1025@-1861.-5.1861.1055" timestamp="1661183892477" />
-    <state width="1878" height="229" key="GridCell.Tab.0.right/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661185531562" />
-    <state width="1638" height="295" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1660320112040" />
-    <state width="1878" height="376" key="GridCell.Tab.1.bottom" timestamp="1661185467079">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state width="1878" height="376" key="GridCell.Tab.1.bottom/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661185467079" />
-    <state width="1878" height="376" key="GridCell.Tab.1.center" timestamp="1661185467078">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state width="1878" height="376" key="GridCell.Tab.1.center/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661185467078" />
-    <state width="1878" height="376" key="GridCell.Tab.1.left" timestamp="1661185467077">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state width="1878" height="376" key="GridCell.Tab.1.left/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661185467077" />
-    <state width="1878" height="376" key="GridCell.Tab.1.right" timestamp="1661185467079">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state width="1878" height="376" key="GridCell.Tab.1.right/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661185467079" />
-    <state x="-1295" y="211" width="670" height="676" key="search.everywhere.popup" timestamp="1661183684985">
-      <screen x="-1920" y="-30" width="1920" height="1080" />
-    </state>
-    <state x="-1295" y="211" width="670" height="676" key="search.everywhere.popup/-1920.-30.1920.1080/0.25.1680.1025@-1920.-30.1920.1080" timestamp="1661183684985" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

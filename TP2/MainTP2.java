@@ -62,7 +62,7 @@ public class MainTP2 {
                 "Lattice=\"2 0.0 0.0 0.0 2 0.0 0.0 0.0 2\"" +
                 "\n");
         for (Agent p : agents) {
-            positionsFile.write(p.getX().toString() + " " + p.getY().toString() + " " + p.getRadius() + "\n");
+            positionsFile.write(p.getX().toString() + " " + p.getY().toString() + " " + p.getAngle() + "\n");
         }
 
         positionsFile.close();

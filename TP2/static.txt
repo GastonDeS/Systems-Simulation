@@ -2,3 +2,4 @@ AGENTS_QTY = 300
 SPEED = 0.03
 R_C = 0.1
 STEPS = 500
+ETA = 0

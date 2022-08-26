@@ -10,8 +10,9 @@ public class Agent {
     private Double radius;
     private Double speed;
     private Double angle;
+    private Double eta;
 
-    public Agent(Double x, Double y, Double radius, Double speed, Double angle, String label) {
+    public Agent(Double x, Double y, Double radius, Double speed, Double angle, String label, Double eta) {
         this.x = x;
         this.y = y;
         this.nearAgents = new ArrayList<>();
@@ -19,6 +20,7 @@ public class Agent {
         this.angle = angle;
         this.label = label;
         this.radius = radius;
+        this.eta = eta;
     }
 
     public Double distance(Agent Agent) {
@@ -36,7 +38,6 @@ public class Agent {
     }
     
     public void nextStep() {
-        double eta = 0.1;
         angle = promNearAngles() + ((Math.random() * eta) - eta/2);
         this.move(speed * Math.cos(angle), speed * Math.sin(angle));
     }

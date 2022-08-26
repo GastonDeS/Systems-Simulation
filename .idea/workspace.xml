@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90b2f280-0b0d-4b07-a0f8-a38733678470" name="Default Changelist" comment="fix: workspace">
-      <change afterPath="$PROJECT_DIR$/TP2/Constants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TP2/static.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TP2/utils/Parser.java" afterDir="false" />
+    <list default="true" id="90b2f280-0b0d-4b07-a0f8-a38733678470" name="Default Changelist" comment="feat: parser, static file and ovito static square">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP2/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/Agent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP2/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/Constants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TP2/MainTP2.java" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/MainTP2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP2/static.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TP2/static.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,8 +98,16 @@
       <workItem from="1661174056354" duration="2971000" />
       <workItem from="1661205356375" duration="403000" />
       <workItem from="1661382894994" duration="36000" />
-      <workItem from="1661519596316" duration="1974000" />
+      <workItem from="1661519596316" duration="3791000" />
     </task>
+    <task id="LOCAL-00001" summary="feat: parser, static file and ovito static square">
+      <created>1661522392659</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1661522392659</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -115,6 +123,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: parser, static file and ovito static square" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: parser, static file and ovito static square" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

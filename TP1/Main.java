@@ -1,5 +1,3 @@
-import jdk.nashorn.internal.parser.JSONParser;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,7 +24,7 @@ public class Main {
 
         List<Particle> particles = generateRandomParticles(particlesQty);
 
-        List<Double> radiusSorted = particles.stream().map(Particle::getRadius).sorted(Comparator.naturalOrder()).collect(Collectors.toList());
+        List<Double> radiusSorted = particles.stream().map(Particle::getRadius).sorted(Comparator.naturalOrder()).toList();
         Double maxRadius1 = radiusSorted.get(radiusSorted.size()-1);
 
 

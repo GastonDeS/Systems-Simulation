@@ -55,7 +55,7 @@ public class MainTP2 {
     }
 
     private static void printResults(List<Agent> agents, int iteration) throws IOException {
-        File positions = new File("./TP2/position/positions"+iteration+".xyz");
+        File positions = new File("./TP2/position/positions_eta:"+ ETA + "_" +iteration+".xyz");
         FileWriter positionsFile = new FileWriter(positions);
 
         positionsFile.write(agents.size()+"\n" +

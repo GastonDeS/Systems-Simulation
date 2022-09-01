@@ -37,9 +37,9 @@ public class Agent {
         return Math.sqrt(Math.pow(Math.min(distX, L - distX), 2) + Math.pow(Math.min(distY, L - distY), 2)) - this.radius - Agent.getRadius();
     }
     
-    public void nextStep() {
+    public void nextStep(Double L) {
         angle = promNearAngles() + ((Math.random() * eta) - eta/2);
-        this.move(speed * Math.cos(angle), speed * Math.sin(angle));
+        this.move(speed * Math.cos(angle), speed * Math.sin(angle), L);
     }
 
     private double promNearAngles() {
@@ -51,9 +51,9 @@ public class Agent {
         return Math.atan2(sinProm, cosProm);
     }
 
-    public void move(Double distX, Double distY) {
-        this.x = ((this.x + distX) % 1) >= 0 ? (this.x + distX) % 1 : (this.x + distX) % 1 + 1;
-        this.y = ((this.y + distY) % 1) >= 0 ? (this.y + distY) % 1 : (this.y + distY) % 1 + 1;
+    public void move(Double distX, Double distY, Double L) {
+        this.x = ((this.x + distX) % L) >= 0 ? (this.x + distX) % L : (this.x + distX) % L + L;
+        this.y = ((this.y + distY) % L) >= 0 ? (this.y + distY) % L : (this.y + distY) % L + L;
     }
 
     public Double getAngle() {

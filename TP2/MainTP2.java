@@ -26,8 +26,6 @@ public class MainTP2 {
     final static Double ETA = Double.valueOf(tokens.get(Constants.ETA.ordinal()));
     final static Double L = Double.valueOf(tokens.get(Constants.L.ordinal()));
 
-
-
     public static void main(String[] args) throws IOException {
         System.out.println("TP2");
         List<Agent> agentList = generateRandomParticles(AGENTS_AMOUNT, SPEED, ETA);
@@ -39,7 +37,7 @@ public class MainTP2 {
                 index.index(agentList);
                 index.addNearAgentsWithFastAlgo(agentList, R_C, true);
 
-                agentList.forEach(Agent::nextStep);
+                agentList.forEach(agent -> agent.nextStep(L));
                 index.resetIndex();
                 agentList.forEach(Agent::resetNearAgents);
             }

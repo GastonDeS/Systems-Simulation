@@ -24,7 +24,7 @@ public class Main {
 
         List<Particle> particles = generateRandomParticles(particlesQty);
 
-        List<Double> radiusSorted = particles.stream().map(Particle::getRadius).sorted(Comparator.naturalOrder()).toList();
+        List<Double> radiusSorted = particles.stream().map(Particle::getRadius).sorted(Comparator.naturalOrder()).collect(Collectors.toList());
         Double maxRadius1 = radiusSorted.get(radiusSorted.size()-1);
 
 

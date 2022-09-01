@@ -24,24 +24,25 @@ public class MainTP2 {
     final static Double R_C = Double.valueOf(tokens.get(Constants.R_C.ordinal()));
     final static Integer STEPS = Integer.valueOf(tokens.get(Constants.STEPS.ordinal()));
     final static Double ETA = Double.valueOf(tokens.get(Constants.ETA.ordinal()));
+    final static Double L = Double.valueOf(tokens.get(Constants.L.ordinal()));
 
 
 
     public static void main(String[] args) throws IOException {
         System.out.println("TP2");
-
         List<Agent> agentList = generateRandomParticles(AGENTS_AMOUNT, SPEED, ETA);
 
-        Index index = new Index(R_C, 1.);
-        for (int i = 0; i < STEPS; i++) {
-            printResults(agentList, i);
-            index.index(agentList);
-            index.addNearAgentsWithFastAlgo(agentList, R_C, true);
+        Index index = new Index(R_C, L);
+        for (int j = 0 ; j < 25 ; j++)
+            for (int i = 0; i < STEPS; i++) {
+                printResults(agentList, i, j);
+                index.index(agentList);
+                index.addNearAgentsWithFastAlgo(agentList, R_C, true);
 
-            agentList.forEach(Agent::nextStep);
-            index.resetIndex();
-            agentList.forEach(Agent::resetNearAgents);
-        }
+                agentList.forEach(Agent::nextStep);
+                index.resetIndex();
+                agentList.forEach(Agent::resetNearAgents);
+            }
 
     }
 
@@ -54,12 +55,12 @@ public class MainTP2 {
         return randomAgents;
     }
 
-    private static void printResults(List<Agent> agents, int iteration) throws IOException {
-        File positions = new File("./TP2/position/positions_eta:"+ ETA + "_" +iteration+".xyz");
+    private static void printResults(List<Agent> agents, int iteration, int sameEtaIteration) throws IOException {
+        File positions = new File("./TP2/position/positions_eta:" + ETA + "_" + sameEtaIteration + "_" + iteration+".xyz");
         FileWriter positionsFile = new FileWriter(positions);
 
         positionsFile.write(agents.size()+"\n" +
-                "Lattice=\"2 0.0 0.0 0.0 2 0.0 0.0 0.0 2\"" +
+                "Lattice=\"3 0.0 0.0 0.0 3 0.0 0.0 0.0 3\"" +
                 "\n");
         for (Agent p : agents) {
             positionsFile.write(p.getX().toString() + " " + p.getY().toString() + " " + p.getAngle() + "\n");

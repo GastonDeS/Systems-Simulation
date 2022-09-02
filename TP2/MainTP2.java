@@ -28,33 +28,48 @@ public class MainTP2 {
 
     public static void main(String[] args) throws IOException {
         System.out.println("TP2");
-        List<Agent> agentList = generateRandomParticles(AGENTS_AMOUNT, SPEED, ETA);
+
+        List<Double> etas = new ArrayList<>();
+//        etas.add(0.1);
+//        etas.add(2.);
+//        etas.add(4.);
+//        etas.add(5.);
+        etas.add(1.);
+        etas.add(3.);
 
         Index index = new Index(R_C, L);
-        for (int j = 0 ; j < 25 ; j++)
-            for (int i = 0; i < STEPS; i++) {
-                printResults(agentList, i, j);
-                index.index(agentList);
-                index.addNearAgentsWithFastAlgo(agentList, R_C, true);
+        etas.forEach( (eta) -> {
+            List<Agent> agentList = generateRandomParticles(AGENTS_AMOUNT, SPEED, eta, L);
+            System.out.println("eta: "+eta);
+//            for (int j = 0 ; j < 25 ; j++) {
+                for (int i = 0; i < STEPS; i++) {
+                    try {
+                        printResults(agentList, i, 0, AGENTS_AMOUNT, eta);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    index.index(agentList);
+                    index.addNearAgentsWithFastAlgo(agentList, R_C, true);
 
-                agentList.forEach(agent -> agent.nextStep(L));
-                index.resetIndex();
-                agentList.forEach(Agent::resetNearAgents);
-            }
-
+                    agentList.forEach(agent -> agent.nextStep(L));
+                    index.resetIndex();
+                    agentList.forEach(Agent::resetNearAgents);
+                }
+//            }
+        });
     }
 
-    private static List<Agent> generateRandomParticles(int amount, double speed, double eta) {
+    private static List<Agent> generateRandomParticles(int amount, double speed, double eta, double L) {
         List<Agent> randomAgents = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             double angle = Math.random() * 2 * Math.PI;
-            randomAgents.add(new Agent( Math.random(), Math.random(), 0., speed, angle, ""+i, eta));
+            randomAgents.add(new Agent( Math.random() * L, Math.random() * L, 0., speed, angle, ""+i, eta));
         }
         return randomAgents;
     }
 
-    private static void printResults(List<Agent> agents, int iteration, int sameEtaIteration) throws IOException {
-        File positions = new File("./TP2/position/positions_eta:" + ETA + "_" + sameEtaIteration + "_" + iteration+".xyz");
+    private static void printResults(List<Agent> agents, int iteration, int sameEtaIteration, double densidad, double eta) throws IOException {
+        File positions = new File("../position/positions_eta:" + eta + "_" + sameEtaIteration + "_" + iteration+"_"+densidad+".xyz");
         FileWriter positionsFile = new FileWriter(positions);
 
         positionsFile.write(agents.size()+"\n" +

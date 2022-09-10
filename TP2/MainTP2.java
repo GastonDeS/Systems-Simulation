@@ -29,34 +29,21 @@ public class MainTP2 {
     public static void main(String[] args) throws IOException {
         System.out.println("TP2");
 
-        List<Double> etas = new ArrayList<>();
-//        etas.add(0.1);
-//        etas.add(2.);
-//        etas.add(4.);
-//        etas.add(5.);
-        etas.add(1.);
-        etas.add(3.);
-
         Index index = new Index(R_C, L);
-        etas.forEach( (eta) -> {
-            List<Agent> agentList = generateRandomParticles(AGENTS_AMOUNT, SPEED, eta, L);
-            System.out.println("eta: "+eta);
-//            for (int j = 0 ; j < 25 ; j++) {
-                for (int i = 0; i < STEPS; i++) {
-                    try {
-                        printResults(agentList, i, 0, AGENTS_AMOUNT, eta);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    index.index(agentList);
-                    index.addNearAgentsWithFastAlgo(agentList, R_C, true);
+        List<Agent> agentList = generateRandomParticles(AGENTS_AMOUNT, SPEED, ETA, L);
+        for (int i = 0; i < STEPS; i++) {
+            try {
+                printResults(agentList, i, 0, AGENTS_AMOUNT, ETA);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            index.index(agentList);
+            index.addNearAgentsWithFastAlgo(agentList, R_C, true);
 
-                    agentList.forEach(agent -> agent.nextStep(L));
-                    index.resetIndex();
-                    agentList.forEach(Agent::resetNearAgents);
-                }
-//            }
-        });
+            agentList.forEach(agent -> agent.nextStep(L));
+            index.resetIndex();
+            agentList.forEach(Agent::resetNearAgents);
+        }
     }
 
     private static List<Agent> generateRandomParticles(int amount, double speed, double eta, double L) {

@@ -1,3 +1,4 @@
+import utils.Pair;
 import utils.Parser;
 
 import java.io.File;
@@ -56,7 +57,7 @@ public class MainTP2 {
     }
 
     private static void printResults(List<Agent> agents, int iteration, int sameEtaIteration, double densidad, double eta) throws IOException {
-        File positions = new File("../position/positions_eta:" + eta + "_" + sameEtaIteration + "_" + iteration+"_"+densidad+".xyz");
+        File positions = new File("TP2/position/positions_eta:" + eta + "_" + sameEtaIteration + "_" + iteration+"_"+densidad+".xyz");
         FileWriter positionsFile = new FileWriter(positions);
 
         positionsFile.write(agents.size()+"\n" +

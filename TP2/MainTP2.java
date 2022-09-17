@@ -14,7 +14,7 @@ public class MainTP2 {
 
     static {
         try {
-            tokens = Parser.parse("TP2/static.txt");
+            tokens = Parser.parse("static.txt");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +57,7 @@ public class MainTP2 {
     }
 
     private static void printResults(List<Agent> agents, int iteration, int sameEtaIteration, double densidad, double eta) throws IOException {
-        File positions = new File("TP2/position/positions_eta:" + eta + "_" + sameEtaIteration + "_" + iteration+"_"+densidad+".xyz");
+        File positions = new File("position/positions_eta:" + eta + "_" + sameEtaIteration + "_" + iteration+"_"+densidad+".xyz");
         FileWriter positionsFile = new FileWriter(positions);
 
         positionsFile.write(agents.size()+"\n" +

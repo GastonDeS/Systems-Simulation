@@ -43,7 +43,7 @@ def main():
     agentsAmount = [0.1, 1.0, 2.0, 3.0, 4.0, 5.0]
 
     for i in range(6):
-        va_list[i] = get_va_bulk(f'../../../position/positions_eta:{agentsAmount[i]}_', 1500, 1024, 1024)
+        va_list[i] = get_va_bulk(f'../position/positions_eta:{agentsAmount[i]}_', 1500, 1024, 1024)
     x = list(range(0, 1500))
 
     fig = plt.figure()
@@ -65,7 +65,7 @@ def main():
 #     etas = [0.0, 1.0, 2.0,3.0,4.0,5.0]
 #
 #     for i in range(6):
-#         va_list[i] = get_va_bulk(f'../../../position/positions_eta:{etas[i]}_', 1500, 1024, 1024)
+#         va_list[i] = get_va_bulk(f'../position/positions_eta:{etas[i]}_', 1500, 1024, 1024)
 #         va_mean[i] = np.mean(va_list[i])
 #         va_std[i] = np.std(va_list[i])
 #
@@ -87,7 +87,7 @@ def main():
 #     agentsAmount = [40, 800, 2000]
 #
 #     for i in range(3):
-#         va_list[i] = get_va_bulk(f'../../../position/positions_eta:2.0_', 1500, agentsAmount[i], agentsAmount[i] / (20 **2))
+#         va_list[i] = get_va_bulk(f'../position/positions_eta:2.0_', 1500, agentsAmount[i], agentsAmount[i] / (20 **2))
 #     x = list(range(0, 1500))
 #
 #     fig = plt.figure()
@@ -116,7 +116,7 @@ def main():
 #         print(i)
 #         for j in range(6):
 #             print(j)
-#             va_list[j] = get_va_bulk(f'../../../position/positions_eta:{etas[i]}_', 1500, 400 * agentsAmount[j], agentsAmount[j])
+#             va_list[j] = get_va_bulk(f'../position/positions_eta:{etas[i]}_', 1500, 400 * agentsAmount[j], agentsAmount[j])
 #             va_mean[j] = np.mean(va_list[j])
 #             va_std[j] = np.std(va_list[j])
 #         x = list(range(6))

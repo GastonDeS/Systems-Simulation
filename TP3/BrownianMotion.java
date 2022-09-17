@@ -19,6 +19,9 @@ public class BrownianMotion {
         for (Particle particle : particles) {
             calculateEventForParticle(particle, null);
         }
+        while (!events.isEmpty()) {
+            System.out.println(events.poll());
+        }
     }
 
     public Event performCollision() {
@@ -38,6 +41,8 @@ public class BrownianMotion {
         this.events.addAll(eventsWithoutP1AndP2);
 
         calculateEventForParticle(p1, p2);
+        if (p2 != null)
+            calculateEventForParticle(p2, p1);
     }
 
     public void calculateEventForParticle(Particle p, Particle omitted) {
@@ -66,6 +71,7 @@ public class BrownianMotion {
             direction = 'y';
         }
 
+        if (tc > 0) // remove this its highly weird that we need to check that its positive
         events.add(new Event(tc, p, p2, direction));
     }
 

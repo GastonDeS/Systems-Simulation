@@ -1,5 +1,3 @@
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -22,11 +20,11 @@ public class BrownianMotion {
         }
     }
 
-    private void calculateEventForParticle(Particle p, Particle omitted) {
+    public void calculateEventForParticle(Particle p, Particle omitted) {
         double tc = Double.POSITIVE_INFINITY;
-        double tcWithWalls = Math.min(p.calculateCollisionTimeWithWall(L, 'x'),
-                p.calculateCollisionTimeWithWall(L, 'y'));
-
+        double tcDirX = p.calculateCollisionTimeWithWall(L, 'x');
+        double tcDirY = p.calculateCollisionTimeWithWall(L, 'y');
+        char direction = '-';
         Particle p2 = null;
         for (Particle other : particles) {
             if (!other.equals(p) && !other.equals(omitted)) {
@@ -38,9 +36,17 @@ public class BrownianMotion {
             }
         }
 
-        tc = Math.min(tc, tcWithWalls);
-        events.add(new Event(tc, p, p2));
+        if (tcDirX < tc) {
+            tc = tcDirX;
+            direction = 'x';
+        }
 
+        if (tcDirY < tc) {
+            tc = tcDirY;
+            direction = 'y';
+        }
+
+        events.add(new Event(tc, p, p2, direction));
     }
 
     private void refreshBeforeEvent() {

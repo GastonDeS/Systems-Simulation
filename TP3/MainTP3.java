@@ -18,10 +18,10 @@ public class MainTP3 {
 
         int particlesAmount = (int) Math.round((Math.random() * 50) + 100);
 
-        particles.add(new Particle(2, 0.7,L/2,L/2, 0,0));
+        particles.add(new Particle(0, 2, 0.7,L/2,L/2, 0,0));
         for (int i = 0; i < particlesAmount; i++) {
             Pair<Double, Double> velocity = getRandomVelocity();
-            Particle particle = new Particle(0.9,0.2, getRandomPos(), getRandomPos(), velocity.getKey(), velocity.getValue());
+            Particle particle = new Particle(i + 1,0.9,0.2, getRandomPos(), getRandomPos(), velocity.getKey(), velocity.getValue());
             while (isOverlap(particles, particle)) {
                 particle.setPosX(getRandomPos());
                 particle.setPosY(getRandomPos());

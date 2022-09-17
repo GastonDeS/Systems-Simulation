@@ -1,7 +1,8 @@
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 public class Particle {
-
+    private final int label;
     private final double mass;
     private final double radius;
     private double posX;
@@ -9,7 +10,8 @@ public class Particle {
     private double velX;
     private double velY;
 
-    public Particle(double mass, double radius, double posX, double posY, double velX, double velY) {
+    public Particle(int label, double mass, double radius, double posX, double posY, double velX, double velY) {
+        this.label = label;
         this.mass = mass;
         this.radius = radius;
         this.posX = posX;
@@ -99,5 +101,18 @@ public class Particle {
 
     public void setPosY(double posY) {
         this.posY = posY;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (! (o instanceof Particle)) return false;
+        Particle particle = (Particle) o;
+        return label == particle.label;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(label);
     }
 }

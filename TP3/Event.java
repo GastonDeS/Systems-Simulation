@@ -1,9 +1,9 @@
 public class Event {
     private final double time;
-    private final int p1; //index of particle in list
-    private final int p2;
+    private final Particle p1; //index of particle in list
+    private final Particle p2;
 
-    public Event(double time, int p1, int p2) {
+    public Event(double time, Particle p1, Particle p2) {
         this.time = time;
         this.p1 = p1;
         this.p2 = p2;
@@ -13,11 +13,11 @@ public class Event {
         return time;
     }
 
-    public int getP1() {
+    public Particle getP1() {
         return p1;
     }
 
-    public int getP2() {
+    public Particle getP2() {
         return p2;
     }
 }

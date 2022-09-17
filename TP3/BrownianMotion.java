@@ -1,3 +1,5 @@
+import com.sun.xml.internal.ws.wsdl.writer.document.Part;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -14,14 +16,29 @@ public class BrownianMotion {
     }
 
     private void calculateEvents() {
-        for (Particle p : particles) {
-            calculateEventForParticle(p, null);
+        for (Particle particle : particles) {
+            calculateEventForParticle(particle, null);
         }
     }
 
     private void calculateEventForParticle(Particle p, Particle omitted) {
         double tc = Double.POSITIVE_INFINITY;
-        double tcVerticalWalls = p.calculateCollisionTimeWithWall(L, 'x');
-        double tcHorizontalWalls = p.calculateCollisionTimeWithWall(L, 'y');
+        double tcWithWalls = Math.min(p.calculateCollisionTimeWithWall(L, 'x'),
+                p.calculateCollisionTimeWithWall(L, 'y'));
+
+        Particle p2 = null;
+        for (Particle other : particles) {
+            if (!other.equals(p) && !other.equals(omitted)) {
+                double tcAux = p.calculateCollisionTimeWithParticle(other);
+                if (tcAux < tc) {
+                    tc = tcAux;
+                    p2 = other;
+                }
+            }
+        }
+
+        tc = Math.min(tc, tcWithWalls);
+        events.add(new Event(tc, p, p2));
+
     }
 }

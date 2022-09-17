@@ -1,6 +1,9 @@
 import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import javafx.util.Pair;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +14,17 @@ public class MainTP3 {
     public static void main(String[] args) {
         List<Particle> particles = generateParticles();
         System.out.println(particles.size());
+    }
+
+    private static void saveState(List<Particle> particles, int iteration) throws IOException {
+        File positions = new File("./TP3/positions"+iteration+".csv");
+        FileWriter positionsFile = new FileWriter(positions);
+
+        for (Particle particle : particles) {
+            positionsFile.write( particle.toString() + "\n");
+        }
+
+        positionsFile.close();
     }
 
     private static List<Particle> generateParticles() {

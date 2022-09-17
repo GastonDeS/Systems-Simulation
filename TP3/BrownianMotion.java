@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+
 public class BrownianMotion {
     private final List<Particle> particles;
     private PriorityQueue<Event> events;
@@ -40,5 +41,12 @@ public class BrownianMotion {
         tc = Math.min(tc, tcWithWalls);
         events.add(new Event(tc, p, p2));
 
+    }
+
+    private void refreshBeforeEvent() {
+        Event event = events.poll(); // We don't have to check if it's empty because there is always a next event
+        if (event == null) return; // This should happen on normal activity
+        double time = event.getTime();
+        particles.forEach(particle -> particle.refreshToTime(time));
     }
 }

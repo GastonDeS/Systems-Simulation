@@ -20,6 +20,20 @@ public class Particle {
         this.velY = velY;
     }
 
+    public Double distance(Particle particle) {
+        return Math.sqrt(Math.pow(this.posX - particle.posX, 2) + Math.pow(this.posY - particle.posY, 2));
+    }
+
+    // this has a problem on precision example 1.400000000000000004 compared to 1.4
+    public boolean isOverlap(Particle particle2) {
+        return this.distance(particle2) <= this.radius + particle2.radius;
+    }
+
+    public void refreshToTime(double time) {
+        this.posX += this.velX * time;
+        this.posY += this.velY * time;
+    }
+
     public double calculateCollisionTimeWithParticle(Particle p) {
         Point2D.Double dr = new Point2D.Double(p.posX - posX, p.posY - posY); // Δr
         Point2D.Double dv = new Point2D.Double(p.velX - velX, p.velY - velY); // Δv
@@ -61,7 +75,15 @@ public class Particle {
         }
         return tc;
     }
-    
+
+    @Override
+    public String toString() {
+        return posX +
+                "," + posY +
+                "," + velX +
+                "," + velY;
+    }
+
     public double getMass() {
         return mass;
     }
@@ -84,15 +106,6 @@ public class Particle {
 
     public double getVelY() {
         return velY;
-    }
-
-    public Double distance(Particle particle) {
-        return Math.sqrt(Math.pow(this.posX - particle.posX, 2) + Math.pow(this.posY - particle.posY, 2));
-    }
-
-    // this has a problem on precision example 1.400000000000000004 compared to 1.4
-    public boolean isOverlap(Particle particle2) {
-        return this.distance(particle2) <= this.radius + particle2.radius;
     }
 
     public void setPosX(double posX) {

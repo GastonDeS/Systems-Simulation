@@ -38,8 +38,26 @@ public class Particle {
         return - (rv + Math.sqrt(d))/vv;
     }
 
-    public double calculateCollisionTimeWithWall() {
-        return 0;
+    public double calculateCollisionTimeWithWall(Double L, char direction) {
+        double tc = Double.POSITIVE_INFINITY;
+        if (velX == 0 || velY == 0) return tc;
+        switch (direction) {
+            case 'x':
+                if (velX > 0) {
+                    tc = (L - radius - posX)/velX;
+                } else {
+                    tc = (radius - posX)/velX;
+                }
+                break;
+            case 'y':
+                if (velY > 0) {
+                    tc = (L - radius - posY)/velY;
+                } else {
+                    tc = (radius - posY)/velY;
+                }
+                break;
+        }
+        return tc;
     }
     
     public double getMass() {
@@ -72,10 +90,7 @@ public class Particle {
 
     // this has a problem on precision example 1.400000000000000004 compared to 1.4
     public boolean isOverlap(Particle particle2) {
-        if (this.distance(particle2) <= this.radius + particle2.radius) {
-            return true;
-        }
-        return false;
+        return this.distance(particle2) <= this.radius + particle2.radius;
     }
 
     public void setPosX(double posX) {

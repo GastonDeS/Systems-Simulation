@@ -1,6 +1,4 @@
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -30,6 +28,13 @@ public class BrownianMotion {
     }
 
     public void removeAndCalculateEventForParticle(Particle p1, Particle p2) {
+        Set<Particle> invalidParticles = events.stream()
+                .filter(e -> e.containsParticle(p1) || e.containsParticle(p2))
+                .map(Event::getParticles).flatMap(Collection::stream).collect(Collectors.toCollection(HashSet::new));
+        invalidParticles.remove(p1);
+        invalidParticles.remove(p2);
+        invalidParticles.forEach(p -> calculateEventForParticle(p, null));
+
         List<Event> eventsWithoutP1AndP2 = events.stream()
                 .filter(e -> !e.containsParticle(p1) || !e.containsParticle(p2))
                 .collect(Collectors.toList());

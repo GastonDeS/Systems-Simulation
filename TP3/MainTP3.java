@@ -7,7 +7,7 @@ import java.util.List;
 public class MainTP3 {
     private final static double L = 6; // double because then its get divided so we avoid casting
     private final static double maxVelocity = 2; // max velocity module
-    private final static int events = 1000;
+    private final static int eventsQty = 5000;
 
     public static void main(String[] args) {
         List<Particle> particles = generateParticles();
@@ -15,14 +15,18 @@ public class MainTP3 {
 
         BrownianMotion brownianMotion = new BrownianMotion(particles, L);
         brownianMotion.calculateEvents();
+        List<Event> events = new ArrayList<>();
         Event lastEvent;
-        for (int i = 0; i < events; i++) {
+        for (int i = 0; i < eventsQty; i++) {
             brownianMotion.refreshBeforeEvent();
             saveState(brownianMotion.getParticles(), i);
             lastEvent = brownianMotion.performCollision();
             if ( lastEvent != null) brownianMotion.removeAndCalculateEventForParticle(lastEvent.getP1(), lastEvent.getP2());
+            else throw new NullPointerException();
+            events.add(lastEvent);
         }
 
+        events.forEach(e -> System.out.println(e.getTime()));
     }
 
     private static void saveState(List<Particle> particles, int iteration) {
@@ -71,7 +75,8 @@ public class MainTP3 {
     }
 
     private static double getRandomPos() {
-        return Math.random() * L;
+        double radius = 0.2;
+        return Math.random() * (L - 2*radius) + radius;
     }
 
     private static boolean isOverlap(List<Particle> particles , Particle particle) {

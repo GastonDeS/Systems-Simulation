@@ -1,4 +1,8 @@
+import com.sun.xml.internal.ws.wsdl.writer.document.Part;
+
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Event {
     private final double time;
@@ -48,6 +52,7 @@ public class Event {
         double Jx = (J*dx)/sigma;
         double Jy = (J*dy)/sigma;
 
+
         p1.setVelX(p1.getVelX() + Jx/m1);
         p1.setVelY(p1.getVelY() + Jy/m1);
 
@@ -57,6 +62,13 @@ public class Event {
 
     public boolean containsParticle(Particle p) {
         return p2 == null ? p1.equals(p) : p1.equals(p) || p2.equals(p);
+    }
+
+    public List<Particle> getParticles() {
+        List<Particle> particles = new ArrayList<>();
+        particles.add(p1);
+        if (p2 != null) particles.add(p2);
+        return particles;
     }
 
     public double getTime() {

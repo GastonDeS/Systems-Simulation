@@ -1,5 +1,3 @@
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
-
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
@@ -41,7 +39,7 @@ public class Particle {
         Point2D.Double dv = new Point2D.Double(p.velX - velX, p.velY - velY); // Δv
         double rv = dr.x*dv.x+dr.y*dv.y; // Δr.Δv
 
-        if (rv > 0)
+        if (rv >= 0)
             return Double.POSITIVE_INFINITY;
 
         double rr = Math.pow(dr.x, 2) + Math.pow(dr.y, 2); // Δr.Δr
@@ -49,7 +47,7 @@ public class Particle {
         double sigma = radius + p.radius;
         double d = Math.pow(rv, 2) - vv * (rr - Math.pow(sigma, 2));
 
-        if (d > 0) {
+        if (d < 0) {
             return Double.POSITIVE_INFINITY;
         }
 

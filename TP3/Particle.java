@@ -22,42 +22,6 @@ public class Particle {
         this.velY = velY;
     }
 
-    public static void updateAfterCollision(Event event) {
-        switch (event.getDirection()) {
-            case 'x', 'y' -> updateAfterCollisionWithWall(event.getP1(), event.getDirection());
-            case '-' -> updateAfterCollisionWithParticle(event.getP1(), event.getP2());
-        }
-    }
-
-    private static void updateAfterCollisionWithWall(Particle p, char direction) {
-        if (direction == 'x') {
-            p.setVelX(-p.velX);
-        } else {
-            p.setVelY(-p.velY);
-        }
-    }
-
-    private static void updateAfterCollisionWithParticle(Particle p1, Particle p2) {
-        double dx = p2.posX - p1.posX; // Δx
-        double dy = p2.posY - p1.posY; // Δy
-        Point2D.Double dr = new Point2D.Double(dx, dy); // Δr
-        Point2D.Double dv = new Point2D.Double(p2.velX - p1.velX, p2.velY - p1.velY); // Δv
-        double sigma = p1.radius + p2.radius;
-        double m1 = p1.mass;
-        double m2 = p2.mass;
-        double rv = dr.x*dv.x+dr.y*dv.y; // Δr.Δv
-        double J = (2*m1*m2*rv)/(sigma*(m1+m2));
-        double Jx = J*dx/sigma;
-        double Jy = J*dy/sigma;
-
-        p1.setVelX(p1.velX + Jx/m1);
-        p1.setVelY(p1.velY + Jy/m1);
-
-        p2.setVelX(p2.velX - Jx/m2);
-        p2.setVelY(p2.velY - Jy/m2);
-
-    }
-
     public Double distance(Particle particle) {
         return Math.sqrt(Math.pow(this.posX - particle.posX, 2) + Math.pow(this.posY - particle.posY, 2));
     }

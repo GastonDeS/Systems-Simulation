@@ -53,6 +53,10 @@ public class Event {
         p2.setVelY(p2.getVelY() - Jy/m2);
     }
 
+    public boolean containsParticle(Particle p) {
+        return p2 == null ? p1.equals(p) : p1.equals(p) || p2.equals(p);
+    }
+
     public double getTime() {
         return time;
     }

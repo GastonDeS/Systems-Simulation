@@ -32,11 +32,9 @@ public class BrownianMotion {
     }
 
     public void removeAndCalculateEventForParticle(Particle p1, Particle p2) {
-        List<Event> eventsWithoutP1AndP2 = events.stream().filter(e -> {
-            boolean filterCondition = e.getP1().equals(p1);
-            if (e.getP2()!=null) filterCondition = filterCondition || e.getP2().equals(p2);
-            return filterCondition;
-        }).collect(Collectors.toList());
+        List<Event> eventsWithoutP1AndP2 = events.stream()
+                .filter(e -> !e.containsParticle(p1) && !e.containsParticle(p2))
+                .collect(Collectors.toList());
         this.events = new PriorityQueue<>(Comparator.comparing(Event::getTime));
         this.events.addAll(eventsWithoutP1AndP2);
 

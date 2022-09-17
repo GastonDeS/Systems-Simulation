@@ -73,7 +73,15 @@ public class Particle {
         }
         return tc;
     }
-    
+
+    @Override
+    public String toString() {
+        return posX +
+                "," + posY +
+                "," + velX +
+                "," + velY;
+    }
+
     public double getMass() {
         return mass;
     }

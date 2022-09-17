@@ -123,9 +123,9 @@ public class Particle {
     @Override
     public String toString() {
         return posX +
-                "," + posY +
-                "," + velX +
-                "," + velY;
+                " " + posY +
+                " " + velX +
+                " " + velY + " " + radius;
     }
 
     @Override

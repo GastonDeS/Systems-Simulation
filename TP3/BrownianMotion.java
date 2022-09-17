@@ -8,6 +8,7 @@ public class BrownianMotion {
     private final List<Particle> particles;
     private PriorityQueue<Event> events;
     private final double L;
+    private double actualTime = 0;
 
     public BrownianMotion(List<Particle> particles, double l) {
         this.particles = particles;
@@ -19,24 +20,23 @@ public class BrownianMotion {
         for (Particle particle : particles) {
             calculateEventForParticle(particle, null);
         }
-        while (!events.isEmpty()) {
-            System.out.println(events.poll());
-        }
     }
 
     public Event performCollision() {
         Event event = events.poll();
-        if (event == null) return null; // this shouldn't happen
+        if (event == null) throw new NullPointerException(); // this shouldn't happen
         event.updateAfterCollision();
         return event;
     }
 
     public void removeAndCalculateEventForParticle(Particle p1, Particle p2) {
         List<Event> eventsWithoutP1AndP2 = events.stream()
-                .filter(e -> !e.containsParticle(p1) && !e.containsParticle(p2))
+                .filter(e -> !e.containsParticle(p1) || !e.containsParticle(p2))
                 .collect(Collectors.toList());
         this.events = new PriorityQueue<>(Comparator.comparing(Event::getTime));
+
         this.events.addAll(eventsWithoutP1AndP2);
+
 
         calculateEventForParticle(p1, p2);
         if (p2 != null)
@@ -45,13 +45,13 @@ public class BrownianMotion {
 
     public void calculateEventForParticle(Particle p, Particle omitted) {
         double tc = Double.POSITIVE_INFINITY;
-        double tcDirX = p.calculateCollisionTimeWithWall(L, 'x');
-        double tcDirY = p.calculateCollisionTimeWithWall(L, 'y');
+        double tcDirX = p.calculateCollisionTimeWithWall(L, 'x')+ actualTime;
+        double tcDirY = p.calculateCollisionTimeWithWall(L, 'y')+ actualTime;
         char direction = '-';
         Particle p2 = null;
         for (Particle other : particles) {
             if (!other.equals(p) && !other.equals(omitted)) {
-                double tcAux = p.calculateCollisionTimeWithParticle(other);
+                double tcAux = p.calculateCollisionTimeWithParticle(other) + actualTime;
                 if (tcAux < tc) {
                     tc = tcAux;
                     p2 = other;
@@ -82,7 +82,8 @@ public class BrownianMotion {
         if (event == null) return; // This should happen on normal activity
         double time = event.getTime();
         for (Particle particle : particles) {
-            particle.refreshToTime(time);
+            particle.refreshToTime(time - actualTime);
         }
+        actualTime = time;
     }
 }

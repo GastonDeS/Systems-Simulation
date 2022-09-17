@@ -14,8 +14,10 @@ public class Event {
     }
 
     public void updateAfterCollision() {
-        switch (this.getDirection()) {
+        switch (direction) {
             case 'x':
+                updateAfterCollisionWithWall();
+                break;
             case 'y':
                 updateAfterCollisionWithWall();
                 break;
@@ -43,8 +45,8 @@ public class Event {
         double m2 = p2.getMass();
         double rv = dr.x*dv.x+dr.y*dv.y; // Δr.Δv
         double J = (2*m1*m2*rv)/(sigma*(m1+m2));
-        double Jx = J*dx/sigma;
-        double Jy = J*dy/sigma;
+        double Jx = (J*dx)/sigma;
+        double Jy = (J*dy)/sigma;
 
         p1.setVelX(p1.getVelX() + Jx/m1);
         p1.setVelY(p1.getVelY() + Jy/m1);

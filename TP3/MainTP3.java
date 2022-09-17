@@ -7,7 +7,7 @@ import java.util.List;
 public class MainTP3 {
     private final static double L = 6; // double because then its get divided so we avoid casting
     private final static double maxVelocity = 2; // max velocity module
-    private final static int events = 100000;
+    private final static int events = 1000;
 
     public static void main(String[] args) {
         List<Particle> particles = generateParticles();
@@ -20,19 +20,19 @@ public class MainTP3 {
             brownianMotion.refreshBeforeEvent();
             saveState(brownianMotion.getParticles(), i);
             lastEvent = brownianMotion.performCollision();
-            if (i != events -1 && lastEvent != null) brownianMotion.removeAndCalculateEventForParticle(lastEvent.getP1(), lastEvent.getP2());
-            if (i %1000 == 0) System.out.println("step: " + i);
+            if ( lastEvent != null) brownianMotion.removeAndCalculateEventForParticle(lastEvent.getP1(), lastEvent.getP2());
         }
 
     }
 
     private static void saveState(List<Particle> particles, int iteration) {
-        File positions = new File("./../positionTP3/positions"+iteration+".csv");
+        File positions = new File("./../positionTP3/positions"+iteration+".xyz");
         try {
             FileWriter positionsFile = new FileWriter(positions);
 
             positionsFile.write(
-                    "Lattice=\"3 0.0 0.0 0.0 3 0.0 0.0 0.0 3\"" +
+                    particles.size()+"\n" +
+                    "Lattice=\"6 0.0 0.0 0.0 6 0.0 0.0 0.0 6\"" +
                     "\n");
             for (Particle particle : particles) {
                 positionsFile.write(particle.toString() + "\n");

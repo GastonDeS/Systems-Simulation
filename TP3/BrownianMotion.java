@@ -29,19 +29,18 @@ public class BrownianMotion {
 
     public void removeAndCalculateEventForParticle(Particle p1, Particle p2) {
         Set<Particle> invalidParticles = events.stream()
-                .filter(e -> e.containsParticle(p1) || e.containsParticle(p2))
-                .map(Event::getParticles).flatMap(Collection::stream).collect(Collectors.toCollection(HashSet::new));
-        invalidParticles.remove(p1);
-        invalidParticles.remove(p2);
-        invalidParticles.forEach(p -> calculateEventForParticle(p, null));
+                .filter(ev -> ev.containsParticle(p1) || ev.containsParticle(p2))
+                .map(Event::getParticles)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toCollection(HashSet::new));
 
         List<Event> eventsWithoutP1AndP2 = events.stream()
-                .filter(e -> !e.containsParticle(p1) || !e.containsParticle(p2))
+                .filter(e -> !e.containsParticle(p1) && !e.containsParticle(p2))
                 .collect(Collectors.toList());
         this.events = new PriorityQueue<>(Comparator.comparing(Event::getTime));
 
         this.events.addAll(eventsWithoutP1AndP2);
-
+        invalidParticles.forEach(p -> calculateEventForParticle(p, null));
 
         calculateEventForParticle(p1, p2);
         if (p2 != null)
@@ -50,8 +49,8 @@ public class BrownianMotion {
 
     public void calculateEventForParticle(Particle p, Particle omitted) {
         double tc = Double.POSITIVE_INFINITY;
-        double tcDirX = p.calculateCollisionTimeWithWall(L, 'x')+ actualTime;
-        double tcDirY = p.calculateCollisionTimeWithWall(L, 'y')+ actualTime;
+        double tcDirX = p.calculateCollisionTimeWithWall(L, 'x') + actualTime;
+        double tcDirY = p.calculateCollisionTimeWithWall(L, 'y') + actualTime;
         char direction = '-';
         Particle p2 = null;
         for (Particle other : particles) {

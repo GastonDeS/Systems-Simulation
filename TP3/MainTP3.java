@@ -7,7 +7,7 @@ import java.util.List;
 public class MainTP3 {
     private final static double L = 6; // double because then its get divided so we avoid casting
     private final static double maxVelocity = 2; // max velocity module
-    private final static int eventsQty = 5000;
+    private final static int eventsQty = 10000;
 
     public static void main(String[] args) {
         List<Particle> particles = generateParticles();
@@ -17,16 +17,36 @@ public class MainTP3 {
         brownianMotion.calculateEvents();
         List<Event> events = new ArrayList<>();
         Event lastEvent;
-        for (int i = 0; i < eventsQty; i++) {
+        for (int i = 0; i < eventsQty ; i++) {
             brownianMotion.refreshBeforeEvent();
             saveState(brownianMotion.getParticles(), i);
             lastEvent = brownianMotion.performCollision();
-            if ( lastEvent != null) brownianMotion.removeAndCalculateEventForParticle(lastEvent.getP1(), lastEvent.getP2());
+            if ( lastEvent != null) {
+                brownianMotion.removeAndCalculateEventForParticle(lastEvent.getP1(), lastEvent.getP2());
+                if (lastEvent.containsParticle(particles.get(0)) && lastEvent.getP2() == null) {
+                    System.out.println("big particle crash");
+                    break;
+                }
+            }
             else throw new NullPointerException();
             events.add(lastEvent);
         }
 
-        events.forEach(e -> System.out.println(e.getTime()));
+        saveEvents(events);
+    }
+
+    private static void saveEvents(List<Event> events) {
+        File positions = new File("./TP3/events.csv");
+        try {
+            FileWriter positionsFile = new FileWriter(positions);
+            for (Event event : events) {
+                positionsFile.write(event+ "\n");
+            }
+
+            positionsFile.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private static void saveState(List<Particle> particles, int iteration) {

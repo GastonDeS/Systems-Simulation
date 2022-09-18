@@ -20,8 +20,6 @@ public class Event {
     public void updateAfterCollision() {
         switch (direction) {
             case 'x':
-                updateAfterCollisionWithWall();
-                break;
             case 'y':
                 updateAfterCollisionWithWall();
                 break;

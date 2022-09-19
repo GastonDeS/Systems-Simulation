@@ -86,11 +86,6 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
-                "time=" + time +
-                ", p1=" + p1 +
-                ", p2=" + p2 +
-                ", direction=" + direction +
-                '}';
+        return "" + time;
     }
 }

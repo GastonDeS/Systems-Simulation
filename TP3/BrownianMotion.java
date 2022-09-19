@@ -81,6 +81,10 @@ public class BrownianMotion {
         return particles;
     }
 
+    public double getTime() {
+        return actualTime;
+    }
+
     public void refreshBeforeEvent() {
         Event event = events.peek(); // We don't have to check if it's empty because there is always a next event
         if (event == null) return; // This should happen on normal activity

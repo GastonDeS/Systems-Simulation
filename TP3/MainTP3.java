@@ -9,8 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class MainTP3 {
-    private final static double L = 6; // double because then its get divided so we avoid casting
-    private final static double maxVelocity = 2; // max velocity module
+    private final static double L = 6;
+    private final static double maxVelocity = 2;
     private final static int eventsQty = 10000;
     private final static double smallRadius = 0.2;
     private final static double bigRadius = 0.7;
@@ -38,15 +38,14 @@ public class MainTP3 {
                 for (int j = 0; j < particlesQty.size(); j++) {
                     List<StatisticsData> statistics = new ArrayList<>();
 //                    for (int k = 0; k < 25; k++) {
-                        statistics.add(brownianMotion(eventsQty, particlesQty.get(i), new Pair<>(0., 2.), 0, true));
+                    statistics.add(brownianMotion(eventsQty, particlesQty.get(i), new Pair<>(0., 2.), true));
 //                    }
-//                    double eventsSize = statistics.stream().map(statistics1 -> statistics1.eventsSize).reduce(0. , Double::sum);
-//                    double timeTotal = statistics.stream().map(statistics1 -> statistics1.totalTime).reduce(0. , Double::sum);
+                    double eventsSize = statistics.stream().map(statistics1 -> statistics1.eventsSize).reduce(0. , Double::sum);
+                    double timeTotal = statistics.stream().map(statistics1 -> statistics1.totalTime).reduce(0. , Double::sum);
 
-//                    List<StatisticsData> sortedByTime = statistics.stream().sorted(Comparator.comparingDouble(s -> s.totalTime)).collect(Collectors.toList());
-//                    System.out.println(particlesQty.get(i)+" "+eventsSize+" "+timeTotal / eventsSize+" "+eventsSize / timeTotal +" " + sortedByTime.get(6).eventsSize / sortedByTime.get(6).totalTime +" " +sortedByTime.get(19).eventsSize / sortedByTime.get(19).totalTime);
-//                    System.out.println("Lista de tiempos: \n" + statistics.toString());
-//                    System.out.println();
+                    double desvFrecxSec = desvFrecXsec(statistics, eventsSize / timeTotal);
+                    double desvFrec = desvFrec(statistics, timeTotal / eventsSize);
+                    System.out.println(particlesQty.get(i)+" "+eventsSize+" "+timeTotal / eventsSize+" "+desvFrec+" "+eventsSize / timeTotal +" " +desvFrecxSec);
                 }
             }
         } catch (Exception ex) {
@@ -54,19 +53,36 @@ public class MainTP3 {
         }
     }
 
-    private static StatisticsData brownianMotion(int eventsQty, int particlesQty, Pair<Double, Double> speedRange, int speedI, boolean isSimulation) {
+    private static double desvFrecXsec(List<StatisticsData> statisticsData, double medium) {
+        double sum = 0.;
+        for (StatisticsData s : statisticsData) {
+            sum += Math.pow( s.eventsSize / s.totalTime - medium,2);
+        }
+        return Math.sqrt(sum / statisticsData.size());
+    }
+
+    private static double desvFrec(List<StatisticsData> statisticsData, double medium) {
+        double sum = 0.;
+        for (StatisticsData s : statisticsData) {
+            sum += Math.pow( s.totalTime / s.eventsSize - medium,2);
+        }
+        return Math.sqrt(sum / statisticsData.size());
+    }
+
+    private static StatisticsData brownianMotion(int eventsQty, int particlesQty, Pair<Double, Double> speedRange, boolean isSimulation) {
         List<Particle> particles = generateParticles(particlesQty, speedRange);
-        saveState(particles, 0.,0, speedI);
+        if (isSimulation)
+            saveState(particles,0);
         BrownianMotion brownianMotion = new BrownianMotion(particles, L);
         List<Event> events = new ArrayList<>();
         Event lastEvent;
         brownianMotion.calculateEvents();
         double timeStep = 0.05;
-        double timeForScreenshot = 0;
-        for (int i = 0;  ; i++) {
+        double timeForScreenshot = timeStep; // the first is already saved
+        for (int i = 0; i < eventsQty ; i++) {
             brownianMotion.refreshBeforeEvent();
             if (isSimulation && timeForScreenshot < brownianMotion.getTime()){
-                saveState(brownianMotion.getParticles(), brownianMotion.getTime(), i, speedI);
+                saveState(brownianMotion.getParticles(), i);
                 timeForScreenshot += timeStep;
             }
             lastEvent = brownianMotion.performCollision();
@@ -81,17 +97,14 @@ public class MainTP3 {
             events.add(lastEvent);
         }
 
-//        CompletableFuture.allOf(
-//                CompletableFuture.supplyAsync(() -> saveEvents(events, particlesQty))
-//        );
+        if (isSimulation)
+            saveEvents(events, particlesQty);
         return new StatisticsData( events.size(), events.get(events.size()-1).getTime());
-//        System.out.println(particlesQty+"\nCantidad total de colisiones: "+events.size()+"\nTiempo entre colisiones promedio: "+
-//                events.get(events.size()-1).getTime() / events.size()+"\nFrecuencia de colisiones: "+events.size() / events.get(events.size()-1).getTime());
     }
 
 
     private static Integer saveEvents(List<Event> events, int particlesQty) {
-        File positions = new File("./TP3/events"+particlesQty+".csv");
+        File positions = new File("./../events"+particlesQty+".csv");
         try {
             FileWriter positionsFile = new FileWriter(positions);
             for (Event event : events) {
@@ -105,24 +118,19 @@ public class MainTP3 {
         return 1;
     }
 
-    private static void saveState(List<Particle> particles, double time,int iteration, int speedIndex) {
-        File smallLads = new File("./../positionTP3/"+"smallLads"+iteration+".xyz");
-//        File bigboy = new File("./../positionTP3/I"+(speedIndex+1)+"/bigBoy"+iteration+".xyz");
+    private static void saveState(List<Particle> particles, int iteration) {
+        File smallLads = new File("./../positionTP3/positions"+iteration+".xyz");
         try {
             FileWriter smallLadsFile = new FileWriter(smallLads);
-//            FileWriter bigBoyFile = new FileWriter(bigboy);
 
             smallLadsFile.write(
                     particles.size()+"\n" +
-                    "Lattice=\"6 0.0 0.0 0.0 6 0.0 0.0 0.0 6\"" +
-                    "\n");
-//            smallLadsFile.write(""+time);
+                            "Lattice=\"6 0.0 0.0 0.0 6 0.0 0.0 0.0 6\"" +
+                            "\n");
             for (int i = 0 ; i < particles.size()  ; i ++) {
                 smallLadsFile.write(particles.get(i).toString() + "\n");
             }
-//            bigBoyFile.write(particles.get(0).toString() + "\n");
 
-//            bigBoyFile.close();
             smallLadsFile.close();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -131,7 +139,6 @@ public class MainTP3 {
 
     private static List<Particle> generateParticles(int particlesQty, Pair<Double, Double> speedRange) {
         List<Particle> particles = new ArrayList<>();
-        if (particlesQty == 140) System.out.println(140);
 
         ThreadLocalRandom r = ThreadLocalRandom.current();
 
@@ -148,7 +155,6 @@ public class MainTP3 {
                 iter = 0;
             }
             if (iter>1000) {
-//                System.out.println(particles.size());
                 return generateParticles(particlesQty, speedRange);
             }
         }
@@ -163,17 +169,10 @@ public class MainTP3 {
         return new Pair<>(speed * Math.cos(angle), speed * Math.sin(angle));
     }
 
-    private static double getRandomPos(ThreadLocalRandom r) {
-        double radius = 0.2;
-        return r.nextDouble() * (L - 2*radius) + radius;
-    }
-
     private static boolean isOverlap(List<Particle> particles , Particle particle) {
         for (Particle particle2: particles) {
             if (particle.isOverlap(particle2)) return true;
         }
         return false;
     }
-
-
 }

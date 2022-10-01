@@ -42,7 +42,7 @@ public class FirstSystem {
         }
 
         Oscillator oscillator = new Oscillator(algorithm, tf, steps);
-        oscillator.simulate(deltaT);
+        oscillator.simulate(deltaT, gamma, K, m);
 
     }
 }

@@ -7,9 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Oscillator {
-    private final double m = 70.;
-    private final double k = Math.pow(10,4);
-    private final double gamma = 100.;
     private final int r0 = 1;
     // Set in main
     private final Algorithm algorithm;
@@ -22,29 +19,26 @@ public class Oscillator {
         this.steps = steps;
     }
 
-    public void simulate(double deltaT) {
+    public void simulate(double deltaT, double gamma, double k, double m) {
         File file = createFile();
         try (FileWriter data = new FileWriter(file)) {
             double initialSpeed = -r0 * gamma/(2 * m);
             double initialForce = -k * r0 - gamma * initialSpeed;
-            Particle current = new Particle('-', 70.0, 0, r0, 0, initialSpeed, 0, initialForce, 0);
+            Particle current = new Particle('-', m, 0, r0, 0, initialSpeed, 0, initialForce, 0);
             Particle future;
             Particle previous = null;
             double time = 0;
-            int iter = 0;
 
             while (time < tf) {
                 future = algorithm.update(previous, current, deltaT, time);
-                    printResult(data, time, future);
-                    System.out.println(current.toString());
+                printResult(data, time, current);
+                System.out.println(current);
                 previous = current;
                 current = future;
                 time += deltaT;
-                iter++;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("ERROR: Create folder data");
         }
     }
 

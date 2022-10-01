@@ -32,7 +32,7 @@ public class Analytic implements Algorithm {
 
     @Override
     public String getName() {
-        return "Analytic";
+        return "analitica";
     }
 }
 

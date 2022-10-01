@@ -1,25 +1,16 @@
 package utils.algorithms;
 
 import utils.Particle;
-import utils.UpdateMethods;
+import utils.UpdateMethod;
 
 import java.awt.geom.Point2D;
 
-public class BeemanAlgorithm implements Algorithm {
-    private final double K;
-    private final double gamma;
+public class BeemanAlgorithm extends AlgorithmImpl implements Algorithm {
+
     private final Algorithm euler;
 
-    private final UpdateMethods name = UpdateMethods.BEEMAN;
-
-    @Override
-    public String getName() {
-        return name.name;
-    }
-
     public BeemanAlgorithm(double K, double gamma) {
-        this.K = K;
-        this.gamma = gamma;
+        super(K, gamma, UpdateMethod.BEEMAN);
         this.euler = new EulerAlgorithm(K, gamma);
     }
 

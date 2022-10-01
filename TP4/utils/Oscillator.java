@@ -27,24 +27,23 @@ public class Oscillator {
         try (FileWriter data = new FileWriter(file)) {
             double initialSpeed = -r0 * gamma/(2 * m);
             double initialForce = -k * r0 - gamma * initialSpeed;
-            Particle current = new Particle('-', 1, 0, r0, 0, initialSpeed, 0, initialForce, 0);
+            Particle current = new Particle('-', 70.0, 0, r0, 0, initialSpeed, 0, initialForce, 0);
             Particle future;
             Particle previous = null;
             double time = 0;
-            int iter = 1;
+            int iter = 0;
 
             while (time < tf) {
                 future = algorithm.update(previous, current, deltaT, time);
-                if (iter % steps == 0) {
-                    printResult(data, time, current);
-                    System.out.println(previous.toString());
-                }
+                    printResult(data, time, future);
+                    System.out.println(current.toString());
                 previous = current;
                 current = future;
                 time += deltaT;
                 iter++;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("ERROR: Create folder data");
         }
     }

@@ -9,12 +9,9 @@ public class BeemanAlgorithm extends AlgorithmImpl implements Algorithm {
 
     private final Algorithm euler;
 
-    protected BeemanAlgorithm(double K, double gamma, UpdateMethod updateMethod) {
-        super(K, gamma, updateMethod);
-        this.euler = new EulerAlgorithm(K, gamma);
-    }
     public BeemanAlgorithm(double K, double gamma) {
-        this(K, gamma, UpdateMethod.BEEMAN);
+        super(K, gamma, UpdateMethod.BEEMAN);
+        this.euler = new EulerAlgorithm(K, gamma);
     }
 
     @Override

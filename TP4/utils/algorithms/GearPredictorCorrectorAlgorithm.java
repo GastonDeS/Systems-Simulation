@@ -5,7 +5,7 @@ import utils.UpdateMethod;
 
 import java.util.stream.LongStream;
 
-public class GearPredictorCorrectorAlgorithm extends BeemanAlgorithm implements Algorithm {
+public class GearPredictorCorrectorAlgorithm extends AlgorithmImpl implements Algorithm {
     private static final double[] ALPHAS = {3.0/20, 251.0/360, 1.0, 11.0/18, 1.0/6, 1.0/60};
     private double[] r;
     private double[] rp;

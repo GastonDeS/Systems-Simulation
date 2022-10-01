@@ -11,8 +11,8 @@ public class GearPredictorCorrectorAlgorithm implements Algorithm {
     private double[] r;
     private double[] rp;
 
-    public GearPredictorCorrectorAlgorithm(double k, double gamma) {
-        this.K = k;
+    public GearPredictorCorrectorAlgorithm(double K, double gamma) {
+        this.K = K;
         this.gamma = gamma;
         this.r = new double[] {0, 0, 0, 0, 0, 0};
         this.rp = new double[] {0, 0, 0, 0, 0, 0};

@@ -30,7 +30,6 @@ public class Oscillator {
             previous = current;
             current = algorithm.update(null, current, deltaT);
             if (iter % steps == 0) {
-                System.out.println(time);
                 System.out.println(previous.toString());
             }
             time += deltaT;

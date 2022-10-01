@@ -1,8 +1,5 @@
 import utils.Oscillator;
-import utils.algorithms.Algorithm;
-import utils.algorithms.EulerAlgorithm;
-import utils.algorithms.EulerModifiedAlgorithm;
-import utils.algorithms.GearPredictorCorrectorAlgorithm;
+import utils.algorithms.*;
 
 
 public class FirstSystem {
@@ -13,7 +10,7 @@ public class FirstSystem {
     static int A = 1;
     // TODO: read from config.json
     static int tf = 5;
-    static String updateMethod = "gear-predictor";
+    static String updateMethod = "beeman";
     static int steps = 2;
     static double deltaT = 0.01;
 
@@ -30,6 +27,9 @@ public class FirstSystem {
                 break;
             case "gear-predictor":
                 algorithm = new GearPredictorCorrectorAlgorithm(K, gamma);
+                break;
+            case "beeman":
+                algorithm = new BeemanAlgorithm(K, gamma);
                 break;
             default:
                 throw new IllegalArgumentException("No such algorithm found");

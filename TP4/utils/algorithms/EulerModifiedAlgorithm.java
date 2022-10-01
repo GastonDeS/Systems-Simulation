@@ -1,16 +1,11 @@
 package utils.algorithms;
 
 import utils.Particle;
-import utils.UpdateMethods;
-
-import utils.UpdateMethods;
+import utils.UpdateMethod;
 
 public class EulerModifiedAlgorithm extends EulerAlgorithm {
-
-     protected final UpdateMethods name = UpdateMethods.EULER_MODIFIED;
-
     public EulerModifiedAlgorithm(double K, double gamma) {
-        super(K, gamma);
+        super(K, gamma, UpdateMethod.EULER_MODIFIED);
     }
 
     @Override
@@ -23,8 +18,4 @@ public class EulerModifiedAlgorithm extends EulerAlgorithm {
         return next;
     }
 
-    @Override
-    public String getName() {
-        return name.name;
-    }
 }

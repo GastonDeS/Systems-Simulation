@@ -1,19 +1,16 @@
 package utils.algorithms;
 
 import utils.Particle;
-import utils.UpdateMethods;
+import utils.UpdateMethod;
 
-import static utils.UpdateMethods.EULER;
 
-public class EulerAlgorithm implements Algorithm {
-    private final double K;
-    private final double gamma;
+public class EulerAlgorithm extends AlgorithmImpl implements Algorithm {
 
-    protected final UpdateMethods name = EULER;
-
+    protected EulerAlgorithm(double K, double gamma, UpdateMethod updateMethod) {
+        super(K, gamma, updateMethod);
+    }
     public EulerAlgorithm(double K, double gamma) {
-        this.K = K;
-        this.gamma = gamma;
+        super(K, gamma, UpdateMethod.EULER);
     }
 
     @Override
@@ -26,10 +23,6 @@ public class EulerAlgorithm implements Algorithm {
         return next;
     }
 
-    @Override
-    public String getName() {
-        return name.name;
-    }
 
     protected void updatePos(Particle current, Particle next, double deltaT, boolean isModified) {
         double velX = isModified ? next.getVelX() : current.getVelX();

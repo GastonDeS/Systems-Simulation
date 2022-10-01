@@ -1,6 +1,6 @@
 package utils;
 
-public enum UpdateMethods {
+public enum UpdateMethod {
     EULER("euler"),
     EULER_MODIFIED("euler-modified"),
     BEEMAN("beeman"),
@@ -8,7 +8,7 @@ public enum UpdateMethods {
     GEAR_PREDICTOR_CORRECTOR("gear-predictor");
 
     public String name;
-    UpdateMethods(String name) {
+    UpdateMethod(String name) {
         this.name = name;
     }
 }

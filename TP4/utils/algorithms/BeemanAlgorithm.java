@@ -1,6 +1,7 @@
 package utils.algorithms;
 
 import utils.Particle;
+import utils.UpdateMethods;
 
 import java.awt.geom.Point2D;
 
@@ -8,6 +9,13 @@ public class BeemanAlgorithm implements Algorithm {
     private final double K;
     private final double gamma;
     private final Algorithm euler;
+
+    private final UpdateMethods name = UpdateMethods.BEEMAN;
+
+    @Override
+    public String getName() {
+        return name.name;
+    }
 
     public BeemanAlgorithm(double K, double gamma) {
         this.K = K;

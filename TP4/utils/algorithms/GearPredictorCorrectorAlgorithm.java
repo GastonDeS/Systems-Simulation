@@ -1,8 +1,11 @@
 package utils.algorithms;
 
 import utils.Particle;
+import utils.UpdateMethods;
 
 import java.util.stream.LongStream;
+
+import static utils.UpdateMethods.EULER;
 
 public class GearPredictorCorrectorAlgorithm implements Algorithm {
     private static final double[] ALPHAS = {3.0/20, 251.0/360, 1.0, 11.0/18, 1.0/6, 1.0/60};
@@ -10,6 +13,8 @@ public class GearPredictorCorrectorAlgorithm implements Algorithm {
     private final double gamma;
     private double[] r;
     private double[] rp;
+
+    private final UpdateMethods name = UpdateMethods.GEAR_PREDICTOR_CORRECTOR;
 
     public GearPredictorCorrectorAlgorithm(double K, double gamma) {
         this.K = K;
@@ -39,6 +44,11 @@ public class GearPredictorCorrectorAlgorithm implements Algorithm {
         next.setVelX(r[1]);
         next.setAccX(r[2]);
         return next;
+    }
+
+    @Override
+    public String getName() {
+        return name.name;
     }
 
     private double getPredicted(double deltaT, int num) {

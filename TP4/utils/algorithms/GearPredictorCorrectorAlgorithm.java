@@ -17,7 +17,7 @@ public class GearPredictorCorrectorAlgorithm extends AlgorithmImpl implements Al
     }
 
     @Override
-    public Particle update(Particle previous, Particle current, double deltaT) {
+    public Particle update(Particle previous, Particle current, double deltaT, double currTime) {
         if (current == null) throw new NullPointerException("No current particle to update with");
         Particle next = current.clone();
         r[0] = current.getPosX();

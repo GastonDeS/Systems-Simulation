@@ -5,7 +5,6 @@ import utils.algorithms.Algorithm;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLOutput;
 
 public class Oscillator {
     private final double m = 70.;
@@ -35,7 +34,7 @@ public class Oscillator {
             int iter = 1;
 
             while (time < tf) {
-                future = algorithm.update(previous, current, deltaT);
+                future = algorithm.update(previous, current, deltaT, time);
                 if (iter % steps == 0) {
                     printResult(data, time, current);
                     System.out.println(previous.toString());

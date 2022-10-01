@@ -15,9 +15,9 @@ public class BeemanAlgorithm extends AlgorithmImpl implements Algorithm {
     }
 
     @Override
-    public Particle update(Particle previous, Particle current, double deltaT) {
+    public Particle update(Particle previous, Particle current, double deltaT, double currTime) {
         if(current == null) throw new NullPointerException("No current particle to update with");
-        if(previous == null) previous = euler.update(null, current, -deltaT);
+        if(previous == null) previous = euler.update(null, current, -deltaT, currTime );
         Particle next = current.clone();
 
         Point2D.Double nextPos = getNextPos(previous, current, deltaT);

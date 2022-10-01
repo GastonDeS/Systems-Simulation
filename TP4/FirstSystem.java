@@ -10,7 +10,7 @@ public class FirstSystem {
     static int A = 1;
     // TODO: read from config.json
     static int tf = 5;
-    static UpdateMethod updateMethod = UpdateMethod.EULER_MODIFIED;
+    static UpdateMethod updateMethod = UpdateMethod.ANALYTIC;
     static int steps = 2;
     static double deltaT = 0.01;
 
@@ -33,6 +33,9 @@ public class FirstSystem {
                 break;
             case VERLET:
                 algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
+                break;
+            case ANALYTIC:
+                algorithm = new Analytic(K, gamma);
                 break;
             default:
                 throw new IllegalArgumentException("No such algorithm found");

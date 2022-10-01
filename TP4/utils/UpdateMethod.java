@@ -5,7 +5,8 @@ public enum UpdateMethod {
     EULER_MODIFIED("euler-modified"),
     BEEMAN("beeman"),
     VERLET("verlet"),
-    GEAR_PREDICTOR_CORRECTOR("gear-predictor");
+    GEAR_PREDICTOR_CORRECTOR("gear-predictor"),
+    ANALYTIC("analytic");
 
     public String name;
     UpdateMethod(String name) {

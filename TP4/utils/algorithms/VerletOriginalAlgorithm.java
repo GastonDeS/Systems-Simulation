@@ -14,13 +14,13 @@ public class VerletOriginalAlgorithm implements Algorithm {
     }
 
     @Override
-    public Particle update(Particle previous, Particle present, double deltaT) {
+    public Particle update(Particle previous, Particle present, double deltaT, double currTime) {
         if (present == null) {
             throw new NullPointerException();
         }
         if (previous == null) {
             // Resolver con euler
-            previous = euler.update(null, present, -deltaT);
+            previous = euler.update(null, present, -deltaT,  currTime);
         }
         double mass = present.getMass();
         double newPosX = 2 * present.getPosX() - previous.getPosX() + Math.pow(deltaT, 2) * present.getAccX();

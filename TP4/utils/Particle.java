@@ -11,11 +11,11 @@ public class Particle implements Cloneable {
     private double posY;
     private double velX;
     private double velY;
-    private double forceX;
-    private double forceY;
+    private double accX;
+    private double accY;
 
     public Particle(int label, double mass, double radius, double posX, double posY,
-                    double velX, double velY, double forceX, double forceY) {
+                    double velX, double velY, double accX, double accY) {
         this.label = label;
         this.mass = mass;
         this.radius = radius;
@@ -23,8 +23,8 @@ public class Particle implements Cloneable {
         this.posY = posY;
         this.velX = velX;
         this.velY = velY;
-        this.forceX = forceX;
-        this.forceY = forceY;
+        this.accX = accX;
+        this.accY = accY;
     }
 
     public Double distance(Particle particle) {
@@ -111,12 +111,12 @@ public class Particle implements Cloneable {
         return velY;
     }
 
-    public double getForceX() {
-        return forceX;
+    public double getAccX() {
+        return accX;
     }
 
-    public double getForceY() {
-        return forceY;
+    public double getAccY() {
+        return accY;
     }
 
     public void setPosX(double posX) {
@@ -135,12 +135,12 @@ public class Particle implements Cloneable {
         this.velY = velY;
     }
 
-    public void setForceX(double forceX) {
-        this.forceX = forceX;
+    public void setAccX(double accX) {
+        this.accX = accX;
     }
 
-    public void setForceY(double forceY) {
-        this.forceY = forceY;
+    public void setAccY(double accY) {
+        this.accY = accY;
     }
 
     @Override

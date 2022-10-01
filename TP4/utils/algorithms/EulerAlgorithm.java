@@ -22,21 +22,20 @@ public class EulerAlgorithm implements Algorithm {
     }
 
     protected void updatePos(Particle current, Particle next, double deltaT, boolean isModified) {
-        double mass = current.getMass();
         double velX = isModified ? next.getVelX() : current.getVelX();
         double velY = isModified ? next.getVelY() : current.getVelY();
-        next.setPosX(current.getPosX() + deltaT * velX + Math.pow(deltaT, 2) * current.getForceX()/(2 * mass));
-        next.setPosY(current.getPosY() + deltaT * velY + Math.pow(deltaT, 2) * current.getForceY()/(2 * mass));
+        next.setPosX(current.getPosX() + deltaT * velX + Math.pow(deltaT, 2) * current.getAccX()/2);
+        next.setPosY(current.getPosY() + deltaT * velY + Math.pow(deltaT, 2) * current.getAccY()/2);
     }
 
     protected void updateVel(Particle current, Particle next, double deltaT) {
-        double mass = current.getMass();
-        next.setVelX(current.getVelX() + deltaT * current.getForceX()/mass);
-        next.setVelY(current.getVelY() + deltaT * current.getForceY()/mass);
+        next.setVelX(current.getVelX() + deltaT * current.getAccX());
+        next.setVelY(current.getVelY() + deltaT * current.getAccY());
     }
 
     protected void updateForce(Particle next) {
-        next.setForceX(-K * next.getPosX() - gamma * next.getVelX());
-        next.setForceY(-K * next.getPosY() - gamma * next.getVelY());
+        double mass = next.getMass();
+        next.setAccX((-K * next.getPosX() - gamma * next.getVelX())/mass);
+        next.setAccY((-K * next.getPosY() - gamma * next.getVelY())/mass);
     }
 }

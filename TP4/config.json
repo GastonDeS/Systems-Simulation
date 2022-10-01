@@ -1,0 +1,6 @@
+{
+  "algorithm": "euler",
+  "tf": 5,
+  "steps": 1,
+  "deltaT": 0.01
+}

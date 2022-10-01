@@ -1,7 +1,9 @@
+package utils;
+
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
-public class Particle {
+public class Particle implements Cloneable {
     private final int label;
     private final double mass;
     private final double radius;
@@ -9,8 +11,11 @@ public class Particle {
     private double posY;
     private double velX;
     private double velY;
+    private double forceX;
+    private double forceY;
 
-    public Particle(int label, double mass, double radius, double posX, double posY, double velX, double velY) {
+    public Particle(int label, double mass, double radius, double posX, double posY,
+                    double velX, double velY, double forceX, double forceY) {
         this.label = label;
         this.mass = mass;
         this.radius = radius;
@@ -18,6 +23,8 @@ public class Particle {
         this.posY = posY;
         this.velX = velX;
         this.velY = velY;
+        this.forceX = forceX;
+        this.forceY = forceY;
     }
 
     public Double distance(Particle particle) {
@@ -104,6 +111,14 @@ public class Particle {
         return velY;
     }
 
+    public double getForceX() {
+        return forceX;
+    }
+
+    public double getForceY() {
+        return forceY;
+    }
+
     public void setPosX(double posX) {
         this.posX = posX;
     }
@@ -118,6 +133,14 @@ public class Particle {
 
     public void setVelY(double velY) {
         this.velY = velY;
+    }
+
+    public void setForceX(double forceX) {
+        this.forceX = forceX;
+    }
+
+    public void setForceY(double forceY) {
+        this.forceY = forceY;
     }
 
     @Override
@@ -139,5 +162,14 @@ public class Particle {
     @Override
     public int hashCode() {
         return Objects.hash(label);
+    }
+
+    @Override
+    public Particle clone() {
+        try {
+            return (Particle) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalStateException();
+        }
     }
 }

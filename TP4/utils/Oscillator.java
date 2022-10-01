@@ -29,17 +29,19 @@ public class Oscillator {
             double initialSpeed = -r0 * gamma/(2 * m);
             double initialForce = -k * r0 - gamma * initialSpeed;
             Particle current = new Particle('-', 1, 0, r0, 0, initialSpeed, 0, initialForce, 0);
+            Particle future;
             Particle previous = null;
             double time = 0;
             int iter = 1;
 
             while (time < tf) {
-                previous = current;
-                current = algorithm.update(null, current, deltaT);
+                future = algorithm.update(previous, current, deltaT);
                 if (iter % steps == 0) {
                     printResult(data, time, current);
                     System.out.println(previous.toString());
                 }
+                previous = current;
+                current = future;
                 time += deltaT;
                 iter++;
             }

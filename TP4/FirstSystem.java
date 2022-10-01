@@ -10,7 +10,7 @@ public class FirstSystem {
     static int A = 1;
     // TODO: read from config.json
     static int tf = 5;
-    static UpdateMethods updateMethod = UpdateMethods.EULER_MODIFIED;
+    static UpdateMethods updateMethod = UpdateMethods.VERLET;
     static int steps = 2;
     static double deltaT = 0.01;
 
@@ -31,8 +31,8 @@ public class FirstSystem {
             case BEEMAN:
                 algorithm = new BeemanAlgorithm(K, gamma);
                 break;
-            case "verlet":
-                algorithm = new VerletOriginalAlgorithm(K, gamma);
+            case VERLET:
+                algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
                 break;
             default:
                 throw new IllegalArgumentException("No such algorithm found");

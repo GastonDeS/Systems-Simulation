@@ -1,10 +1,15 @@
 package utils.algorithms;
 
 import utils.Particle;
+import utils.UpdateMethods;
+
+import static utils.UpdateMethods.EULER;
 
 public class EulerAlgorithm implements Algorithm {
     private final double K;
     private final double gamma;
+
+    protected final UpdateMethods name = EULER;
 
     public EulerAlgorithm(double K, double gamma) {
         this.K = K;
@@ -19,6 +24,11 @@ public class EulerAlgorithm implements Algorithm {
         updateVel(current, next, deltaT);
         updateForce(next);
         return next;
+    }
+
+    @Override
+    public String getName() {
+        return name.name;
     }
 
     protected void updatePos(Particle current, Particle next, double deltaT, boolean isModified) {

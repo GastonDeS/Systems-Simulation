@@ -1,6 +1,6 @@
 import utils.Oscillator;
 import utils.algorithms.*;
-
+import utils.UpdateMethods;
 
 public class FirstSystem {
 
@@ -10,27 +10,25 @@ public class FirstSystem {
     static int A = 1;
     // TODO: read from config.json
     static int tf = 5;
-    static String updateMethod = "verlet";
+    static UpdateMethods updateMethod = UpdateMethods.EULER_MODIFIED;
     static int steps = 2;
     static double deltaT = 0.01;
-
-
 
     public static void main(String[] args) {
         System.out.println("TP4");
         Algorithm algorithm;
 
         switch (updateMethod) {
-            case "euler":
+            case EULER:
                 algorithm = new EulerAlgorithm(K, gamma);
                 break;
-            case "euler-modified":
+            case EULER_MODIFIED:
                 algorithm = new EulerModifiedAlgorithm(K, gamma);
                 break;
-            case "gear-predictor":
+            case GEAR_PREDICTOR_CORRECTOR:
                 algorithm = new GearPredictorCorrectorAlgorithm(K, gamma);
                 break;
-            case "beeman":
+            case BEEMAN:
                 algorithm = new BeemanAlgorithm(K, gamma);
                 break;
             case "verlet":

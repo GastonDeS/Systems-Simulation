@@ -1,13 +1,9 @@
 import utils.Oscillator;
-import utils.Particle;
 import utils.algorithms.Algorithm;
 import utils.algorithms.EulerAlgorithm;
 import utils.algorithms.EulerModifiedAlgorithm;
+import utils.algorithms.GearPredictorCorrectorAlgorithm;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.net.URL;
 
 public class FirstSystem {
 
@@ -17,8 +13,8 @@ public class FirstSystem {
     static int A = 1;
     // TODO: read from config.json
     static int tf = 5;
-    static String updateMethod = "euler-modified";
-    static int steps = 1;
+    static String updateMethod = "gear-predictor";
+    static int steps = 2;
     static double deltaT = 0.01;
 
     public static void main(String[] args) {
@@ -31,6 +27,9 @@ public class FirstSystem {
                 break;
             case "euler-modified":
                 algorithm = new EulerModifiedAlgorithm(K, gamma);
+                break;
+            case "gear-predictor":
+                algorithm = new GearPredictorCorrectorAlgorithm(K, gamma);
                 break;
             default:
                 throw new IllegalArgumentException("No such algorithm found");

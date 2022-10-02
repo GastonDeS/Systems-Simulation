@@ -24,7 +24,7 @@ public class Oscillator {
         try (FileWriter data = new FileWriter(file)) {
             double initialSpeed = -r0 * gamma/(2 * m);
             double initialForce = -k * r0 - gamma * initialSpeed;
-            Particle current = new Particle('-', m, 0, r0, 0, initialSpeed, 0, initialForce, 0);
+            Particle current = new Particle('-', m, 0, r0, 0, initialSpeed, 0, initialForce/m, 0);
             Particle future;
             Particle previous = null;
             double time = 0;

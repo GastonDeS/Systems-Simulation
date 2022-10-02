@@ -10,7 +10,7 @@ public class FirstSystem {
     static double A = 1.0;
     // TODO: read from config.json
     static int tf = 5;
-    static UpdateMethod updateMethod = UpdateMethod.ANALYTIC;
+    static UpdateMethod updateMethod = UpdateMethod.BEEMAN;
     static int steps = 2;
     static double deltaT = 0.01;
 

@@ -1,5 +1,4 @@
 .idea/*
-*.csv
 out/*
 *.xml
 .DS_Store

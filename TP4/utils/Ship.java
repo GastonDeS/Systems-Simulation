@@ -13,13 +13,23 @@ public class Ship {
 
     public Ship(double posX, double posY, double velX, double velY, double accX, double accY) {
         this.mass = 2 * Math.pow(10, 5); // kg
-        this.radius = 1000/*TODO check this*/;
+        this.radius = 10000/*TODO check this*/;
         this.posX = posX;
         this.posY = posY;
         this.velX = velX;
         this.velY = velY;
         this.accX = accX;
         this.accY = accY;
+    }
+
+
+    @Override
+    public String toString() {
+        return
+                 posX + " " +
+                 posY + " " +
+                 velX + " " +
+                 velY + " " + radius;
     }
 
     public double getMass() {

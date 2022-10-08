@@ -1,5 +1,6 @@
 package utils;
 
+// todo: planet is a particle
 public class Planet {
     private final double radius;
 //    private final double mass;
@@ -18,10 +19,10 @@ public class Planet {
 
     @Override
     public String toString() {
-        return x + " "+
-                y + " "+
-                velocityX + " " +
-                velocityY + " " + radius;
+        return "x: " + x + " y: "+
+                y + " velX: "+
+                velocityX + " velY: " +
+                velocityY + " R: " + radius;
     }
 
 

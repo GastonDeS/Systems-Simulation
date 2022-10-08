@@ -28,14 +28,18 @@ public class Oscillator {
             Particle future;
             Particle previous = null;
             double time = 0;
+            int iter = 0;
 
             while (time < tf) {
                 future = algorithm.update(previous, current, deltaT, time);
-                printResult(data, time, current);
-                System.out.println(current);
+                if (iter % steps == 0) {
+                    printResult(data, time, current);
+                    System.out.println(current);
+                }
                 previous = current;
                 current = future;
                 time += deltaT;
+                iter++;
             }
         } catch (Exception e) {
             e.printStackTrace();

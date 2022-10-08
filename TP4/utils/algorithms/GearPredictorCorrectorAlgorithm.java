@@ -7,8 +7,8 @@ import java.util.stream.LongStream;
 
 public class GearPredictorCorrectorAlgorithm extends AlgorithmImpl implements Algorithm {
     private static final double[] ALPHAS = {3.0/20, 251.0/360, 1.0, 11.0/18, 1.0/6, 1.0/60};
-    private final double[] r;
-    private final double[] rp;
+    private double[] r;
+    private double[] rp;
 
     public GearPredictorCorrectorAlgorithm(double K, double gamma) {
         super(K, gamma, UpdateMethod.GEAR_PREDICTOR_CORRECTOR);

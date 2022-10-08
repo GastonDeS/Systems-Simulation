@@ -1,5 +1,6 @@
 package utils;
 
+// TODO: ship is a particle
 public class Ship {
     private final double mass;
     private final double radius;

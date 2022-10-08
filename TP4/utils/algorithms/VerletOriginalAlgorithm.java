@@ -24,9 +24,7 @@ public class VerletOriginalAlgorithm implements Algorithm {
         }
         double mass = present.getMass();
         double newPosX = 2 * present.getPosX() - previous.getPosX() + Math.pow(deltaT, 2) * present.getAccX();
-
         double newVelX = (newPosX - previous.getPosX()) / (2 * deltaT);
-
 
         present.setVelX(newVelX);
         Particle future = present.clone();

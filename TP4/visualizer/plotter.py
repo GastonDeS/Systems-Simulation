@@ -26,7 +26,7 @@ def plot_exercise_1(delta_t):
         print(y)
         x = np.arange(start=0, step=delta_t, stop=5)
         if ex1_files[idx] == 'analitica':
-            plt.plot(x, y[:500], label='Analítica', linestyle='dashed', linewidth=2)
+            plt.plot(x, y[:500], label='Analítica', linestyle='dashed', linewidth=1)
         else:
             plt.plot(x, y[:500], label=ex1_files[idx], linewidth=0.5)
     plt.legend()

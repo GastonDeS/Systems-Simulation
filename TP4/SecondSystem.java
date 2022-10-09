@@ -19,7 +19,7 @@ public class SecondSystem {
 
     static double K = Math.pow(10,4);
     static double gamma = 100.0;
-    static int steps = 1000;
+    static int steps = 72;
     static double deltaT = 3000;
     static double maxTime = 378432000;
     static double takeOffTime = 31801800;

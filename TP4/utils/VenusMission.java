@@ -7,6 +7,7 @@ import utils.predicates.MaxTimePredicate;
 import utils.predicates.MissedTargetPredicate;
 import utils.predicates.Predicate;
 
+import javax.swing.*;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
@@ -61,8 +62,7 @@ public class VenusMission {
         Particle futureSpaceship;
         int iter = 0;
 
-        while (!cut(spaceship)) {
-
+        while (!cut()) {
             if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
                 positionShip(Arrays.asList(earth, sun, venus));
                 hasTakenOff = true;
@@ -93,9 +93,12 @@ public class VenusMission {
         }
     }
 
-    private boolean cut(Particle spaceship) {
+    private boolean cut() {
         for (Predicate predicate : predicates) {
-            return predicate.predict(spaceship, venus);
+            if (predicate.predict(spaceship, venus)) {
+                predicate.print();
+                return true;
+            }
         }
         return false;
     }

@@ -2,15 +2,15 @@ package utils;
 
 import utils.algorithms.Algorithm;
 import utils.algorithms.VerletOriginalAlgorithm;
+import utils.predicates.MaxTimePredicate;
+import utils.predicates.MissedTargetPredicate;
+import utils.predicates.Predicate;
 
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Initial conditions for a planet at a given time step respective to the sun
@@ -33,9 +33,10 @@ public class VenusMission {
     private Particle spaceship;
     private final Algorithm algorithm;
     private boolean hasTakenOff;
-    private final double maxTime;
+    private final Config config;
+    private final List<Predicate> predicates = new ArrayList<>();
 
-    public VenusMission(Particle earth, Particle venus, Algorithm algorithm, double maxTime) {
+    public VenusMission(Particle earth, Particle venus, Algorithm algorithm, Config config) {
         this.earth = earth.withLabel(EARTH_ID);
         this.venus = venus.withLabel(VENUS_ID);
         this.sun = new Particle(SUN_ID, 1.989e30, 15000, 0, 0, 0, 0, 0, 0);
@@ -43,10 +44,12 @@ public class VenusMission {
         setAcceleration(earth, Arrays.asList(venus, sun));
         this.algorithm = algorithm;
         this.hasTakenOff = false;
-        this.maxTime = maxTime;
+        this.config = config;
+        this.predicates.add(new MaxTimePredicate(config.getMaxTime(), config.getDeltaT()));
+        this.predicates.add(new MissedTargetPredicate(this.venus));
     }
 
-    public void simulate(double deltaT, double takeOffTime, int steps) {
+    public void simulate() {
         double currentTime = 0;
         Particle pastEarth = null;
         Particle pastVenus = null;
@@ -56,15 +59,15 @@ public class VenusMission {
         Particle futureSpaceship;
         int iter = 0;
 
-        while (!maxTimeReached(currentTime)) {
+        while (!cut(spaceship)) {
 
-            if (!hasTakenOff && currentTime >= takeOffTime) {
+            if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
                 positionShip(Arrays.asList(earth, sun, venus));
                 hasTakenOff = true;
             }
 
-            futureEarth = algorithm.update(pastEarth, earth, deltaT, currentTime);
-            futureVenus = algorithm.update(pastVenus, venus, deltaT, currentTime);
+            futureEarth = algorithm.update(pastEarth, earth, config.getDeltaT(), currentTime);
+            futureVenus = algorithm.update(pastVenus, venus, config.getDeltaT(), currentTime);
             pastEarth = earth;
             pastVenus = venus;
             earth = futureEarth;
@@ -73,25 +76,26 @@ public class VenusMission {
             setAcceleration(venus, Arrays.asList(earth, sun));
 
             if (hasTakenOff) {
-                futureSpaceship = algorithm.update(pastSpaceship, spaceship, deltaT, currentTime);
+                futureSpaceship = algorithm.update(pastSpaceship, spaceship, config.getDeltaT(), currentTime);
                 pastSpaceship = spaceship;
                 spaceship = futureSpaceship;
                 setAcceleration(spaceship, Arrays.asList(earth, venus, sun));
             }
 
-            if (iter % steps == 0) {
+            if (iter % config.getSteps() == 0) {
                 saveState(iter);
             }
 
             iter++;
-            currentTime += deltaT;
-
+            currentTime += config.getDeltaT();
         }
-
     }
 
-    private boolean maxTimeReached(double currentTime) {
-        return currentTime > maxTime;
+    private boolean cut(Particle spaceship) {
+        for (Predicate predicate : predicates) {
+            return predicate.predict(spaceship);
+        }
+        return false;
     }
 
     private void setAcceleration(Particle target, List<Particle> interactions) {
@@ -146,15 +150,15 @@ public class VenusMission {
         File smallLads = new File("TP4/position/positions" + iter + ".xyz");
         try {
             FileWriter smallLadsFile = new FileWriter(smallLads);
-
+            int quantity = hasTakenOff ? 4 : 3;
             smallLadsFile.write(
-                    4+"\n" +
+                    quantity + "\n" +
                             "Lattice=\"6 0.0 0.0 0.0 6 0.0 0.0 0.0 6\"" +
                             "\n");
             smallLadsFile.write("0 0 0 0 15000\n"); // sun
             smallLadsFile.write(earth + "\n");
             smallLadsFile.write(venus + "\n");
-            smallLadsFile.write(spaceship + "\n");
+            if (hasTakenOff) smallLadsFile.write(spaceship + "\n");
 
             smallLadsFile.close();
         } catch (IOException ex) {

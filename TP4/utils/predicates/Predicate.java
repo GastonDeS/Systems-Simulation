@@ -3,7 +3,7 @@ package utils.predicates;
 import utils.Particle;
 
 public abstract class Predicate {
-    public abstract boolean predict(Particle spaceship);
+    public abstract boolean predict(Particle spaceship, Particle target);
 
     public abstract State getState();
 

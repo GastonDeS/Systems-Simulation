@@ -2,6 +2,7 @@ package utils;
 
 import utils.algorithms.Algorithm;
 import utils.algorithms.VerletOriginalAlgorithm;
+import utils.predicates.EnteredOrbitPredicate;
 import utils.predicates.MaxTimePredicate;
 import utils.predicates.MissedTargetPredicate;
 import utils.predicates.Predicate;
@@ -47,6 +48,7 @@ public class VenusMission {
         this.config = config;
         this.predicates.add(new MaxTimePredicate(config.getMaxTime(), config.getDeltaT()));
         this.predicates.add(new MissedTargetPredicate(this.venus));
+        this.predicates.add(new EnteredOrbitPredicate());
     }
 
     public void simulate() {
@@ -93,7 +95,7 @@ public class VenusMission {
 
     private boolean cut(Particle spaceship) {
         for (Predicate predicate : predicates) {
-            return predicate.predict(spaceship);
+            return predicate.predict(spaceship, venus);
         }
         return false;
     }

@@ -12,7 +12,7 @@ public class MissedTargetPredicate extends Predicate {
     }
 
     @Override
-    public boolean predict(Particle spaceship) {
+    public boolean predict(Particle spaceship, Particle target) {
         if (spaceship == null) return false;
         double dist = Math.sqrt(Math.pow(spaceship.getPosX(), 2) + Math.pow(spaceship.getPosY(), 2));
         return dist < targetOrbitRadius - targetRadius;

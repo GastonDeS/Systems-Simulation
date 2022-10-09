@@ -14,7 +14,7 @@ public class MaxTimePredicate extends Predicate {
     }
 
     @Override
-    public boolean predict(Particle spaceship) {
+    public boolean predict(Particle spaceship, Particle target) {
         time += deltaT;
         return time >= maxTime;
     }

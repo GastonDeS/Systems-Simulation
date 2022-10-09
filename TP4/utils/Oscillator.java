@@ -5,6 +5,7 @@ import utils.algorithms.Algorithm;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class Oscillator {
     private final int r0 = 1;
@@ -20,7 +21,7 @@ public class Oscillator {
     }
 
     public void simulate(double deltaT, double gamma, double k, double m) {
-        File file = createFile();
+        File file = createFile(deltaT);
         try (FileWriter data = new FileWriter(file)) {
             double initialSpeed = -r0 * gamma/(2 * m);
             double initialForce = -k * r0 - gamma * initialSpeed;
@@ -34,7 +35,7 @@ public class Oscillator {
                 future = algorithm.update(previous, current, deltaT, time);
                 if (iter % steps == 0) {
                     printResult(data, time, current);
-                    System.out.println(current);
+                    //System.out.println(current);
                 }
                 previous = current;
                 current = future;
@@ -49,7 +50,7 @@ public class Oscillator {
     private void printResult(FileWriter data, Double time, Particle current) throws IOException {
         data.write(time + " " + current.getPosX()+" "+current.getPosY()+"\n");
     }
-    private File createFile() {
-        return new File("TP4/data/" + algorithm.getName() + ".ssv");
+    private File createFile(double deltaT) {
+        return new File("TP4/data/" + algorithm.getName() + "-" + BigDecimal.valueOf(deltaT) + ".ssv");
     }
 }

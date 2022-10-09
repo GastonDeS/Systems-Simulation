@@ -155,7 +155,7 @@ public class VenusMission {
                     quantity + "\n" +
                             "Lattice=\"6 0.0 0.0 0.0 6 0.0 0.0 0.0 6\"" +
                             "\n");
-            smallLadsFile.write("0 0 0 0 15000\n"); // sun
+            smallLadsFile.write(sun + "\n");
             smallLadsFile.write(earth + "\n");
             smallLadsFile.write(venus + "\n");
             if (hasTakenOff) smallLadsFile.write(spaceship + "\n");

@@ -111,7 +111,7 @@ public class VenusMission {
             double fn = getGravitationalForce(target, p, dist);
             Point2D.Double normalComponents = getNormalComponents(target, p, dist);
             Fx += fn * normalComponents.x;
-            Fx += fn * normalComponents.y;
+            Fy += fn * normalComponents.y;
         }
         target.setAccX(Fx/target.getMass());
         target.setAccY(Fy/target.getMass());

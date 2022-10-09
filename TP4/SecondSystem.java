@@ -13,7 +13,7 @@ public class SecondSystem {
     private static final double EARTH_RADIUS = 6371;
     private static final double VENUS_RADIUS = 6051.8;
     private static final double EARTH_MASS = 5.97219e24;
-    private static final double VENUS_MASS = 5.97219e24;
+    private static final double VENUS_MASS = 4.867e24;
     private static final String EARTH_COND_FILE = "TP4/nasaData/earth.csv";
     private static final String VENUS_COND_FILE = "TP4/nasaData/venus.csv";
 

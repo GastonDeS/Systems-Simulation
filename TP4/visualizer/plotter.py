@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from visualizer.parser import parse_ssv
+from visualizer.parser import parse_ssv, parse_xyz
 
 delta_t_list = np.arange(start=0.00001, stop=0.01, step=0.0001, dtype=np.float64)
 ex1_files = ['verlet', 'beeman', 'analitica', 'gear-predictor']
@@ -12,16 +12,15 @@ ex1_b_names = ['Verlet', 'Beeman', 'Gear Predictor']
 
 
 
-font = {
-    'weight': 'normal',
-    'size': 14}
-
-plt.rc('font', **font)
+# font = {
+#     'weight': 'normal',
+#     'size': 14}
+#
+# plt.rc('font', **font)
 
 
 def plot_exercise_1(delta_t):
     f = plt.figure()
-    f.set_size_inches(10.5, 5.5)
     #plt.ylim([0.39, .5])
     real_data = parse_ssv('../data/analitica.ssv')
 
@@ -72,4 +71,16 @@ def plot_exercise_1b():
     plt.show()
 
 
+def plot_earth():
+    iter = np.arange(start=0, stop=109440, step=72)
+    x = []
+    y = []
+    for i in iter:
+        data = parse_xyz(f'../position/positions{i}.xyz')
+        x.append(get_pos(data[1])[0])
+        y.append(get_pos(data[1])[1])
+    plt.plot(x, y)
+    plt.show()
 
+def get_pos(data):
+    return data.split(' ')[0:2]

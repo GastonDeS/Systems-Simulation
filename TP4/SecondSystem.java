@@ -5,6 +5,7 @@ import utils.VenusMission;
 import utils.algorithms.Algorithm;
 import utils.algorithms.EulerAlgorithm;
 import utils.algorithms.VerletOriginalAlgorithm;
+import utils.predicates.Predicate;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -21,33 +22,25 @@ public class SecondSystem {
     static double K = Math.pow(10,4);
     static double gamma = 100.0;
     static int steps = 72;
-    static double deltaT = 3000;
+    static double deltaT = 300;
     static double maxTime = 378432000;
     static double takeOffTime = 31801800;
 
     public static void main(String[] args) {
+        getOptimumDate(); // Ejercicio 1a
         calculateDeltaT();
-//        Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
-//        Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
-//
-//        Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
-//        Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
-//
-//        VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
-//        venusMission.simulate();
     }
 
     private static void calculateDeltaT() {
         Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
         Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
 
-
         double maxDeltaT = 60 * 60;
         steps = 5 * 60;
         List<Double> deltaTs = new ArrayList<>();
         int k = 0;
         for(double i = steps; i <= maxDeltaT;i+= steps){
-            if(k % 3== 0 || i == maxDeltaT){
+            if(k % 3 == 0 || i == maxDeltaT){
                 deltaTs.add(i);
             }
             k++;
@@ -55,14 +48,13 @@ public class SecondSystem {
 
         for(Double dt : deltaTs) {
             deltaT = dt;
-            System.out.println("dT:  " + deltaT);
+            System.out.println("dT: " + deltaT);
             Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
             Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
             VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
             venusMission.simulate();
             List<Pair<Double, Double>> timeAndEnergy = venusMission.getTimeAndEnergy();
-            System.out.println(timeAndEnergy);
             saveEnergy(timeAndEnergy);
         }
     }
@@ -101,5 +93,28 @@ public class SecondSystem {
             e.printStackTrace();
         }
         return particle;
+    }
+
+    private static void getOptimumDate() {
+        Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
+        Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
+        int interval = (int) deltaT;
+        List<Long> takeOffTimes = new ArrayList<>();
+        for(long i = 15581700; i <= maxTime; i += interval){
+            takeOffTimes.add(i);
+        }
+        for(Long t: takeOffTimes) {
+            System.out.println(t);
+            takeOffTime = t;
+            Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
+            Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
+
+            VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
+            Predicate result = venusMission.simulate();
+            if (result.getState() == Predicate.State.LANDED) {
+                System.out.println("LANDED: " + t);
+                return;
+            }
+        }
     }
 }

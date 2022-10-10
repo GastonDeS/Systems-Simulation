@@ -27,7 +27,7 @@ public class SecondSystem {
     static double takeOffTime = 31801800;
 
     public static void main(String[] args) {
-        getOptimumDate(); // Ejercicio 1a
+        //getOptimumDate(); // Ejercicio 1a
         calculateDeltaT();
     }
 

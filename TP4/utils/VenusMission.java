@@ -92,7 +92,7 @@ public class VenusMission {
             }
 
             if (iter % config.getSteps() == 0) {
-                saveState(iter);
+                //saveState(iter);
                 if(hasTakenOff)
                     calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
                 else

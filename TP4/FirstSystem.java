@@ -12,7 +12,8 @@ public class FirstSystem {
     static double A = 1.0;
     // TODO: read from config.json
     static int tf = 5;
-    static UpdateMethod updateMethod = UpdateMethod.GEAR_PREDICTOR_CORRECTOR;
+    static UpdateMethod updateMethod = UpdateMethod.ANALYTIC;
+
     static int steps = 2;
     static BigDecimal deltaT = BigDecimal.valueOf(0.0001);
     static BigDecimal minDeltaT = BigDecimal.valueOf(0.00001);

@@ -1,3 +1,4 @@
+import javafx.util.Pair;
 import utils.Config;
 import utils.Particle;
 import utils.VenusMission;
@@ -5,9 +6,9 @@ import utils.algorithms.Algorithm;
 import utils.algorithms.EulerAlgorithm;
 import utils.algorithms.VerletOriginalAlgorithm;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SecondSystem {
     private static final double EARTH_RADIUS = 6371;
@@ -25,15 +26,61 @@ public class SecondSystem {
     static double takeOffTime = 31801800;
 
     public static void main(String[] args) {
+        calculateDeltaT();
+//        Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
+//        Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
+//
+//        Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
+//        Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
+//
+//        VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
+//        venusMission.simulate();
+    }
+
+    private static void calculateDeltaT() {
         Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
         Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
 
-        Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
-        Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
-        VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
-        venusMission.simulate();
+        double maxDeltaT = 60 * 60;
+        steps = 5 * 60;
+        List<Double> deltaTs = new ArrayList<>();
+        int k = 0;
+        for(double i = steps; i <= maxDeltaT;i+= steps){
+            if(k % 3== 0 || i == maxDeltaT){
+                deltaTs.add(i);
+            }
+            k++;
+        }
+
+        for(Double dt : deltaTs) {
+            deltaT = dt;
+            System.out.println("dT:  " + deltaT);
+            Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
+            Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
+
+            VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
+            venusMission.simulate();
+            List<Pair<Double, Double>> timeAndEnergy = venusMission.getTimeAndEnergy();
+            System.out.println(timeAndEnergy);
+            saveEnergy(timeAndEnergy);
+        }
     }
+
+    private static void saveEnergy(List<Pair<Double, Double>> timeAndEnergy) {
+        File smallLads = new File("TP4/energy/energy" + deltaT + ".txt");
+        try {
+            FileWriter smallLadsFile = new FileWriter(smallLads);
+            for (Pair<Double, Double> energy : timeAndEnergy) {
+                System.out.println(energy.getKey()/86400 + " " + energy.getValue());
+                smallLadsFile.write(energy.getKey()/86400 + " " + energy.getValue() + "\n");
+            }
+            smallLadsFile.close();
+        } catch (IOException ex) {
+            System.out.println("Add folder energy to TP4");
+        }
+    }
+
 
     private static Particle getInitialValues(String filename, double radius, double mass) {
         File initConditions = new File(filename);

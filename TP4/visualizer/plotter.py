@@ -12,11 +12,11 @@ ex1_b_names = ['Verlet', 'Beeman', 'Gear Predictor']
 
 
 
-# font = {
-#     'weight': 'normal',
-#     'size': 14}
-#
-# plt.rc('font', **font)
+font = {
+    'weight': 'normal',
+    'size': 14}
+
+plt.rc('font', **font)
 
 
 def plot_exercise_1(delta_t):
@@ -51,6 +51,7 @@ def plot_exercise_1b():
     f = plt.figure()
     f.set_size_inches(10.5, 5.5)
     plt.yscale('log')
+    plt.xscale('log')
     for idx, d in enumerate(ex1_b_files):
         ecm = []
         for delta_t in delta_t_list:
@@ -84,3 +85,23 @@ def plot_earth():
 
 def get_pos(data):
     return data.split(' ')[0:2]
+
+def plot_delta_E():
+    f = plt.figure()
+    f.set_size_inches(10.5, 5.5)
+    plt.yscale('log')
+    plt.xlim([0, 500])
+    for i in [300., 1200., 2100., 3000., 3600.]:
+        data = parse_ssv(f'../energy/energy{i}.txt')
+        delta_E = []
+        days = []
+        for d in data:
+            if d != '':
+                days.append(float(d.split(' ')[0]))
+                delta_E.append(float(d.split(' ')[1]))
+        plt.scatter(days, delta_E, label=f'dt = {i}')
+    plt.legend()
+    plt.ylabel('|Energía(t) - Energía(0)| (J)')
+    plt.xlabel('Tiempo (días)')
+    plt.show()
+

@@ -1,5 +1,6 @@
 package utils;
 
+import javafx.util.Pair;
 import utils.algorithms.Algorithm;
 import utils.algorithms.VerletOriginalAlgorithm;
 import utils.predicates.EnteredOrbitPredicate;
@@ -38,6 +39,11 @@ public class VenusMission {
     private final Config config;
     private final List<Predicate> predicates = new ArrayList<>();
 
+    double initialEnergy = 0.;
+
+    private List<Pair<Double, Double>> timeAndEnergy = new ArrayList<>();
+
+
     public VenusMission(Particle earth, Particle venus, Algorithm algorithm, Config config) {
         this.earth = earth.withLabel(EARTH_ID);
         this.venus = venus.withLabel(VENUS_ID);
@@ -52,6 +58,8 @@ public class VenusMission {
         this.predicates.add(new EnteredOrbitPredicate());
     }
 
+
+
     public void simulate() {
         double currentTime = 0;
         Particle pastEarth = null;
@@ -61,6 +69,7 @@ public class VenusMission {
         Particle futureVenus;
         Particle futureSpaceship;
         int iter = 0;
+        initialEnergy = calculateEnergy(Arrays.asList(earth, venus, sun), 0);
 
         while (!cut()) {
             if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
@@ -86,6 +95,10 @@ public class VenusMission {
 
             if (iter % config.getSteps() == 0) {
                 saveState(iter);
+                if(hasTakenOff)
+                    calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
+                else
+                    calculateEnergy(Arrays.asList(earth, sun , venus),currentTime);
             }
 
             iter++;
@@ -115,6 +128,23 @@ public class VenusMission {
         }
         target.setAccX(Fx/target.getMass());
         target.setAccY(Fy/target.getMass());
+    }
+
+    private double calculateEnergy(List<Particle> particles, double currentTime) {
+        double K = 0;
+        double P = 0;
+        for(int i = 0 ; i < particles.size(); i++){
+            Particle p1 = particles.get(i);
+            K += 0.5 * p1.getMass() * (Math.pow(p1.getVelX(),2) + Math.pow(p1.getVelY(),2));
+            for(int j = i+1; j < particles.size(); j++){
+                Particle p2 = particles.get(j);
+                P += - G * p1.getMass() * p2.getMass() / p1.distance(p2);
+            }
+        }
+        double sum = K + P;
+        if (initialEnergy != 0)
+            timeAndEnergy.add(new Pair<>(currentTime, Math.abs(sum - initialEnergy)));
+        return sum;
     }
 
     private Point2D.Double getNormalComponents(Particle pi, Particle pj, double dist) {
@@ -169,5 +199,9 @@ public class VenusMission {
         } catch (IOException ex) {
             System.out.println("Add folder position to TP4");
         }
+    }
+
+    public List<Pair<Double, Double>> getTimeAndEnergy() {
+        return timeAndEnergy;
     }
 }

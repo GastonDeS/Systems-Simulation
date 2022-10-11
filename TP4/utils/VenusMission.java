@@ -13,6 +13,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -30,6 +31,8 @@ public class VenusMission {
     private final static double stationSpeedToEarth = 7.12; // km/s
     private final static double spaceshipInitialSpeed = 8.; // km/s
 
+    BigDecimal a;
+
     private final Particle sun;
     private Particle earth;
     private Particle venus;
@@ -42,6 +45,7 @@ public class VenusMission {
     double initialEnergy = 0.;
 
     private List<Pair<Double, Double>> timeAndEnergy = new ArrayList<>();
+    private List<Pair<Double, Double>> timeAndSpeed = new ArrayList<>();
 
 
     public VenusMission(Particle earth, Particle venus, Algorithm algorithm, Config config) {
@@ -93,17 +97,24 @@ public class VenusMission {
                 setAcceleration(spaceship, Arrays.asList(earth, venus, sun));
             }
 
-            if (iter % config.getSteps() == 0) {
-                saveState(iter);
-                if(hasTakenOff)
-                    calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
-                else
-                    calculateEnergy(Arrays.asList(earth, sun , venus),currentTime);
+            if (iter % config.getSteps() == 0 && hasTakenOff) {
+                saveSpeedAndTime(spaceship, currentTime);
+//                saveState(iter);
+//                if(hasTakenOff)
+//                calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
+//                else
+//                    calculateEnergy(Arrays.asList(earth, sun , venus),currentTime);
             }
 
             iter++;
             currentTime += config.getDeltaT();
         }
+    }
+
+    private void saveSpeedAndTime(Particle spaceship, double currentTime) {
+        Double spaceshipSpeed = Math.sqrt(Math.pow(spaceship.getVelY(), 2) + Math.pow(spaceship.getVelX(), 2));
+        timeAndSpeed.add(new Pair<>(currentTime - config.getTakeOffTime(), spaceshipSpeed));
+
     }
 
     private boolean cut() {
@@ -203,5 +214,9 @@ public class VenusMission {
 
     public List<Pair<Double, Double>> getTimeAndEnergy() {
         return timeAndEnergy;
+    }
+
+    public List<Pair<Double, Double>> getTimeAndSpeed() {
+        return timeAndSpeed;
     }
 }

@@ -105,3 +105,5 @@ def plot_delta_E():
     plt.xlabel('Tiempo (días)')
     plt.show()
 
+def plot_min_distance():
+    

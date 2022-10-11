@@ -61,9 +61,11 @@ public class SecondSystem {
 
             VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
             venusMission.simulate();
-            List<Pair<Double, Double>> timeAndEnergy = venusMission.getTimeAndEnergy();
-            System.out.println(timeAndEnergy);
-            saveEnergy(timeAndEnergy);
+            List<Pair<Double, Double>> timeAndSpeed = venusMission.getTimeAndSpeed();
+            saveTimeAndSpeed(timeAndSpeed);
+//            List<Pair<Double, Double>> timeAndEnergy = venusMission.getTimeAndEnergy();
+//            System.out.println(timeAndEnergy);
+//            saveEnergy(timeAndEnergy);
         }
     }
 
@@ -78,6 +80,20 @@ public class SecondSystem {
             smallLadsFile.close();
         } catch (IOException ex) {
             System.out.println("Add folder energy to TP4");
+        }
+    }
+
+    private static void saveTimeAndSpeed(List<Pair<Double, Double>> speedAndTime) {
+        File smallLads = new File("TP4/speed/speed.txt");
+        try {
+            FileWriter smallLadsFile = new FileWriter(smallLads);
+            for (Pair<Double, Double> speed : speedAndTime) {
+                System.out.println(speed.getKey()/86400 + " " + speed.getValue());
+                smallLadsFile.write(speed.getKey()/86400 + " " + speed.getValue() + "\n");
+            }
+            smallLadsFile.close();
+        } catch (IOException ex) {
+            System.out.println("Add folder speed to TP4");
         }
     }
 

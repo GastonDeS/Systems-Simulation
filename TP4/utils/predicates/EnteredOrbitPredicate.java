@@ -2,33 +2,34 @@ package utils.predicates;
 
 import utils.Particle;
 
+import java.math.BigDecimal;
+
 public class EnteredOrbitPredicate extends Predicate {
     private State state;
     private boolean enteredOrbit;
+    private final Particle sun;
 
-    public EnteredOrbitPredicate() {
+    public EnteredOrbitPredicate(Particle sun) {
         this.enteredOrbit = false;
         this.state = State.MISSED;
+        this.sun = sun;
     }
 
     @Override
     public boolean predict(Particle spaceship, Particle target) {
         if(spaceship == null) return false;
         double dist = spaceship.distance(target);
-        if(dist <= target.getRadius()) { // todo: add limit
-            enteredOrbit = true;
-            if(state == State.MISSED) {
-                state = State.IN_ORBIT; // when added limit
-            }
-            if(dist <= target.getRadius()) {
-                state = State.LANDED;
-                return true;
-            }
+        if(dist <= target.getRadius()) { // landed
+            state = State.LANDED;
+            return true;
         } else {
-            if(enteredOrbit) {
-                enteredOrbit = false;
-                state = State.MISSED;
-                return true;
+            if (BigDecimal.valueOf(target.distance(sun)).equals(BigDecimal.valueOf(spaceship.distance(sun)))) {
+                state = State.IN_ORBIT;
+                if (enteredOrbit) {
+                    return true;
+                } else {
+                    enteredOrbit = true;
+                }
             }
         }
         return false;

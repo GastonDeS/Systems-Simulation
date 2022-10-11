@@ -8,12 +8,10 @@ import utils.predicates.MaxTimePredicate;
 import utils.predicates.MissedTargetPredicate;
 import utils.predicates.Predicate;
 
-import javax.swing.*;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -31,8 +29,6 @@ public class VenusMission {
     private final static double stationSpeedToEarth = 7.12; // km/s
     private final static double spaceshipInitialSpeed = 8.; // km/s
 
-    BigDecimal a;
-
     private final Particle sun;
     private Particle earth;
     private Particle venus;
@@ -41,12 +37,9 @@ public class VenusMission {
     private boolean hasTakenOff;
     private final Config config;
     private final List<Predicate> predicates = new ArrayList<>();
-
-    double initialEnergy = 0.;
-
+    private Predicate result;
     private List<Pair<Double, Double>> timeAndEnergy = new ArrayList<>();
-    private List<Pair<Double, Double>> timeAndSpeed = new ArrayList<>();
-
+    double initialEnergy = 0.;
 
     public VenusMission(Particle earth, Particle venus, Algorithm algorithm, Config config) {
         this.earth = earth.withLabel(EARTH_ID);
@@ -59,13 +52,12 @@ public class VenusMission {
         this.config = config;
         this.predicates.add(new MaxTimePredicate(config.getMaxTime(), config.getDeltaT()));
         this.predicates.add(new MissedTargetPredicate(this.venus));
-        this.predicates.add(new EnteredOrbitPredicate());
+        this.predicates.add(new EnteredOrbitPredicate(this.sun));
     }
 
-
-
-    public void simulate() {
+    public Predicate simulate() {
         double currentTime = 0;
+        double targetMinDistance = Double.MAX_VALUE;
         Particle pastEarth = null;
         Particle pastVenus = null;
         Particle pastSpaceship = null;
@@ -79,6 +71,7 @@ public class VenusMission {
             if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
                 positionShip(Arrays.asList(earth, sun, venus));
                 hasTakenOff = true;
+                targetMinDistance = Double.min(targetMinDistance, venus.distance(spaceship));
             }
 
             futureEarth = algorithm.update(pastEarth, earth, config.getDeltaT(), currentTime);
@@ -95,6 +88,7 @@ public class VenusMission {
                 pastSpaceship = spaceship;
                 spaceship = futureSpaceship;
                 setAcceleration(spaceship, Arrays.asList(earth, venus, sun));
+                targetMinDistance = Double.min(targetMinDistance, venus.distance(spaceship));
             }
 
             if (iter % config.getSteps() == 0 && hasTakenOff) {
@@ -109,6 +103,7 @@ public class VenusMission {
             iter++;
             currentTime += config.getDeltaT();
         }
+        return result;
     }
 
     private void saveSpeedAndTime(Particle spaceship, double currentTime) {
@@ -121,6 +116,7 @@ public class VenusMission {
         for (Predicate predicate : predicates) {
             if (predicate.predict(spaceship, venus)) {
                 predicate.print();
+                result = predicate;
                 return true;
             }
         }
@@ -186,8 +182,8 @@ public class VenusMission {
 
         double spaceshipEarthDist = spaceship.distance(earth);
         Point2D.Double tangentialComponents = getTangentialComponents(spaceship, earth, spaceshipEarthDist);
-        this.spaceship.setVelX(earth.getVelX() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.x);
-        this.spaceship.setVelY(earth.getVelY() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.y);
+        this.spaceship.setVelX(earth.getVelX() - Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.x);
+        this.spaceship.setVelY(earth.getVelY() - Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.y);
 
         setAcceleration(this.spaceship, planets);
     }

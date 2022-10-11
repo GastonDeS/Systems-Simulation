@@ -52,7 +52,7 @@ public class VenusMission {
         this.config = config;
         this.predicates.add(new MaxTimePredicate(config.getMaxTime(), config.getDeltaT()));
         this.predicates.add(new MissedTargetPredicate(this.venus));
-        this.predicates.add(new EnteredOrbitPredicate());
+        this.predicates.add(new EnteredOrbitPredicate(this.sun));
     }
 
     public Predicate simulate() {

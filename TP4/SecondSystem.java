@@ -1,6 +1,7 @@
 import javafx.util.Pair;
 import utils.Config;
 import utils.Particle;
+import utils.SimulationType;
 import utils.VenusMission;
 import utils.algorithms.Algorithm;
 import utils.algorithms.EulerAlgorithm;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SecondSystem {
+    private static final int DAY_IN_SECONDS = 86400;
     private static final double EARTH_RADIUS = 6371;
     private static final double VENUS_RADIUS = 6051.8;
     private static final double EARTH_MASS = 5.97219e24;
@@ -23,26 +25,40 @@ public class SecondSystem {
     static double gamma = 100.0;
     static int steps = 72;
     static double deltaT = 300;
-    static double maxTime = 378432000;
+    static double maxTime = 31536000;
     static double takeOffTime = 22321400;
+    static SimulationType simulationType = SimulationType.MIN_DISTANCE;
+    static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
+    static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
 
     public static void main(String[] args) {
-        //mainSimulation();
-        //getOptimumDate(); // Ejercicio 1a
-        //calculateDeltaT();
-        //calculateTimeAndSpeed();
-        getMinDistances();
+        switch (simulationType) {
+            case MAIN:
+                mainSimulation();
+                break;
+            case OPTIMUM_DATE:
+                getOptimumDate();
+                break;
+            case DELTA_T:
+                calculateDeltaT();
+                break;
+            case TIME_AND_SPEED:
+                calculateTimeAndSpeed();
+                break;
+            case MIN_DISTANCE:
+                getMinDistances(0, (int) maxTime, DAY_IN_SECONDS);
+                break;
+            default:
+                break;
+        }
     }
 
     private static VenusMission mainSimulation() {
-        Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
-        Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
-
         Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
         Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
         VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
-        venusMission.simulate();
+        venusMission.simulate(simulationType);
         return venusMission;
     }
 
@@ -94,33 +110,28 @@ public class SecondSystem {
     }
 
     private static void getOptimumDate() {
-        Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
-        Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
         int interval = (int) deltaT;
         for(long t = 22100000; t <= maxTime; t += interval){
             takeOffTime = t;
-            Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
-            Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
-
-            VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
-            venusMission.simulate();
+            VenusMission venusMission = mainSimulation();
             Predicate result = venusMission.getResult();
             if (result.getState() == Predicate.State.LANDED) {
-                System.out.println("LANDED: " + t);
+                System.out.println("LANDED ON: " + t);
+                System.out.println(venusMission.getMinDistance());
                 return;
             }
         }
     }
 
-    private static void getMinDistances() {
+    private static void getMinDistances(int start, int end, int step) {
         List<Pair<Double, Double>> distances = new ArrayList<>();
-        for(long t = 0; t <= takeOffTime + 10000000; t += (3600*24)){
+        for(long t = start; t <= end; t += step){
             takeOffTime = t;
             VenusMission venusMission = mainSimulation();
-            Double minDistance = venusMission.getMinDistance();
+            Double minDistance = venusMission.getMinDistance() - VENUS_RADIUS;
             distances.add(new Pair<>(takeOffTime, minDistance));
         }
-        saveMinDistance(distances);
+        saveMinDistance(distances, step);
     }
 
     private static void saveEnergy(List<Pair<Double, Double>> timeAndEnergy) {
@@ -133,8 +144,8 @@ public class SecondSystem {
         writeFile(smallLads, speedAndTime, "speed");
     }
 
-    private static void saveMinDistance(List<Pair<Double, Double>> distances) {
-        File smallLads = new File("TP4/distance/distance.txt");
+    private static void saveMinDistance(List<Pair<Double, Double>> distances, int steps) {
+        File smallLads = new File("TP4/distance/distance" + steps + ".txt");
         writeFile(smallLads, distances, "distance");
     }
 
@@ -142,8 +153,8 @@ public class SecondSystem {
         try {
             FileWriter smallLadsFile = new FileWriter(file);
             for (Pair<Double, Double> d : data) {
-                System.out.println(d.getKey()/86400 + " " + d.getValue());
-                smallLadsFile.write(d.getKey()/86400 + " " + d.getValue() + "\n");
+                System.out.println(d.getKey()/DAY_IN_SECONDS + " " + d.getValue());
+                smallLadsFile.write(d.getKey()/DAY_IN_SECONDS + " " + d.getValue() + "\n");
             }
             smallLadsFile.close();
         } catch (IOException ex) {

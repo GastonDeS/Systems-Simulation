@@ -56,7 +56,7 @@ public class VenusMission {
         this.predicates.add(new EnteredOrbitPredicate(this.sun));
     }
 
-    public void simulate() {
+    public void simulate(SimulationType simulationType) {
         double currentTime = 0;
         Particle pastEarth = null;
         Particle pastVenus = null;
@@ -71,7 +71,7 @@ public class VenusMission {
             if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
                 positionShip(Arrays.asList(earth, sun, venus));
                 hasTakenOff = true;
-                minDistance = Double.min(minDistance, venus.distance(spaceship));
+                minDistance = Double.min(minDistance, venus.distanceRadius(spaceship));
             }
 
             futureEarth = algorithm.update(pastEarth, earth, config.getDeltaT(), currentTime);
@@ -88,19 +88,29 @@ public class VenusMission {
                 pastSpaceship = spaceship;
                 spaceship = futureSpaceship;
                 setAcceleration(spaceship, Arrays.asList(earth, venus, sun));
-                minDistance = Double.min(minDistance, venus.distance(spaceship));
+                minDistance = Double.min(minDistance, venus.distanceRadius(spaceship));
             }
 
             if (iter % config.getSteps() == 0) {
-                //saveState(iter);
-//                if (hasTakenOff) {
-//                    saveSpeedAndTime(spaceship, currentTime);
-//                }
-//                if(hasTakenOff) {
-//                    calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
-//                } else {
-//                    calculateEnergy(Arrays.asList(earth, sun, venus), currentTime);
-//                }
+                switch (simulationType) {
+                    case MAIN:
+                        saveState(iter);
+                        break;
+                    case DELTA_T:
+                        if(hasTakenOff) {
+                            calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
+                        } else {
+                            calculateEnergy(Arrays.asList(earth, sun, venus), currentTime);
+                        }
+                        break;
+                    case TIME_AND_SPEED:
+                        if (hasTakenOff) {
+                            saveSpeedAndTime(spaceship, currentTime);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
 
             iter++;

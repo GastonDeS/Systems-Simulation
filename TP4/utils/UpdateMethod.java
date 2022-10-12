@@ -9,6 +9,7 @@ public enum UpdateMethod {
     ANALYTIC("analytic");
 
     public String name;
+
     UpdateMethod(String name) {
         this.name = name;
     }

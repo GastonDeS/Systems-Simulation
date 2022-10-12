@@ -2,7 +2,6 @@ package utils;
 
 import javafx.util.Pair;
 import utils.algorithms.Algorithm;
-import utils.algorithms.VerletOriginalAlgorithm;
 import utils.predicates.EnteredOrbitPredicate;
 import utils.predicates.MaxTimePredicate;
 import utils.predicates.MissedTargetPredicate;
@@ -39,11 +38,9 @@ public class VenusMission {
     private final List<Predicate> predicates = new ArrayList<>();
     private Predicate result;
     private List<Pair<Double, Double>> timeAndEnergy = new ArrayList<>();
-
-    List<Pair<Double, Double>> timeAndSpeed = new ArrayList<>();
-
-
-    double initialEnergy = 0.;
+    private List<Pair<Double, Double>> timeAndSpeed = new ArrayList<>();
+    private double initialEnergy = 0.;
+    private double minDistance = Double.MAX_VALUE;
 
     public VenusMission(Particle earth, Particle venus, Algorithm algorithm, Config config) {
         this.earth = earth.withLabel(EARTH_ID);
@@ -59,9 +56,8 @@ public class VenusMission {
         this.predicates.add(new EnteredOrbitPredicate(this.sun));
     }
 
-    public Predicate simulate() {
+    public void simulate() {
         double currentTime = 0;
-        double targetMinDistance = Double.MAX_VALUE;
         Particle pastEarth = null;
         Particle pastVenus = null;
         Particle pastSpaceship = null;
@@ -70,13 +66,12 @@ public class VenusMission {
         Particle futureSpaceship;
         int iter = 0;
         initialEnergy = calculateEnergy(Arrays.asList(earth, venus, sun), 0);
-        System.out.println("Initial time: " + config.getTakeOffTime());
 
         while (!cut()) {
             if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
                 positionShip(Arrays.asList(earth, sun, venus));
                 hasTakenOff = true;
-                targetMinDistance = Double.min(targetMinDistance, venus.distance(spaceship));
+                minDistance = Double.min(minDistance, venus.distance(spaceship));
             }
 
             futureEarth = algorithm.update(pastEarth, earth, config.getDeltaT(), currentTime);
@@ -93,29 +88,29 @@ public class VenusMission {
                 pastSpaceship = spaceship;
                 spaceship = futureSpaceship;
                 setAcceleration(spaceship, Arrays.asList(earth, venus, sun));
-                targetMinDistance = Double.min(targetMinDistance, venus.distance(spaceship));
+                minDistance = Double.min(minDistance, venus.distance(spaceship));
             }
 
-            if (iter%config.getSteps() == 0 &&hasTakenOff) {
-//                saveState(iter);
-                saveSpeedAndTime(spaceship, currentTime);
-//                if(hasTakenOff)
-//                calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
-//                else
-//                    calculateEnergy(Arrays.asList(earth, sun , venus),currentTime);
+            if (iter % config.getSteps() == 0) {
+                //saveState(iter);
+//                if (hasTakenOff) {
+//                    saveSpeedAndTime(spaceship, currentTime);
+//                }
+//                if(hasTakenOff) {
+//                    calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
+//                } else {
+//                    calculateEnergy(Arrays.asList(earth, sun, venus), currentTime);
+//                }
             }
 
             iter++;
             currentTime += config.getDeltaT();
         }
-        System.out.println("Time: " + currentTime/(3600*24));
-        return result;
     }
 
     private void saveSpeedAndTime(Particle spaceship, double currentTime) {
         Double spaceshipSpeed = Math.pow(Math.pow(spaceship.getVelY(), 2) + Math.pow(spaceship.getVelX(), 2), 0.5);
         timeAndSpeed.add(new Pair<>(currentTime - config.getTakeOffTime(), spaceshipSpeed));
-
     }
 
     private boolean cut() {
@@ -173,15 +168,15 @@ public class VenusMission {
         return G * pi.getMass() * pj.getMass()/Math.pow(dist,2);
     }
 
-    private void positionShip(List<Particle> planets){
-        //System.out.println("LAUNCHING SPACESHIP");
+    private void positionShip(List<Particle> planets) {
+        System.out.println("LAUNCHING SPACESHIP");
         double sunEarthDist = earth.distance(sun);
         Point2D.Double normalComponents = getNormalComponents(earth, sun, sunEarthDist);
         this.spaceship = new Particle()
                 .withLabel(SPACESHIP_ID)
                 .withRadius(0.01)
                 .withMass(2e5)
-                .withPosX(this.earth.getPosX() - (stationDistanceToEarthSurface +earth.getRadius()) * normalComponents.x)
+                .withPosX(this.earth.getPosX() - (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.x)
                 .withPosY(this.earth.getPosY() - (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.y)
                 .withAccX(0)
                 .withAccY(0);
@@ -225,5 +220,13 @@ public class VenusMission {
 
     public List<Pair<Double, Double>> getTimeAndSpeed() {
         return timeAndSpeed;
+    }
+
+    public Predicate getResult() {
+        return result;
+    }
+
+    public double getMinDistance() {
+        return minDistance;
     }
 }

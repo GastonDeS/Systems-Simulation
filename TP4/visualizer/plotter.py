@@ -109,7 +109,7 @@ def plot_time_vs_speed():
     f = plt.figure()
     f.set_size_inches(10.5, 5.5)
 
-    data = parse_ssv('../speed/speed.txt')
+    data = parse_ssv('../distance/distance.txt')
     x = []
     y = []
     for d in data:

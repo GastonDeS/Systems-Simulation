@@ -24,11 +24,17 @@ public class SecondSystem {
     static int steps = 72;
     static double deltaT = 300;
     static double maxTime = 378432000;
-    static double takeOffTime = 22312400;
+    static double takeOffTime = 22321400;
 
     public static void main(String[] args) {
+        //mainSimulation();
         //getOptimumDate(); // Ejercicio 1a
-//        calculateDeltaT();
+        //calculateDeltaT();
+        //calculateTimeAndSpeed();
+        getMinDistances();
+    }
+
+    private static VenusMission mainSimulation() {
         Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
         Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
 
@@ -37,13 +43,15 @@ public class SecondSystem {
 
         VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
         venusMission.simulate();
+        return venusMission;
+    }
+
+    private static void calculateTimeAndSpeed() {
+        VenusMission venusMission = mainSimulation();
         saveTimeAndSpeed(venusMission.getTimeAndSpeed());
     }
 
     private static void calculateDeltaT() {
-        Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
-        Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
-
         double maxDeltaT = 60 * 60;
         steps = 5 * 60;
         List<Double> deltaTs = new ArrayList<>();
@@ -58,47 +66,11 @@ public class SecondSystem {
         for(Double dt : deltaTs) {
             deltaT = dt;
             System.out.println("dT: " + deltaT);
-            Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
-            Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
-
-            VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
-            venusMission.simulate();
-            List<Pair<Double, Double>> timeAndSpeed = venusMission.getTimeAndSpeed();
-            saveTimeAndSpeed(timeAndSpeed);
-//            List<Pair<Double, Double>> timeAndEnergy = venusMission.getTimeAndEnergy();
-//            System.out.println(timeAndEnergy);
-//            saveEnergy(timeAndEnergy);
+            VenusMission venusMission = mainSimulation();
+            List<Pair<Double, Double>> timeAndEnergy = venusMission.getTimeAndEnergy();
+            saveEnergy(timeAndEnergy);
         }
     }
-
-    private static void saveEnergy(List<Pair<Double, Double>> timeAndEnergy) {
-        File smallLads = new File("TP4/energy/energy" + deltaT + ".txt");
-        try {
-            FileWriter smallLadsFile = new FileWriter(smallLads);
-            for (Pair<Double, Double> energy : timeAndEnergy) {
-                System.out.println(energy.getKey()/86400 + " " + energy.getValue());
-                smallLadsFile.write(energy.getKey()/86400 + " " + energy.getValue() + "\n");
-            }
-            smallLadsFile.close();
-        } catch (IOException ex) {
-            System.out.println("Add folder energy to TP4");
-        }
-    }
-
-    private static void saveTimeAndSpeed(List<Pair<Double, Double>> speedAndTime) {
-        File smallLads = new File("TP4/speed/speed.txt");
-        try {
-            FileWriter smallLadsFile = new FileWriter(smallLads);
-            for (Pair<Double, Double> speed : speedAndTime) {
-                System.out.println(speed.getKey()/86400 + " " + speed.getValue());
-                smallLadsFile.write(speed.getKey()/86400 + " " + speed.getValue() + "\n");
-            }
-            smallLadsFile.close();
-        } catch (IOException ex) {
-            System.out.println("Add folder speed to TP4");
-        }
-    }
-
 
     private static Particle getInitialValues(String filename, double radius, double mass) {
         File initConditions = new File(filename);
@@ -131,11 +103,51 @@ public class SecondSystem {
             Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
             VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
-            Predicate result = venusMission.simulate();
+            venusMission.simulate();
+            Predicate result = venusMission.getResult();
             if (result.getState() == Predicate.State.LANDED) {
                 System.out.println("LANDED: " + t);
                 return;
             }
+        }
+    }
+
+    private static void getMinDistances() {
+        List<Pair<Double, Double>> distances = new ArrayList<>();
+        for(long t = 0; t <= takeOffTime + 10000000; t += (3600*24)){
+            takeOffTime = t;
+            VenusMission venusMission = mainSimulation();
+            Double minDistance = venusMission.getMinDistance();
+            distances.add(new Pair<>(takeOffTime, minDistance));
+        }
+        saveMinDistance(distances);
+    }
+
+    private static void saveEnergy(List<Pair<Double, Double>> timeAndEnergy) {
+        File smallLads = new File("TP4/energy/energy" + deltaT + ".txt");
+        writeFile(smallLads, timeAndEnergy, "energy");
+    }
+
+    private static void saveTimeAndSpeed(List<Pair<Double, Double>> speedAndTime) {
+        File smallLads = new File("TP4/speed/speed.txt");
+        writeFile(smallLads, speedAndTime, "speed");
+    }
+
+    private static void saveMinDistance(List<Pair<Double, Double>> distances) {
+        File smallLads = new File("TP4/distance/distance.txt");
+        writeFile(smallLads, distances, "distance");
+    }
+
+    private static void writeFile(File file, List<Pair<Double, Double>> data, String folder) {
+        try {
+            FileWriter smallLadsFile = new FileWriter(file);
+            for (Pair<Double, Double> d : data) {
+                System.out.println(d.getKey()/86400 + " " + d.getValue());
+                smallLadsFile.write(d.getKey()/86400 + " " + d.getValue() + "\n");
+            }
+            smallLadsFile.close();
+        } catch (IOException ex) {
+            System.out.println("Add folder " + folder + " to TP4");
         }
     }
 }

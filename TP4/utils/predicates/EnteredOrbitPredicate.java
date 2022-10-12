@@ -19,6 +19,8 @@ public class EnteredOrbitPredicate extends Predicate {
     public boolean predict(Particle spaceship, Particle target) {
         if(spaceship == null) return false;
         double dist = spaceship.distance(target);
+        Double aux = dist - target.getRadius();
+        //System.out.println("Distancia: " + aux);
         if(dist <= target.getRadius()) { // landed
             state = State.LANDED;
             return true;

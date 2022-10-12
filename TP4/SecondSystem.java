@@ -24,19 +24,20 @@ public class SecondSystem {
     static int steps = 72;
     static double deltaT = 300;
     static double maxTime = 378432000;
-    static double takeOffTime = 31801800;
+    static double takeOffTime = 22312400;
 
     public static void main(String[] args) {
         //getOptimumDate(); // Ejercicio 1a
-        calculateDeltaT();
-//        Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
-//        Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
-//
-//        Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
-//        Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
-//
-//        VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
-//        venusMission.simulate();
+//        calculateDeltaT();
+        Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
+        Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
+
+        Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
+        Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
+
+        VenusMission venusMission = new VenusMission(earth, venus, algorithm, config);
+        venusMission.simulate();
+        saveTimeAndSpeed(venusMission.getTimeAndSpeed());
     }
 
     private static void calculateDeltaT() {
@@ -124,12 +125,7 @@ public class SecondSystem {
         Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
         Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
         int interval = (int) deltaT;
-        List<Long> takeOffTimes = new ArrayList<>();
-        for(long i = 15581700; i <= maxTime; i += interval){
-            takeOffTimes.add(i);
-        }
-        for(Long t: takeOffTimes) {
-            System.out.println(t);
+        for(long t = 22100000; t <= maxTime; t += interval){
             takeOffTime = t;
             Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
             Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);

@@ -9,9 +9,6 @@ ex1_names = ['Verlet', 'Beeman', 'Analitica', 'Gear Predictor']
 ex1_b_files = ['verlet', 'beeman', 'gear-predictor']
 ex1_b_names = ['Verlet', 'Beeman', 'Gear Predictor']
 
-
-
-
 font = {
     'weight': 'normal',
     'size': 14}
@@ -21,7 +18,7 @@ plt.rc('font', **font)
 
 def plot_exercise_1(delta_t):
     f = plt.figure()
-    #plt.ylim([0.39, .5])
+    # plt.ylim([0.39, .5])
     real_data = parse_ssv('../data/analitica.ssv')
 
     for idx in range(len(ex1_files)):
@@ -32,7 +29,7 @@ def plot_exercise_1(delta_t):
             if d != '':
                 value = float(d.split(' ')[1])
                 real_value = float(real_data[id].split(' ')[1])
-                error += (value - real_value)**2
+                error += (value - real_value) ** 2
                 y.append(value)
         x = np.arange(start=0, step=delta_t, stop=5)
         if ex1_files[idx] == 'analitica':
@@ -55,14 +52,14 @@ def plot_exercise_1b():
     for idx, d in enumerate(ex1_b_files):
         ecm = []
         for delta_t in delta_t_list:
-            real_data = parse_ssv(f'../data/analitica-{np.round(delta_t*1e5)/1e5}.ssv')
-            data = parse_ssv(f'../data/{d}-{np.round(delta_t*1e5)/1e5}.ssv')
+            real_data = parse_ssv(f'../data/analitica-{np.round(delta_t * 1e5) / 1e5}.ssv')
+            data = parse_ssv(f'../data/{d}-{np.round(delta_t * 1e5) / 1e5}.ssv')
             error = 0
             for idd, dd in enumerate(data):
                 if dd != '':
                     value = float(dd.split(' ')[1])
                     real_value = float(real_data[idd].split(' ')[1])
-                    error += (value - real_value)**2
+                    error += (value - real_value) ** 2
             ecm.append(error / 500)
         x = np.arange(start=0.00001, step=0.0001, stop=0.01)
         plt.plot(x, ecm, label=ex1_b_names[idx], linewidth=1)
@@ -83,8 +80,10 @@ def plot_earth():
     plt.plot(x, y)
     plt.show()
 
+
 def get_pos(data):
     return data.split(' ')[0:2]
+
 
 def plot_delta_E():
     f = plt.figure()
@@ -105,5 +104,19 @@ def plot_delta_E():
     plt.xlabel('Tiempo (días)')
     plt.show()
 
-def plot_min_distance():
-    
+
+def plot_time_vs_speed():
+    f = plt.figure()
+    f.set_size_inches(10.5, 5.5)
+
+    data = parse_ssv('../speed/speed.txt')
+    x = []
+    y = []
+    for d in data:
+        if d != '':
+            x.append(float(d.split(' ')[0]))
+            y.append(float(d.split(' ')[1]))
+    plt.plot(x, y)
+    plt.xlabel('Tiempo (días)')
+    plt.ylabel('Velocidad (km/s)')
+    plt.show()

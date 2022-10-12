@@ -39,6 +39,10 @@ public class VenusMission {
     private final List<Predicate> predicates = new ArrayList<>();
     private Predicate result;
     private List<Pair<Double, Double>> timeAndEnergy = new ArrayList<>();
+
+    List<Pair<Double, Double>> timeAndSpeed = new ArrayList<>();
+
+
     double initialEnergy = 0.;
 
     public VenusMission(Particle earth, Particle venus, Algorithm algorithm, Config config) {
@@ -66,6 +70,7 @@ public class VenusMission {
         Particle futureSpaceship;
         int iter = 0;
         initialEnergy = calculateEnergy(Arrays.asList(earth, venus, sun), 0);
+        System.out.println("Initial time: " + config.getTakeOffTime());
 
         while (!cut()) {
             if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
@@ -91,9 +96,9 @@ public class VenusMission {
                 targetMinDistance = Double.min(targetMinDistance, venus.distance(spaceship));
             }
 
-            if (iter % config.getSteps() == 0 && hasTakenOff) {
-                saveSpeedAndTime(spaceship, currentTime);
+            if (iter%config.getSteps() == 0 &&hasTakenOff) {
 //                saveState(iter);
+                saveSpeedAndTime(spaceship, currentTime);
 //                if(hasTakenOff)
 //                calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
 //                else
@@ -103,11 +108,12 @@ public class VenusMission {
             iter++;
             currentTime += config.getDeltaT();
         }
+        System.out.println("Time: " + currentTime/(3600*24));
         return result;
     }
 
     private void saveSpeedAndTime(Particle spaceship, double currentTime) {
-        Double spaceshipSpeed = Math.sqrt(Math.pow(spaceship.getVelY(), 2) + Math.pow(spaceship.getVelX(), 2));
+        Double spaceshipSpeed = Math.pow(Math.pow(spaceship.getVelY(), 2) + Math.pow(spaceship.getVelX(), 2), 0.5);
         timeAndSpeed.add(new Pair<>(currentTime - config.getTakeOffTime(), spaceshipSpeed));
 
     }
@@ -168,22 +174,22 @@ public class VenusMission {
     }
 
     private void positionShip(List<Particle> planets){
-        System.out.println("LAUNCHING SPACESHIP");
+        //System.out.println("LAUNCHING SPACESHIP");
         double sunEarthDist = earth.distance(sun);
         Point2D.Double normalComponents = getNormalComponents(earth, sun, sunEarthDist);
         this.spaceship = new Particle()
                 .withLabel(SPACESHIP_ID)
-                .withRadius(2000)
+                .withRadius(0.01)
                 .withMass(2e5)
-                .withPosX(this.earth.getPosX() + (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.x)
-                .withPosY(this.earth.getPosY() + (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.y)
+                .withPosX(this.earth.getPosX() - (stationDistanceToEarthSurface +earth.getRadius()) * normalComponents.x)
+                .withPosY(this.earth.getPosY() - (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.y)
                 .withAccX(0)
                 .withAccY(0);
 
         double spaceshipEarthDist = spaceship.distance(earth);
         Point2D.Double tangentialComponents = getTangentialComponents(spaceship, earth, spaceshipEarthDist);
-        this.spaceship.setVelX(earth.getVelX() - Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.x);
-        this.spaceship.setVelY(earth.getVelY() - Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.y);
+        this.spaceship.setVelX(earth.getVelX() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.x);
+        this.spaceship.setVelY(earth.getVelY() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.y);
 
         setAcceleration(this.spaceship, planets);
     }
@@ -200,7 +206,12 @@ public class VenusMission {
             smallLadsFile.write(sun + "\n");
             smallLadsFile.write(earth + "\n");
             smallLadsFile.write(venus + "\n");
-            if (hasTakenOff) smallLadsFile.write(spaceship + "\n");
+
+            if (hasTakenOff) {
+                Particle spaceshipv2 = spaceship.clone();
+                spaceshipv2.withRadius(spaceshipv2.getRadius()* 200000);
+                smallLadsFile.write(spaceshipv2 + "\n");
+            }
 
             smallLadsFile.close();
         } catch (IOException ex) {

@@ -27,12 +27,13 @@ public class SecondSystem {
     static double gamma = 100.0;
     static int steps = 72;
     static double deltaT = 300;
-    static double maxTime = 31536000 + 73690800; //31536000;
+    static double maxTime = 31536000 + 73690800; //31536000 + 22321400;
     static double takeOffTime = 73690800; //22321400;
-    static SimulationType simulationType = SimulationType.MAIN;
+    static SimulationType simulationType = SimulationType.OPTIMIZE_SPEED;
     static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.EARTH;
     static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
     static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
+    static double spaceshipInitialSpeed = 8.; // km/s
 
     public static void main(String[] args) {
         switch (simulationType) {
@@ -51,13 +52,21 @@ public class SecondSystem {
             case MIN_DISTANCE:
                 getMinDistances(0, (int) maxTime, DAY_IN_SECONDS);
                 break;
+            case OPTIMIZE_SPEED:
+                optimizeSpeed();
+                break;
             default:
                 break;
         }
     }
 
     private static AbstractMission mainSimulation() {
-        Config config = new Config().withDeltaT(deltaT).withSteps(steps).withMaxTime(maxTime).withTakeOffTime(takeOffTime);
+        Config config = new Config()
+                .withDeltaT(deltaT)
+                .withSteps(steps)
+                .withMaxTime(maxTime)
+                .withTakeOffTime(takeOffTime)
+                .withInitialSpeed(spaceshipInitialSpeed);
         Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
         AbstractMission mission;
@@ -119,7 +128,7 @@ public class SecondSystem {
 
     private static void getOptimumDate() {
         int interval = (int) deltaT;
-        for(long t = 73612800-86400; t <= 73612800 + 86400; t += interval) {
+        for(long t = (278*86400)-86400; t <= (278*86400) + 86400; t += interval) {
             System.out.println(t);
             takeOffTime = t;
             AbstractMission mission = mainSimulation();
@@ -140,6 +149,27 @@ public class SecondSystem {
             distances.add(new Pair<>(takeOffTime, minDistance));
         }
         saveMinDistance(distances, step);
+    }
+
+    private static void optimizeSpeed() {
+        List<Pair<Double,Double>> data = new ArrayList<>();
+        int j = 0;
+        double step = 0.0001;
+        double v0 = 7.99;
+        for (double i = v0; i < 8.01; i+=step, j++) {
+            spaceshipInitialSpeed = i;
+            AbstractMission mission = mainSimulation();
+            Predicate result = mission.getResult();
+            if (result.getState() == Predicate.State.LANDED) {
+                data.add(new Pair<>(mission.getCurrentTime(), i));
+            }
+        }
+        saveSpeeds(data, v0, step);
+    }
+
+    private static void saveSpeeds(List<Pair<Double, Double>> speeds, double v0, double step) {
+        File smallLads = new File("TP4/distancevsvel/v0=" + v0 + "&S=" + step + ".txt");
+        writeFile(smallLads, speeds, "distancevsvel");
     }
 
     private static void saveEnergy(List<Pair<Double, Double>> timeAndEnergy) {

@@ -40,8 +40,8 @@ public class VenusMission extends AbstractMission {
 
         double spaceshipEarthDist = spaceship.distance(origin);
         Point2D.Double tangentialComponents = getTangentialComponents(spaceship, origin, spaceshipEarthDist);
-        this.spaceship.setVelX(origin.getVelX() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.x);
-        this.spaceship.setVelY(origin.getVelY() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.y);
+        this.spaceship.setVelX(origin.getVelX() + Math.abs(stationSpeedToEarth + config.getInitialSpeed()) * tangentialComponents.x);
+        this.spaceship.setVelY(origin.getVelY() + Math.abs(stationSpeedToEarth + config.getInitialSpeed()) * tangentialComponents.y);
 
         setAcceleration(this.spaceship, planets);
     }

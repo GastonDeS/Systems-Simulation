@@ -5,5 +5,6 @@ public enum SimulationType {
     OPTIMUM_DATE,
     DELTA_T,
     TIME_AND_SPEED,
-    MIN_DISTANCE
+    MIN_DISTANCE,
+    OPTIMIZE_SPEED
 }

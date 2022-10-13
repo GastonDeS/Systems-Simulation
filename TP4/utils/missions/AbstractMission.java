@@ -23,7 +23,6 @@ public abstract class AbstractMission {
     protected static final int SPACESHIP_ID = 3;
     protected final static double stationDistanceToEarthSurface = 1500; // km
     protected final static double stationSpeedToEarth = 7.12; // km/s
-    protected final static double spaceshipInitialSpeed = 8.; // km/s
 
     protected final Particle sun;
     protected Particle origin;
@@ -31,13 +30,14 @@ public abstract class AbstractMission {
     protected Particle spaceship;
     private final Algorithm algorithm;
     private boolean hasTakenOff;
-    private final Config config;
+    protected final Config config;
     private Predicate result;
     protected final List<Predicate> predicates = new ArrayList<>();
     private List<Pair<Double, Double>> timeAndEnergy = new ArrayList<>();
     private List<Pair<Double, Double>> timeAndSpeed = new ArrayList<>();
     private double initialEnergy = 0.;
     private double minDistance = Double.MAX_VALUE;
+    private double currentTime;
 
     public AbstractMission(Particle origin, Particle target, Algorithm algorithm, Config config) {
         this.origin = origin.withLabel(EARTH_ID);
@@ -51,7 +51,7 @@ public abstract class AbstractMission {
     }
 
     public void simulate(SimulationType simulationType) {
-        double currentTime = 0;
+        this.currentTime = 0;
         Particle pastOrigin = null;
         Particle pastTarget = null;
         Particle pastSpaceship = null;
@@ -213,6 +213,10 @@ public abstract class AbstractMission {
 
     public double getMinDistance() {
         return minDistance;
+    }
+
+    public double getCurrentTime() {
+        return currentTime;
     }
 
     public enum MissionTarget {

@@ -5,6 +5,7 @@ public class Config {
     private double maxTime;
     private int steps;
     private double takeOffTime;
+    private double initialSpeed;
 
     public Config() {}
 
@@ -28,6 +29,11 @@ public class Config {
         return this;
     }
 
+    public Config withInitialSpeed(double initialSpeed) {
+        this.initialSpeed = initialSpeed;
+        return this;
+    }
+
     public double getDeltaT() {
         return deltaT;
     }
@@ -42,5 +48,9 @@ public class Config {
 
     public double getTakeOffTime() {
         return takeOffTime;
+    }
+
+    public double getInitialSpeed() {
+        return initialSpeed;
     }
 }

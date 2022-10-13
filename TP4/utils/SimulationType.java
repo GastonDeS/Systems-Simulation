@@ -2,7 +2,7 @@ package utils;
 
 public enum SimulationType {
     MAIN,
-    GO_AND_COME,
+    ROUND_TRIP,
     OPTIMUM_DATE,
     DELTA_T,
     TIME_AND_SPEED,

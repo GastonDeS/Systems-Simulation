@@ -90,7 +90,7 @@ public abstract class AbstractMission {
             if (iter % config.getSteps() == 0) {
                 switch (simulationType) {
                     case MAIN:
-                    case GO_AND_COME:
+                    case ROUND_TRIP:
                         saveState(iter);
                         break;
                     case DELTA_T:

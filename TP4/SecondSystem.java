@@ -32,7 +32,7 @@ public class SecondSystem {
     static double maxTime = 31536000 + TO_EARTH_TAKEOFF;
     static double takeOffTime = TO_EARTH_TAKEOFF;
     static SimulationType simulationType = SimulationType.MIN_DISTANCE;
-    static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.VENUS;
+    static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.EARTH;
     static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS).withName("earth");
     static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS).withName("venus");
     static double spaceshipInitialSpeed = 8.; // km/s
@@ -50,8 +50,8 @@ public class SecondSystem {
             case MAIN:
                 mainSimulation(config, algorithm);
                 break;
-            case GO_AND_COME:
-                goAndComeSimulation();
+            case ROUND_TRIP:
+                roundTrip();
                 break;
             case OPTIMUM_DATE:
                 getOptimumDate(config, algorithm);
@@ -77,12 +77,12 @@ public class SecondSystem {
         SIMULATION TYPES
      */
 
-    private static void goAndComeSimulation() {
+    private static void roundTrip() {
         Config venusConfig = new Config()
                 .withDeltaT(deltaT)
                 .withSteps(steps)
                 .withMaxTime(maxTime)
-                .withTakeOffTime(TO_VENUS_TAKEOFF)
+                .withTakeOffTime(TO_VENUS_TAKEOFF - 10000)
                 .withInitialSpeed(spaceshipInitialSpeed);
         Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
@@ -91,7 +91,7 @@ public class SecondSystem {
         venusMission.simulate(simulationType, 0);
 
         if (venusMission.getResult().getState() != Predicate.State.LANDED) {
-            System.out.println("Spaceship lost. Never reached Venus.");
+            System.out.println("SPACESHIP LOST. Never reached Venus.");
             return;
         }
 
@@ -166,8 +166,8 @@ public class SecondSystem {
 
     private static void getMinDistances(Config config, Algorithm algorithm) {
         List<Pair<Double, Double>> distances = new ArrayList<>();
-        int start = (int) TO_VENUS_TAKEOFF - 86400;
-        int end = (int) TO_VENUS_TAKEOFF + 86400;
+        int start = (int) TO_EARTH_TAKEOFF - 86400;
+        int end = (int) TO_EARTH_TAKEOFF + 86400;
         int step = (int) deltaT;
         for(long t = start; t <= end; t += step) {
             config.withTakeOffTime(t);
@@ -222,7 +222,7 @@ public class SecondSystem {
         try {
             FileWriter smallLadsFile = new FileWriter(file);
             for (Pair<Double, Double> d : data) {
-                System.out.println(d.getKey()/DAY_IN_SECONDS + " " + d.getValue());
+                //System.out.println(d.getKey()/DAY_IN_SECONDS + " " + d.getValue());
                 smallLadsFile.write(d.getKey()/DAY_IN_SECONDS + " " + d.getValue() + "\n");
             }
             smallLadsFile.close();

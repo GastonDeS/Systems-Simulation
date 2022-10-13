@@ -31,13 +31,13 @@ public class EarthMission extends AbstractMission{
                 .withPosX(this.origin.getPosX() + (stationDistanceToEarthSurface + origin.getRadius()) * normalComponents.x)
                 .withPosY(this.origin.getPosY() + (stationDistanceToEarthSurface + origin.getRadius()) * normalComponents.y)
                 .withAccX(0)
-                .withAccY(0);
+                .withAccY(0)
+                .withName("Spaceship");
 
         double spaceshipVenusDist = spaceship.distance(origin);
         Point2D.Double tangentialComponents = getTangentialComponents(spaceship, origin, spaceshipVenusDist);
         this.spaceship.setVelX(origin.getVelX() + Math.abs(stationSpeedToEarth + config.getInitialSpeed()) * tangentialComponents.x);
         this.spaceship.setVelY(origin.getVelY() + Math.abs(stationSpeedToEarth + config.getInitialSpeed()) * tangentialComponents.y);
-
         setAcceleration(this.spaceship, planets);
     }
 }

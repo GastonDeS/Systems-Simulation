@@ -31,8 +31,8 @@ public class SecondSystem {
     static double deltaT = 300;
     static double maxTime = 31536000 * 3;
     static double takeOffTime = TO_VENUS_TAKEOFF;
-    static SimulationType simulationType = SimulationType.MAIN;
-    static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.EARTH;
+    static SimulationType simulationType = SimulationType.GO_AND_COME;
+    static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.VENUS;
     static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS).withName("earth");
     static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS).withName("venus");
     static double spaceshipInitialSpeed = 8.; // km/s
@@ -41,6 +41,9 @@ public class SecondSystem {
         switch (simulationType) {
             case MAIN:
                 mainSimulation();
+                break;
+            case GO_AND_COME:
+                goAndComeSimulation();
                 break;
             case OPTIMUM_DATE:
                 getOptimumDate();
@@ -62,6 +65,35 @@ public class SecondSystem {
         }
     }
 
+    private static AbstractMission goAndComeSimulation() {
+        Config config = new Config()
+                .withDeltaT(deltaT)
+                .withSteps(steps)
+                .withMaxTime(maxTime)
+                .withTakeOffTime(TO_VENUS_TAKEOFF)
+                .withInitialSpeed(spaceshipInitialSpeed);
+        Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
+
+        AbstractMission mission = new VenusMission(earth, venus, algorithm, config);
+
+        mission.simulate(simulationType, 0);
+        saveParticleState(mission.getOrigin(), mission.getCurrentTime());
+        saveParticleState(mission.getTarget(), mission.getCurrentTime());
+
+        Config config2 = new Config()
+                .withDeltaT(deltaT)
+                .withSteps(steps)
+                .withMaxTime(maxTime)
+                .withTakeOffTime(TO_EARTH_TAKEOFF)
+                .withInitialSpeed(spaceshipInitialSpeed);
+
+        setNewDataForParticles();
+        AbstractMission mission2 = new EarthMission(venus, earth, algorithm, config2);
+        mission2.simulate(simulationType, mission.getIter());
+        System.out.println(mission2.getIter());
+        return mission;
+    }
+
     private static AbstractMission mainSimulation() {
         Config config = new Config()
                 .withDeltaT(deltaT)
@@ -79,11 +111,12 @@ public class SecondSystem {
             config.withTakeOffTime(TO_EARTH_TAKEOFF);
             mission = new EarthMission(venus, earth, algorithm, config);
         }
-        mission.simulate(simulationType);
+        mission.simulate(simulationType, 0);
         if (missionTarget == AbstractMission.MissionTarget.VENUS) {
             saveParticleState(mission.getOrigin(), mission.getCurrentTime());
             saveParticleState(mission.getTarget(), mission.getCurrentTime());
         }
+//        System.out.println(mission.iter);
         return mission;
     }
 

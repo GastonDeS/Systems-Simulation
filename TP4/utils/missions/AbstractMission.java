@@ -32,6 +32,9 @@ public abstract class AbstractMission {
     private boolean hasTakenOff;
     protected final Config config;
     private Predicate result;
+
+    private int iter;
+
     protected final List<Predicate> predicates = new ArrayList<>();
     private List<Pair<Double, Double>> timeAndEnergy = new ArrayList<>();
     private List<Pair<Double, Double>> timeAndSpeed = new ArrayList<>();
@@ -50,7 +53,7 @@ public abstract class AbstractMission {
         this.config = config;
     }
 
-    public void simulate(SimulationType simulationType) {
+    public void simulate(SimulationType simulationType, int iter) {
         this.currentTime = 0;
         Particle pastOrigin = null;
         Particle pastTarget = null;
@@ -58,7 +61,6 @@ public abstract class AbstractMission {
         Particle futureOrigin;
         Particle futureTarget;
         Particle futureSpaceship;
-        int iter = 0;
         initialEnergy = calculateEnergy(Arrays.asList(origin, target, sun), 0);
 
         while (!cut()) {
@@ -87,7 +89,7 @@ public abstract class AbstractMission {
 
             if (iter % config.getSteps() == 0) {
                 switch (simulationType) {
-                    case MAIN:
+                    case MAIN, GO_AND_COME:
                         saveState(iter);
                         break;
                     case DELTA_T:
@@ -108,6 +110,7 @@ public abstract class AbstractMission {
             }
 
             iter++;
+            this.iter = iter;
             currentTime += config.getDeltaT();
         }
     }
@@ -230,5 +233,9 @@ public abstract class AbstractMission {
     public enum MissionTarget {
         VENUS,
         EARTH
+    }
+
+    public int getIter() {
+        return iter;
     }
 }

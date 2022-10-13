@@ -1,6 +1,5 @@
 package utils;
 
-import java.awt.geom.Point2D;
 import java.util.Objects;
 
 public class Particle implements Cloneable {
@@ -166,7 +165,7 @@ public class Particle implements Cloneable {
         return posX +
                 " " + posY +
                 " " + velX +
-                " " + velY + " " + radius;
+                " " + velY + " " + radius + " " + name;
     }
 
     @Override

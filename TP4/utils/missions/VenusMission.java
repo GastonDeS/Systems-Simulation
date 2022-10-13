@@ -36,7 +36,8 @@ public class VenusMission extends AbstractMission {
                 .withPosX(this.origin.getPosX() - (stationDistanceToEarthSurface + origin.getRadius()) * normalComponents.x)
                 .withPosY(this.origin.getPosY() - (stationDistanceToEarthSurface + origin.getRadius()) * normalComponents.y)
                 .withAccX(0)
-                .withAccY(0);
+                .withAccY(0)
+                .withName("Spaceship");
 
         double spaceshipEarthDist = spaceship.distance(origin);
         Point2D.Double tangentialComponents = getTangentialComponents(spaceship, origin, spaceshipEarthDist);

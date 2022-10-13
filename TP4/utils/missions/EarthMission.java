@@ -22,8 +22,8 @@ public class EarthMission extends AbstractMission{
     @Override
     protected void positionShip(List<Particle> planets) {
         System.out.println("LAUNCHING SPACESHIP");
-        double sunEarthDist = origin.distance(sun);
-        Point2D.Double normalComponents = getNormalComponents(origin, sun, sunEarthDist);
+        double sunVenusDist = origin.distance(sun);
+        Point2D.Double normalComponents = getNormalComponents(origin, sun, sunVenusDist);
         this.spaceship = new Particle()
                 .withLabel(SPACESHIP_ID)
                 .withRadius(0.01)
@@ -33,8 +33,8 @@ public class EarthMission extends AbstractMission{
                 .withAccX(0)
                 .withAccY(0);
 
-        double spaceshipEarthDist = spaceship.distance(origin);
-        Point2D.Double tangentialComponents = getTangentialComponents(spaceship, origin, spaceshipEarthDist);
+        double spaceshipVenusDist = spaceship.distance(origin);
+        Point2D.Double tangentialComponents = getTangentialComponents(spaceship, origin, spaceshipVenusDist);
         this.spaceship.setVelX(origin.getVelX() + Math.abs(stationSpeedToEarth + config.getInitialSpeed()) * tangentialComponents.x);
         this.spaceship.setVelY(origin.getVelY() + Math.abs(stationSpeedToEarth + config.getInitialSpeed()) * tangentialComponents.y);
 

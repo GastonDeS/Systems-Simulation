@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 
 public class Particle implements Cloneable {
+    private String name;
     private int label;
     private double mass;
     private double radius;
@@ -91,6 +92,11 @@ public class Particle implements Cloneable {
         return this;
     }
 
+    public Particle withName(String name) {
+        this.name = name;
+        return this;
+    }
+
     public double getMass() {
         return mass;
     }
@@ -121,6 +127,14 @@ public class Particle implements Cloneable {
 
     public double getAccY() {
         return accY;
+    }
+
+    public int getLabel() {
+        return label;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setPosX(double posX) {

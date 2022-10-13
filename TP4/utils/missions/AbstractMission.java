@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class AbstractMission {
     private static final int SUN_ID = 0;
-    private static final int EARTH_ID = 1;
+    private static final int ORIGIN_ID = 1;
     private static final int TARGET_ID = 2;
     private final static double G = 6.693e-20; // km^3/kg/s^2
     protected static final int SPACESHIP_ID = 3;
@@ -40,7 +40,7 @@ public abstract class AbstractMission {
     private double currentTime;
 
     public AbstractMission(Particle origin, Particle target, Algorithm algorithm, Config config) {
-        this.origin = origin.withLabel(EARTH_ID);
+        this.origin = origin.withLabel(ORIGIN_ID);
         this.target = target.withLabel(TARGET_ID);
         this.sun = new Particle(SUN_ID, 1.989e30, 15000, 0, 0, 0, 0, 0, 0);
         setAcceleration(target, Arrays.asList(origin, sun));
@@ -217,6 +217,14 @@ public abstract class AbstractMission {
 
     public double getCurrentTime() {
         return currentTime;
+    }
+
+    public Particle getOrigin() {
+        return origin;
+    }
+
+    public Particle getTarget() {
+        return target;
     }
 
     public enum MissionTarget {

@@ -22,17 +22,20 @@ public class SecondSystem {
     private static final double VENUS_MASS = 4.867e24;
     private static final String EARTH_COND_FILE = "TP4/nasaData/earth.csv";
     private static final String VENUS_COND_FILE = "TP4/nasaData/venus.csv";
+    private static final double TO_VENUS_TAKEOFF = 22321400;
+    private static final double VENUS_LANDING_TIME = 2.63778E7;
+    private static final double TO_EARTH_TAKEOFF = 47313900;
 
     static double K = Math.pow(10,4);
     static double gamma = 100.0;
     static int steps = 72;
     static double deltaT = 300;
-    static double maxTime = 31536000 + 73690800; //31536000 + 22321400;
-    static double takeOffTime = 73690800; //22321400;
-    static SimulationType simulationType = SimulationType.OPTIMIZE_SPEED;
+    static double maxTime = 31536000 * 3;
+    static double takeOffTime = TO_VENUS_TAKEOFF;
+    static SimulationType simulationType = SimulationType.MAIN;
     static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.EARTH;
-    static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
-    static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
+    static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS).withName("earth");
+    static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS).withName("venus");
     static double spaceshipInitialSpeed = 8.; // km/s
 
     public static void main(String[] args) {
@@ -70,13 +73,38 @@ public class SecondSystem {
         Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
         AbstractMission mission;
-        if (missionTarget == AbstractMission.MissionTarget.VENUS) {
-            mission = new VenusMission(earth, venus, algorithm, config);
-        } else {
-            mission = new EarthMission(venus, earth, algorithm, config);
-        }
+        mission = new VenusMission(earth, venus, algorithm, config);
         mission.simulate(simulationType);
+        if (missionTarget == AbstractMission.MissionTarget.EARTH) {
+            saveParticleState(mission.getOrigin(), mission.getCurrentTime());
+            saveParticleState(mission.getTarget(), mission.getCurrentTime());
+            setNewDataForParticles();
+            config.withTakeOffTime(TO_EARTH_TAKEOFF);
+            mission = new EarthMission(venus, earth, algorithm, config);
+            mission.simulate(simulationType);
+        }
         return mission;
+    }
+
+    private static void saveParticleState(Particle particle, double currentTime) {
+        File smallLads = new File("TP4/nasaData/" + particle.getName() + "2.csv");
+        try {
+            FileWriter smallLadsFile = new FileWriter(smallLads);
+            smallLadsFile.write("Landing time (s),X,Y,VX,VY\n");
+            smallLadsFile.write(csvParticle(particle, currentTime));
+            smallLadsFile.close();
+        } catch (IOException ex) {
+            System.out.println("Add folder nasaData to TP4");
+        }
+    }
+
+    private static String csvParticle(Particle particle, double currentTime) {
+        return "" + currentTime + "," + particle.getPosX() + "," + particle.getPosY() + "," + particle.getVelX() + "," + particle.getVelY();
+    }
+
+    private static void setNewDataForParticles() {
+        earth = getInitialValues("TP4/nasaData/earth2.csv", EARTH_RADIUS, EARTH_MASS).withName("earth");
+        venus = getInitialValues("TP4/nasaData/venus2.csv", VENUS_RADIUS, VENUS_MASS).withName("venus");
     }
 
     private static void calculateTimeAndSpeed() {
@@ -128,7 +156,7 @@ public class SecondSystem {
 
     private static void getOptimumDate() {
         int interval = (int) deltaT;
-        for(long t = (278*86400)-86400; t <= (278*86400) + 86400; t += interval) {
+        for(long t = (548*86400)-86400; t <= (550*86400) + 86400; t += interval) {
             System.out.println(t);
             takeOffTime = t;
             AbstractMission mission = mainSimulation();
@@ -156,7 +184,7 @@ public class SecondSystem {
         int j = 0;
         double step = 0.0001;
         double v0 = 7.9;
-        for (double i = v0; i < 8.1; i+=step, j++) {
+        for (double i = v0; i < 8.1; i += step, j++) {
             spaceshipInitialSpeed = i;
             AbstractMission mission = mainSimulation();
             Predicate result = mission.getResult();

@@ -23,7 +23,6 @@ public class SecondSystem {
     private static final String EARTH_COND_FILE = "TP4/nasaData/earth.csv";
     private static final String VENUS_COND_FILE = "TP4/nasaData/venus.csv";
     private static final double TO_VENUS_TAKEOFF = 22321400;
-    private static final double VENUS_LANDING_TIME = 2.63778E7;
     private static final double TO_EARTH_TAKEOFF = 47313900;
 
     static double K = Math.pow(10,4);
@@ -73,15 +72,17 @@ public class SecondSystem {
         Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
         AbstractMission mission;
-        mission = new VenusMission(earth, venus, algorithm, config);
-        mission.simulate(simulationType);
-        if (missionTarget == AbstractMission.MissionTarget.EARTH) {
-            saveParticleState(mission.getOrigin(), mission.getCurrentTime());
-            saveParticleState(mission.getTarget(), mission.getCurrentTime());
+        if (missionTarget == AbstractMission.MissionTarget.VENUS) {
+            mission = new VenusMission(earth, venus, algorithm, config);
+        } else {
             setNewDataForParticles();
             config.withTakeOffTime(TO_EARTH_TAKEOFF);
             mission = new EarthMission(venus, earth, algorithm, config);
-            mission.simulate(simulationType);
+        }
+        mission.simulate(simulationType);
+        if (missionTarget == AbstractMission.MissionTarget.VENUS) {
+            saveParticleState(mission.getOrigin(), mission.getCurrentTime());
+            saveParticleState(mission.getTarget(), mission.getCurrentTime());
         }
         return mission;
     }
@@ -149,6 +150,7 @@ public class SecondSystem {
                     .withVelX(Double.parseDouble(values[3]))
                     .withVelY(Double.parseDouble(values[4]));
         } catch (Exception e) {
+            System.out.println("No such file");
             e.printStackTrace();
         }
         return particle;

@@ -1,94 +1,88 @@
-package utils;
+package utils.missions;
 
 import javafx.util.Pair;
+import utils.Config;
+import utils.Particle;
+import utils.SimulationType;
 import utils.algorithms.Algorithm;
-import utils.predicates.EnteredOrbitPredicate;
-import utils.predicates.MaxTimePredicate;
-import utils.predicates.MissedTargetPredicate;
 import utils.predicates.Predicate;
 
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * Initial conditions for a planet at a given time step respective to the sun
- * Velocity is in km/s
- * Distance is in km
- */
-public class VenusMission {
+public abstract class AbstractMission {
     private static final int SUN_ID = 0;
     private static final int EARTH_ID = 1;
-    private static final int VENUS_ID = 2;
-    private static final int SPACESHIP_ID = 3;
+    private static final int TARGET_ID = 2;
     private final static double G = 6.693e-20; // km^3/kg/s^2
-    private final static double stationDistanceToEarthSurface = 1500; // km
-    private final static double stationSpeedToEarth = 7.12; // km/s
-    private final static double spaceshipInitialSpeed = 8.; // km/s
+    protected static final int SPACESHIP_ID = 3;
+    protected final static double stationDistanceToEarthSurface = 1500; // km
+    protected final static double stationSpeedToEarth = 7.12; // km/s
+    protected final static double spaceshipInitialSpeed = 8.; // km/s
 
-    private final Particle sun;
-    private Particle earth;
-    private Particle venus;
-    private Particle spaceship;
+    protected final Particle sun;
+    protected Particle earth;
+    protected Particle target;
+    protected Particle spaceship;
     private final Algorithm algorithm;
     private boolean hasTakenOff;
     private final Config config;
-    private final List<Predicate> predicates = new ArrayList<>();
     private Predicate result;
+    protected final List<Predicate> predicates = new ArrayList<>();
     private List<Pair<Double, Double>> timeAndEnergy = new ArrayList<>();
     private List<Pair<Double, Double>> timeAndSpeed = new ArrayList<>();
     private double initialEnergy = 0.;
     private double minDistance = Double.MAX_VALUE;
 
-    public VenusMission(Particle earth, Particle venus, Algorithm algorithm, Config config) {
+    public AbstractMission(Particle earth, Particle target, Algorithm algorithm, Config config) {
         this.earth = earth.withLabel(EARTH_ID);
-        this.venus = venus.withLabel(VENUS_ID);
+        this.target = target.withLabel(TARGET_ID);
         this.sun = new Particle(SUN_ID, 1.989e30, 15000, 0, 0, 0, 0, 0, 0);
-        setAcceleration(venus, Arrays.asList(earth, sun));
-        setAcceleration(earth, Arrays.asList(venus, sun));
+        setAcceleration(target, Arrays.asList(earth, sun));
+        setAcceleration(earth, Arrays.asList(target, sun));
         this.algorithm = algorithm;
         this.hasTakenOff = false;
         this.config = config;
-        this.predicates.add(new MaxTimePredicate(config.getMaxTime(), config.getDeltaT()));
-        this.predicates.add(new MissedTargetPredicate(this.venus));
-        this.predicates.add(new EnteredOrbitPredicate(this.sun));
     }
 
     public void simulate(SimulationType simulationType) {
         double currentTime = 0;
         Particle pastEarth = null;
-        Particle pastVenus = null;
+        Particle pastTarget = null;
         Particle pastSpaceship = null;
         Particle futureEarth;
-        Particle futureVenus;
+        Particle futureTarget;
         Particle futureSpaceship;
         int iter = 0;
-        initialEnergy = calculateEnergy(Arrays.asList(earth, venus, sun), 0);
+        initialEnergy = calculateEnergy(Arrays.asList(earth, target, sun), 0);
 
         while (!cut()) {
             if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
-                positionShip(Arrays.asList(earth, sun, venus));
+                positionShip(Arrays.asList(earth, sun, target));
                 hasTakenOff = true;
-                minDistance = Double.min(minDistance, venus.distanceRadius(spaceship));
+                minDistance = Double.min(minDistance, target.distanceRadius(spaceship));
             }
 
             futureEarth = algorithm.update(pastEarth, earth, config.getDeltaT(), currentTime);
-            futureVenus = algorithm.update(pastVenus, venus, config.getDeltaT(), currentTime);
+            futureTarget = algorithm.update(pastTarget, target, config.getDeltaT(), currentTime);
             pastEarth = earth;
-            pastVenus = venus;
+            pastTarget = target;
             earth = futureEarth;
-            venus = futureVenus;
-            setAcceleration(earth, Arrays.asList(venus, sun));
-            setAcceleration(venus, Arrays.asList(earth, sun));
+            target = futureTarget;
+            setAcceleration(earth, Arrays.asList(target, sun));
+            setAcceleration(target, Arrays.asList(earth, sun));
 
             if (hasTakenOff) {
                 futureSpaceship = algorithm.update(pastSpaceship, spaceship, config.getDeltaT(), currentTime);
                 pastSpaceship = spaceship;
                 spaceship = futureSpaceship;
-                setAcceleration(spaceship, Arrays.asList(earth, venus, sun));
-                minDistance = Double.min(minDistance, venus.distanceRadius(spaceship));
+                setAcceleration(spaceship, Arrays.asList(earth, target, sun));
+                minDistance = Double.min(minDistance, target.distanceRadius(spaceship));
             }
 
             if (iter % config.getSteps() == 0) {
@@ -98,9 +92,9 @@ public class VenusMission {
                         break;
                     case DELTA_T:
                         if(hasTakenOff) {
-                            calculateEnergy(Arrays.asList(earth, venus, sun, spaceship), currentTime);
+                            calculateEnergy(Arrays.asList(earth, target, sun, spaceship), currentTime);
                         } else {
-                            calculateEnergy(Arrays.asList(earth, sun, venus), currentTime);
+                            calculateEnergy(Arrays.asList(earth, sun, target), currentTime);
                         }
                         break;
                     case TIME_AND_SPEED:
@@ -118,6 +112,8 @@ public class VenusMission {
         }
     }
 
+    protected abstract void positionShip(List<Particle> planets);
+
     private void saveSpeedAndTime(Particle spaceship, double currentTime) {
         Double spaceshipSpeed = Math.pow(Math.pow(spaceship.getVelY(), 2) + Math.pow(spaceship.getVelX(), 2), 0.5);
         timeAndSpeed.add(new Pair<>(currentTime - config.getTakeOffTime(), spaceshipSpeed));
@@ -125,7 +121,7 @@ public class VenusMission {
 
     private boolean cut() {
         for (Predicate predicate : predicates) {
-            if (predicate.predict(spaceship, venus)) {
+            if (predicate.predict(spaceship, target)) {
                 predicate.print();
                 result = predicate;
                 return true;
@@ -134,7 +130,7 @@ public class VenusMission {
         return false;
     }
 
-    private void setAcceleration(Particle target, List<Particle> interactions) {
+    protected void setAcceleration(Particle target, List<Particle> interactions) {
         double Fx = 0;
         double Fy = 0;
         for(Particle p : interactions){
@@ -165,38 +161,17 @@ public class VenusMission {
         return sum;
     }
 
-    private Point2D.Double getNormalComponents(Particle pi, Particle pj, double dist) {
+    protected Point2D.Double getNormalComponents(Particle pi, Particle pj, double dist) {
         return new Point2D.Double((pj.getPosX() - pi.getPosX())/dist,(pj.getPosY() - pi.getPosY())/dist);
     }
 
-    private Point2D.Double getTangentialComponents(Particle pi, Particle pj, double dist) {
+    protected Point2D.Double getTangentialComponents(Particle pi, Particle pj, double dist) {
         Point2D.Double normalComponents = getNormalComponents(pi, pj, dist);
         return new Point2D.Double(-normalComponents.y, normalComponents.x);
     }
 
     private double getGravitationalForce(Particle pi, Particle pj, double dist){
         return G * pi.getMass() * pj.getMass()/Math.pow(dist,2);
-    }
-
-    private void positionShip(List<Particle> planets) {
-        System.out.println("LAUNCHING SPACESHIP");
-        double sunEarthDist = earth.distance(sun);
-        Point2D.Double normalComponents = getNormalComponents(earth, sun, sunEarthDist);
-        this.spaceship = new Particle()
-                .withLabel(SPACESHIP_ID)
-                .withRadius(0.01)
-                .withMass(2e5)
-                .withPosX(this.earth.getPosX() - (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.x)
-                .withPosY(this.earth.getPosY() - (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.y)
-                .withAccX(0)
-                .withAccY(0);
-
-        double spaceshipEarthDist = spaceship.distance(earth);
-        Point2D.Double tangentialComponents = getTangentialComponents(spaceship, earth, spaceshipEarthDist);
-        this.spaceship.setVelX(earth.getVelX() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.x);
-        this.spaceship.setVelY(earth.getVelY() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.y);
-
-        setAcceleration(this.spaceship, planets);
     }
 
     private void saveState(int iter) {
@@ -210,7 +185,7 @@ public class VenusMission {
                             "\n");
             smallLadsFile.write(sun + "\n");
             smallLadsFile.write(earth + "\n");
-            smallLadsFile.write(venus + "\n");
+            smallLadsFile.write(target + "\n");
 
             if (hasTakenOff) {
                 Particle spaceshipv2 = spaceship.clone();
@@ -238,5 +213,10 @@ public class VenusMission {
 
     public double getMinDistance() {
         return minDistance;
+    }
+
+    public enum MissionTarget {
+        VENUS,
+        MARS
     }
 }

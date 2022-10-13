@@ -1,7 +1,7 @@
 package utils.missions;
 
-import javafx.util.Pair;
 import utils.Config;
+import utils.Pair;
 import utils.Particle;
 import utils.SimulationType;
 import utils.algorithms.Algorithm;

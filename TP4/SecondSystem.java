@@ -1,13 +1,13 @@
-import javafx.util.Pair;
 import utils.Config;
+import utils.Pair;
 import utils.Particle;
 import utils.SimulationType;
-import utils.missions.EarthMission;
-import utils.missions.VenusMission;
 import utils.algorithms.Algorithm;
 import utils.algorithms.EulerAlgorithm;
 import utils.algorithms.VerletOriginalAlgorithm;
 import utils.missions.AbstractMission;
+import utils.missions.EarthMission;
+import utils.missions.VenusMission;
 import utils.predicates.Predicate;
 
 import java.io.*;
@@ -155,8 +155,8 @@ public class SecondSystem {
         List<Pair<Double,Double>> data = new ArrayList<>();
         int j = 0;
         double step = 0.0001;
-        double v0 = 7.99;
-        for (double i = v0; i < 8.01; i+=step, j++) {
+        double v0 = 7.9;
+        for (double i = v0; i < 8.1; i+=step, j++) {
             spaceshipInitialSpeed = i;
             AbstractMission mission = mainSimulation();
             Predicate result = mission.getResult();
@@ -168,8 +168,8 @@ public class SecondSystem {
     }
 
     private static void saveSpeeds(List<Pair<Double, Double>> speeds, double v0, double step) {
-        File smallLads = new File("TP4/distancevsvel/v0=" + v0 + "&S=" + step + ".txt");
-        writeFile(smallLads, speeds, "distancevsvel");
+        File smallLads = new File("TP4/timevsspeed/v0=" + v0 + "&S=" + step + ".txt");
+        writeFile(smallLads, speeds, "timevsspeed");
     }
 
     private static void saveEnergy(List<Pair<Double, Double>> timeAndEnergy) {

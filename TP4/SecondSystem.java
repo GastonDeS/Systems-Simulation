@@ -2,7 +2,7 @@ import javafx.util.Pair;
 import utils.Config;
 import utils.Particle;
 import utils.SimulationType;
-import utils.missions.MarsMission;
+import utils.missions.EarthMission;
 import utils.missions.VenusMission;
 import utils.algorithms.Algorithm;
 import utils.algorithms.EulerAlgorithm;
@@ -18,25 +18,21 @@ public class SecondSystem {
     private static final int DAY_IN_SECONDS = 86400;
     private static final double EARTH_RADIUS = 6371;
     private static final double VENUS_RADIUS = 6051.8;
-    private static final double MARS_RADIUS = 3389.92;
     private static final double EARTH_MASS = 5.97219e24;
     private static final double VENUS_MASS = 4.867e24;
-    private static final double MARS_MASS = 6.4171e23;
     private static final String EARTH_COND_FILE = "TP4/nasaData/earth.csv";
     private static final String VENUS_COND_FILE = "TP4/nasaData/venus.csv";
-    private static final String MARS_COND_FILE = "TP4/nasaData/mars.csv";
 
     static double K = Math.pow(10,4);
     static double gamma = 100.0;
     static int steps = 72;
     static double deltaT = 300;
-    static double maxTime = 378432000; //31536000;
-    static double takeOffTime = 22321400;
+    static double maxTime = 31536000; //31536000;
+    static double takeOffTime = 24019200; //22321400;
     static SimulationType simulationType = SimulationType.OPTIMUM_DATE;
-    static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.MARS;
+    static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.EARTH;
     static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
     static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
-    static Particle mars = getInitialValues(MARS_COND_FILE, MARS_RADIUS, MARS_MASS);
 
     public static void main(String[] args) {
         switch (simulationType) {
@@ -68,7 +64,7 @@ public class SecondSystem {
         if (missionTarget == AbstractMission.MissionTarget.VENUS) {
             mission = new VenusMission(earth, venus, algorithm, config);
         } else {
-            mission = new MarsMission(earth, mars, algorithm, config);
+            mission = new EarthMission(venus, earth, algorithm, config);
         }
         mission.simulate(simulationType);
         return mission;
@@ -123,7 +119,7 @@ public class SecondSystem {
 
     private static void getOptimumDate() {
         int interval = (int) deltaT;
-        for(long t = 0; t <= maxTime + 10000000; t += interval) {
+        for(long t = 23932800; t <= maxTime + 10000000; t += interval) {
             System.out.println(t);
             takeOffTime = t;
             AbstractMission mission = mainSimulation();

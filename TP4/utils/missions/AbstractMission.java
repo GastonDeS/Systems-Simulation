@@ -217,6 +217,6 @@ public abstract class AbstractMission {
 
     public enum MissionTarget {
         VENUS,
-        MARS
+        EARTH
     }
 }

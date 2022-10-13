@@ -10,13 +10,13 @@ import utils.predicates.MissedTargetPredicate;
 import java.awt.geom.Point2D;
 import java.util.List;
 
-public class MarsMission extends AbstractMission{
+public class EarthMission extends AbstractMission{
 
-    public MarsMission(Particle earth, Particle mars, Algorithm algorithm, Config config) {
-        super(earth, mars, algorithm, config);
+    public EarthMission(Particle venus, Particle earth, Algorithm algorithm, Config config) {
+        super(venus, earth, algorithm, config);
         this.predicates.add(new MaxTimePredicate(config.getMaxTime(), config.getDeltaT()));
-        this.predicates.add(new MissedTargetPredicate(this.target, MissionTarget.MARS));
-        this.predicates.add(new EnteredOrbitPredicate(this.sun, MissionTarget.MARS));
+        this.predicates.add(new MissedTargetPredicate(this.target, MissionTarget.EARTH));
+        this.predicates.add(new EnteredOrbitPredicate(this.sun));
     }
 
     @Override

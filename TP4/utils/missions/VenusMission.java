@@ -22,7 +22,7 @@ public class VenusMission extends AbstractMission {
         super(earth, venus, algorithm, config);
         this.predicates.add(new MaxTimePredicate(config.getMaxTime(), config.getDeltaT()));
         this.predicates.add(new MissedTargetPredicate(this.target, MissionTarget.VENUS));
-        this.predicates.add(new EnteredOrbitPredicate(this.sun, MissionTarget.VENUS));
+        this.predicates.add(new EnteredOrbitPredicate(this.sun));
     }
 
     @Override

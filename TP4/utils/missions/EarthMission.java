@@ -22,21 +22,21 @@ public class EarthMission extends AbstractMission{
     @Override
     protected void positionShip(List<Particle> planets) {
         System.out.println("LAUNCHING SPACESHIP");
-        double sunEarthDist = earth.distance(sun);
-        Point2D.Double normalComponents = getNormalComponents(earth, sun, sunEarthDist);
+        double sunEarthDist = origin.distance(sun);
+        Point2D.Double normalComponents = getNormalComponents(origin, sun, sunEarthDist);
         this.spaceship = new Particle()
                 .withLabel(SPACESHIP_ID)
                 .withRadius(0.01)
                 .withMass(2e5)
-                .withPosX(this.earth.getPosX() + (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.x)
-                .withPosY(this.earth.getPosY() + (stationDistanceToEarthSurface + earth.getRadius()) * normalComponents.y)
+                .withPosX(this.origin.getPosX() + (stationDistanceToEarthSurface + origin.getRadius()) * normalComponents.x)
+                .withPosY(this.origin.getPosY() + (stationDistanceToEarthSurface + origin.getRadius()) * normalComponents.y)
                 .withAccX(0)
                 .withAccY(0);
 
-        double spaceshipEarthDist = spaceship.distance(earth);
-        Point2D.Double tangentialComponents = getTangentialComponents(spaceship, earth, spaceshipEarthDist);
-        this.spaceship.setVelX(earth.getVelX() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.x);
-        this.spaceship.setVelY(earth.getVelY() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.y);
+        double spaceshipEarthDist = spaceship.distance(origin);
+        Point2D.Double tangentialComponents = getTangentialComponents(spaceship, origin, spaceshipEarthDist);
+        this.spaceship.setVelX(origin.getVelX() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.x);
+        this.spaceship.setVelY(origin.getVelY() + Math.abs(stationSpeedToEarth + spaceshipInitialSpeed) * tangentialComponents.y);
 
         setAcceleration(this.spaceship, planets);
     }

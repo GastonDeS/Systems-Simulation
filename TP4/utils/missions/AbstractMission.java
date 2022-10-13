@@ -26,7 +26,7 @@ public abstract class AbstractMission {
     protected final static double spaceshipInitialSpeed = 8.; // km/s
 
     protected final Particle sun;
-    protected Particle earth;
+    protected Particle origin;
     protected Particle target;
     protected Particle spaceship;
     private final Algorithm algorithm;
@@ -39,12 +39,12 @@ public abstract class AbstractMission {
     private double initialEnergy = 0.;
     private double minDistance = Double.MAX_VALUE;
 
-    public AbstractMission(Particle earth, Particle target, Algorithm algorithm, Config config) {
-        this.earth = earth.withLabel(EARTH_ID);
+    public AbstractMission(Particle origin, Particle target, Algorithm algorithm, Config config) {
+        this.origin = origin.withLabel(EARTH_ID);
         this.target = target.withLabel(TARGET_ID);
         this.sun = new Particle(SUN_ID, 1.989e30, 15000, 0, 0, 0, 0, 0, 0);
-        setAcceleration(target, Arrays.asList(earth, sun));
-        setAcceleration(earth, Arrays.asList(target, sun));
+        setAcceleration(target, Arrays.asList(origin, sun));
+        setAcceleration(origin, Arrays.asList(target, sun));
         this.algorithm = algorithm;
         this.hasTakenOff = false;
         this.config = config;
@@ -52,36 +52,36 @@ public abstract class AbstractMission {
 
     public void simulate(SimulationType simulationType) {
         double currentTime = 0;
-        Particle pastEarth = null;
+        Particle pastOrigin = null;
         Particle pastTarget = null;
         Particle pastSpaceship = null;
-        Particle futureEarth;
+        Particle futureOrigin;
         Particle futureTarget;
         Particle futureSpaceship;
         int iter = 0;
-        initialEnergy = calculateEnergy(Arrays.asList(earth, target, sun), 0);
+        initialEnergy = calculateEnergy(Arrays.asList(origin, target, sun), 0);
 
         while (!cut()) {
             if (!hasTakenOff && currentTime >= config.getTakeOffTime()) {
-                positionShip(Arrays.asList(earth, sun, target));
+                positionShip(Arrays.asList(origin, sun, target));
                 hasTakenOff = true;
                 minDistance = Double.min(minDistance, target.distanceRadius(spaceship));
             }
 
-            futureEarth = algorithm.update(pastEarth, earth, config.getDeltaT(), currentTime);
+            futureOrigin = algorithm.update(pastOrigin, origin, config.getDeltaT(), currentTime);
             futureTarget = algorithm.update(pastTarget, target, config.getDeltaT(), currentTime);
-            pastEarth = earth;
+            pastOrigin = origin;
             pastTarget = target;
-            earth = futureEarth;
+            origin = futureOrigin;
             target = futureTarget;
-            setAcceleration(earth, Arrays.asList(target, sun));
-            setAcceleration(target, Arrays.asList(earth, sun));
+            setAcceleration(origin, Arrays.asList(target, sun));
+            setAcceleration(target, Arrays.asList(origin, sun));
 
             if (hasTakenOff) {
                 futureSpaceship = algorithm.update(pastSpaceship, spaceship, config.getDeltaT(), currentTime);
                 pastSpaceship = spaceship;
                 spaceship = futureSpaceship;
-                setAcceleration(spaceship, Arrays.asList(earth, target, sun));
+                setAcceleration(spaceship, Arrays.asList(origin, target, sun));
                 minDistance = Double.min(minDistance, target.distanceRadius(spaceship));
             }
 
@@ -92,9 +92,9 @@ public abstract class AbstractMission {
                         break;
                     case DELTA_T:
                         if(hasTakenOff) {
-                            calculateEnergy(Arrays.asList(earth, target, sun, spaceship), currentTime);
+                            calculateEnergy(Arrays.asList(origin, target, sun, spaceship), currentTime);
                         } else {
-                            calculateEnergy(Arrays.asList(earth, sun, target), currentTime);
+                            calculateEnergy(Arrays.asList(origin, sun, target), currentTime);
                         }
                         break;
                     case TIME_AND_SPEED:
@@ -184,7 +184,7 @@ public abstract class AbstractMission {
                             "Lattice=\"6 0.0 0.0 0.0 6 0.0 0.0 0.0 6\"" +
                             "\n");
             smallLadsFile.write(sun + "\n");
-            smallLadsFile.write(earth + "\n");
+            smallLadsFile.write(origin + "\n");
             smallLadsFile.write(target + "\n");
 
             if (hasTakenOff) {

@@ -27,9 +27,9 @@ public class SecondSystem {
     static double gamma = 100.0;
     static int steps = 72;
     static double deltaT = 300;
-    static double maxTime = 31536000; //31536000;
-    static double takeOffTime = 24019200; //22321400;
-    static SimulationType simulationType = SimulationType.OPTIMUM_DATE;
+    static double maxTime = 31536000 + 73690800; //31536000;
+    static double takeOffTime = 73690800; //22321400;
+    static SimulationType simulationType = SimulationType.MAIN;
     static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.EARTH;
     static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS);
     static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS);
@@ -119,7 +119,7 @@ public class SecondSystem {
 
     private static void getOptimumDate() {
         int interval = (int) deltaT;
-        for(long t = 23932800; t <= maxTime + 10000000; t += interval) {
+        for(long t = 73612800-86400; t <= 73612800 + 86400; t += interval) {
             System.out.println(t);
             takeOffTime = t;
             AbstractMission mission = mainSimulation();

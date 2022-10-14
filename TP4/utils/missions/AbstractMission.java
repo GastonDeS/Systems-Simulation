@@ -179,7 +179,7 @@ public abstract class AbstractMission {
     }
 
     private void saveState(int iter) {
-        File smallLads = new File("TP4/position/positions" + iter + ".xyz");
+        File smallLads = new File("position/positions" + iter + ".xyz");
         try {
             FileWriter smallLadsFile = new FileWriter(smallLads);
             int quantity = hasTakenOff ? 4 : 3;

@@ -20,8 +20,8 @@ public class SecondSystem {
     private static final double VENUS_RADIUS = 6051.8;
     private static final double EARTH_MASS = 5.97219e24;
     private static final double VENUS_MASS = 4.867e24;
-    private static final String EARTH_COND_FILE = "TP4/nasaData/earth.csv";
-    private static final String VENUS_COND_FILE = "TP4/nasaData/venus.csv";
+    private static final String EARTH_COND_FILE = "nasaData/earth.csv";
+    private static final String VENUS_COND_FILE = "nasaData/venus.csv";
     private static final double TO_VENUS_TAKEOFF = 22321400;
     private static final double TO_EARTH_TAKEOFF = 47313900;
 
@@ -29,10 +29,10 @@ public class SecondSystem {
     static double gamma = 100.0;
     static int steps = 72;
     static double deltaT = 300;
-    static double maxTime = 31536000 + TO_EARTH_TAKEOFF;
-    static double takeOffTime = TO_EARTH_TAKEOFF;
-    static SimulationType simulationType = SimulationType.MIN_DISTANCE;
-    static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.EARTH;
+    static double maxTime = 31536000 + TO_VENUS_TAKEOFF;
+    static double takeOffTime = TO_VENUS_TAKEOFF;
+    static SimulationType simulationType = SimulationType.ROUND_TRIP;
+    static AbstractMission.MissionTarget missionTarget = AbstractMission.MissionTarget.VENUS;
     static Particle earth = getInitialValues(EARTH_COND_FILE, EARTH_RADIUS, EARTH_MASS).withName("earth");
     static Particle venus = getInitialValues(VENUS_COND_FILE, VENUS_RADIUS, VENUS_MASS).withName("venus");
     static double spaceshipInitialSpeed = 8.; // km/s
@@ -82,7 +82,7 @@ public class SecondSystem {
                 .withDeltaT(deltaT)
                 .withSteps(steps)
                 .withMaxTime(maxTime)
-                .withTakeOffTime(TO_VENUS_TAKEOFF - 10000)
+                .withTakeOffTime(TO_VENUS_TAKEOFF)
                 .withInitialSpeed(spaceshipInitialSpeed);
         Algorithm algorithm = new VerletOriginalAlgorithm(new EulerAlgorithm(K, gamma), K, gamma);
 
@@ -199,22 +199,22 @@ public class SecondSystem {
      */
 
     private static void saveSpeeds(List<Pair<Double, Double>> speeds, double v0, double step) {
-        File smallLads = new File("TP4/timevsspeed/v0=" + v0 + "&S=" + step + ".txt");
+        File smallLads = new File("timevsspeed/v0=" + v0 + "&S=" + step + ".txt");
         writeFile(smallLads, speeds, "timevsspeed");
     }
 
     private static void saveEnergy(List<Pair<Double, Double>> timeAndEnergy) {
-        File smallLads = new File("TP4/energy/energy" + deltaT + ".txt");
+        File smallLads = new File("energy/energy" + deltaT + ".txt");
         writeFile(smallLads, timeAndEnergy, "energy");
     }
 
     private static void saveTimeAndSpeed(List<Pair<Double, Double>> speedAndTime) {
-        File smallLads = new File("TP4/speed/speed.txt");
+        File smallLads = new File("speed/speed.txt");
         writeFile(smallLads, speedAndTime, "speed");
     }
 
     private static void saveMinDistance(List<Pair<Double, Double>> distances, int steps) {
-        File smallLads = new File("TP4/distance/distance" + steps + ".txt");
+        File smallLads = new File("distance/distance" + steps + ".txt");
         writeFile(smallLads, distances, "distance");
     }
 
@@ -254,7 +254,7 @@ public class SecondSystem {
     }
 
     private static void saveParticleState(Particle particle, double currentTime) {
-        File smallLads = new File("TP4/nasaData/" + particle.getName() + "2.csv");
+        File smallLads = new File("nasaData/" + particle.getName() + "2.csv");
         try {
             FileWriter smallLadsFile = new FileWriter(smallLads);
             smallLadsFile.write("Landing time (s),X,Y,VX,VY\n");
@@ -270,7 +270,7 @@ public class SecondSystem {
     }
 
     private static void setNewDataForParticles() {
-        earth = getInitialValues("TP4/nasaData/earth2.csv", EARTH_RADIUS, EARTH_MASS).withName("earth");
-        venus = getInitialValues("TP4/nasaData/venus2.csv", VENUS_RADIUS, VENUS_MASS).withName("venus");
+        earth = getInitialValues("nasaData/earth2.csv", EARTH_RADIUS, EARTH_MASS).withName("earth");
+        venus = getInitialValues("nasaData/venus2.csv", VENUS_RADIUS, VENUS_MASS).withName("venus");
     }
 }

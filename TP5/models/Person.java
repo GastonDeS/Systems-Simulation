@@ -27,6 +27,10 @@ public class Person {
         return distance <= this.radius + person.radius;
     }
 
+    public boolean isTouchingCircularWall() {
+        return Math.sqrt(Math.pow(this.positionX, 2) + Math.pow(this.positionY, 2)) >= 11 - this.radius;
+    }
+
     @Override
     public String toString() {
         return id + " "+ positionX + " " + positionY + " " +radius+" "+ isInfected;

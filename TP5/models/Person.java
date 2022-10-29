@@ -8,13 +8,16 @@ public abstract class Person {
     protected final static double TO_ZOMBIE_TIME = 7.0;
     protected final static double Rmin = 0.2;
     protected final static double Rmax = 0.3;
-    protected final String id;
+    private final String id;
     protected Point2D.Double vel;
     protected Point2D.Double pos;
-    protected Point2D.Double desiredPos;
-    protected double radius;
+    protected final double radius;
+    private boolean isInfected;
     protected PersonState state;
     private double timeLeft;
+    protected Point2D.Double desiredPos;
+    protected double deltaAngle;
+    protected double limitVision;
 
     public Person(String id, double positionX, double positionY) {
         this.id = id;
@@ -81,6 +84,28 @@ public abstract class Person {
     }
 
     protected abstract void update(double deltaT, List<Zombie> zombies, List<Human> humans);
+
+    protected boolean isOnVision(Person human, double angle, double deltaAngle, double limitVision) {
+        double angleBetweenHumanAndZombie = Math.atan((human.pos.y - pos.y) / (human.pos.x - pos.x));
+        return (angleBetweenHumanAndZombie <= angle + deltaAngle
+                && angleBetweenHumanAndZombie >= angle - deltaAngle)
+                && (Math.sqrt(Math.pow(human.pos.x - pos.x, 2) + Math.pow(human.pos.y - pos.y, 2)) <= limitVision);
+    }
+
+    /**
+     * @param persons if the person is a zombie, the list has to be humans,
+     *               if the person is a human, the list has to be zombies
+     * @return the goal position of the person
+     */
+    public abstract  <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> persons);
+
+    public Point2D.Double getVel() {
+        return vel;
+    }
+
+    public void setVel(Point2D.Double vel) {
+        this.vel = vel;
+    }
 
     @Override
     public String toString() {

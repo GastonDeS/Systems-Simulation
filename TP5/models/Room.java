@@ -123,4 +123,8 @@ public class Room {
             System.out.println("Add folder TP5/position");
         }
     }
+
+    public static double getWallRadius() {
+        return wallRadius;
+    }
 }

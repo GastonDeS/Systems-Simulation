@@ -12,6 +12,9 @@ public class Room {
     private List<Zombie> zombies;
     private final static double wallRadius = 11; // fixed value
 
+    private final static double minRadius = 0.1;
+    private final static double maxRadius = 0.3;
+
     public Room(final Config config) {
         this.N = config.getN();
         this.humans = new ArrayList<>();
@@ -20,7 +23,7 @@ public class Room {
 
     public void fillRoom() {
         // Add zombie
-        zombies.add(new Zombie(String.valueOf(0),0,0));
+        zombies.add(new Zombie(String.valueOf(0),0,0, getRandomRadius()));
 
         // Add humans
         for (int i = 1; i < N; i++) {
@@ -31,15 +34,20 @@ public class Room {
     private Human createHuman(int i) {
         double angle = Math.random() * 2 * Math.PI;
         // 11 - 1 (radio de lejania inicial al zombie) - 2 * radius (radio de la persona y el zombie estan considerados)
-        double distance = (Math.random() * (wallRadius - 1 - 2 * Person.getRadius())) + 1 + 2 * Person.getRadius();
+        double distance = (Math.random() * (wallRadius - 1 - 2 * minRadius)) + 1 + 2 * minRadius; // TODO min radius or max radius?
         Human human = new Human(
                 String.valueOf(i),
                 Math.cos(angle) * distance,
-                Math.sin(angle) * distance
+                Math.sin(angle) * distance,
+                getRandomRadius()
         );
 
         if (hasContactWithHumans(human)) return createHuman(i);
         return human;
+    }
+
+    private double getRandomRadius() {
+        return Math.random() * (maxRadius - minRadius) + minRadius;
     }
 
     private boolean hasContactWithHumans(Human human) {

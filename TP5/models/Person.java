@@ -6,12 +6,12 @@ import java.util.Optional;
 
 public abstract class Person {
     protected final static double TO_ZOMBIE_TIME = 7.0;
-    protected final static double Rmin = 0.2;
+    protected final static double Rmin = 0.1;
     protected final static double Rmax = 0.3;
     private final String id;
     protected Point2D.Double vel;
     protected Point2D.Double pos;
-    protected final double radius;
+    protected double radius;
     protected PersonState state;
     private double timeLeft;
     protected Point2D.Double desiredPos;

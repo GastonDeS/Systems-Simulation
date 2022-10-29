@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 
 public class Human extends Person {
 
+    private static double vd = 4;
+    private static final double beta = 0.5; // TODO definir
+    private static final double ve = 0.5; // TODO definir
+    private static final double tau = 3.14; // TODO definir
+
     public Human(String id, double positionX, double positionY) {
         super(id, positionX, positionY);
         deltaAngle = Math.PI / 4; // angulo de vision
@@ -15,17 +20,59 @@ public class Human extends Person {
 
     @Override
     protected void update(double deltaT, List<Zombie> zombies, List<Human> humans) {
-        Optional<Zombie> maybeZombie = getNearestZombie(zombies);
-        if (maybeZombie.isPresent()) {
-            Zombie zombie = maybeZombie.get();
-            if (dist(zombie) < zombie.limitVision) {
-                // update desired pos because human being attacked
-            }
-        } else {
-            // TODO: check if we should avoid collision with another human
-            desiredPos = pos;
-            //radius = Rmin;
+        // update position
+        pos.x += vel.x * deltaT;
+        pos.y += vel.y * deltaT;
+
+        // update velocity
+        Optional<Point2D.Double> maybeGoal = getGoalPosition(zombies);
+
+        List<Human> humansColliding = humans.stream()
+                .filter(this::isColliding)
+                .collect(Collectors.toList());
+
+        if (radius < Rmax) {
+            radius += Rmax / (tau / deltaT);
         }
+
+        if (!humansColliding.isEmpty()) {
+            Point2D.Double eij = getEij(humansColliding);
+            vel.x = ve * eij.x;
+            vel.y = ve * eij.y;
+            radius = Rmin;
+        } else if (maybeGoal.isPresent()) {
+            vel.x = vd * Math.pow((radius-Rmin)/(Rmax-Rmin), beta);
+            vel.y = vd * Math.pow((radius-Rmin)/(Rmax-Rmin), beta);
+        } else if (isTouchingCircularWall(Room.getWallRadius())) {
+            double newVelAngle = Math.atan(vel.y / vel.x) + Math.PI /3;
+            vel.x = Math.cos(newVelAngle) * vd;
+            vel.y = Math.sin(newVelAngle) * vd;
+        }
+    }
+
+    private Point2D.Double getEij(List<Human> humansColliding) {
+        List<Point2D.Double> IJs = getEijs(humansColliding);
+        Point2D.Double IJ = new Point2D.Double(0, 0);
+        for (Point2D.Double IJi : IJs) {
+            IJ.x += IJi.x;
+            IJ.y += IJi.y;
+        } // TODO confirmar que esto es correcto
+        double norm = Math.sqrt(Math.pow(IJ.x, 2) + Math.pow(IJ.y, 2));
+        IJ.x /= norm;
+        IJ.y /= norm;
+        return IJ;
+    }
+
+    private List<Point2D.Double> getEijs(List<Human> humansColliding) {
+        return humansColliding.stream()
+                .map(h -> {
+                    Point2D.Double eij = new Point2D.Double((h.pos.x - pos.x) , (h.pos.y - pos.y));
+                    double norm = Math.sqrt(Math.pow(eij.x, 2) + Math.pow(eij.y, 2));
+                    eij.x /= norm;
+                    eij.y /= norm;
+                    return eij;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

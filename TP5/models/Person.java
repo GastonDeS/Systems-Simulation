@@ -12,7 +12,6 @@ public abstract class Person {
     protected Point2D.Double vel;
     protected Point2D.Double pos;
     protected final double radius;
-    private boolean isInfected;
     protected PersonState state;
     private double timeLeft;
     protected Point2D.Double desiredPos;
@@ -122,5 +121,9 @@ public abstract class Person {
 
     public PersonState getState() {
         return state;
+    }
+
+    public String getId() {
+        return id;
     }
 }

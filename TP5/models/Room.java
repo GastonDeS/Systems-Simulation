@@ -50,7 +50,7 @@ public class Room {
 
     private void updateLists(Human h) {
         if (h.getTimeLeft() <= 0) {
-            Zombie z = new Zombie(h.id, h.pos.x, h.pos.y);
+            Zombie z = new Zombie(h.getId(), h.pos.x, h.pos.y);
             humans.remove(h);
             persons.remove(h);
             zombies.add(z);

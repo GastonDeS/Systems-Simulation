@@ -18,7 +18,7 @@ public class Human extends Person {
         Optional<Zombie> maybeZombie = getNearestZombie(zombies);
         if (maybeZombie.isPresent()) {
             Zombie zombie = maybeZombie.get();
-            if (dist(zombie) < zombie.getZombieVision()) {
+            if (dist(zombie) < zombie.limitVision) {
                 // update desired pos because human being attacked
             }
         } else {
@@ -26,10 +26,6 @@ public class Human extends Person {
             desiredPos = pos;
             //radius = Rmin;
         }
-    }
-
-    public void setInfected() {
-        this.state = PersonState.INFECTED;
     }
 
     @Override

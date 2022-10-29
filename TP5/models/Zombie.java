@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class Zombie extends Person {
-    private final double zombieVision = 4.0; // fixed value
 
     public Zombie(String id, double positionX, double positionY) {
         super(id, positionX, positionY);
@@ -28,10 +27,6 @@ public class Zombie extends Person {
     /*
         GETTERS
      */
-
-    public double getZombieVision() {
-        return zombieVision;
-    }
 
     public <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> humans) {
         double angle = Math.atan(vel.y/ vel.x);

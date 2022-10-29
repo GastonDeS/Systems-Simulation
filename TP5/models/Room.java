@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Room {
     private final int N;
-    private List<Human> humans;
-    private List<Zombie> zombies;
+    private final List<Human> humans;
+    private final List<Zombie> zombies;
     private final static double wallRadius = 11; // fixed value
 
     private final static double minRadius = 0.1;
@@ -83,5 +83,9 @@ public class Room {
         } catch (IOException e) {
             System.out.println("Add folder TP5/position");
         }
+    }
+
+    public static double getWallRadius() {
+        return wallRadius;
     }
 }

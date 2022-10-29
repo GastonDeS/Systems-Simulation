@@ -1,6 +1,6 @@
 package models;
 
-public class Person {
+public abstract class Person {
     private String id;
     private double speed;
     private double angle;
@@ -18,13 +18,9 @@ public class Person {
         this.isInfected = isInfected;
     }
 
-    public void infect() {
-        this.isInfected = true;
-    }
-
-    public boolean isContact(Person person) {
+    public boolean isColliding(Person person) {
         double distance = Math.sqrt(Math.pow(this.positionX - person.positionX, 2) + Math.pow(this.positionY - person.positionY, 2));
-        return distance <= 2 * radius ;
+        return distance <= 2 * radius;
     }
 
     public boolean isTouchingCircularWall(double wallRadius) {
@@ -37,6 +33,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return id + " "+ positionX + " " + positionY + " " +radius+" "+ isInfected;
+        return id + " " + positionX + " " + positionY + " " + radius + " " + isInfected;
     }
 }

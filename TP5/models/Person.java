@@ -15,6 +15,7 @@ public abstract class Person {
     protected PersonState state;
     private double timeLeft;
     protected Point2D.Double desiredPos;
+    protected double desiredSpeed;
     protected double deltaAngle;
     protected double limitVision;
 
@@ -55,21 +56,6 @@ public abstract class Person {
         return nearestZombie;
     }
 
-    protected Optional<Human> getNearestHuman(List<Human> humans) {
-        Optional<Human> nearestHuman = Optional.empty();
-        double minDist = Double.MAX_VALUE;
-
-        for (Human h : humans) {
-            if (h == this) continue;
-            double dist = dist(h);
-            if (dist < minDist) {
-                minDist = dist;
-                nearestHuman = Optional.of(h);
-            }
-        }
-        return nearestHuman;
-    }
-
     protected void startConversion() {
         this.state = PersonState.CONVERTING;
     }
@@ -80,6 +66,11 @@ public abstract class Person {
             this.state = PersonState.WALKING;
             this.timeLeft = TO_ZOMBIE_TIME;
         }
+    }
+
+    protected Point2D.Double getRandomPos() {
+        double angle = Math.random() * 2 * Math.PI;
+        return new Point2D.Double(Math.cos(angle) * desiredSpeed, Math.sin(angle) * desiredSpeed);
     }
 
     protected abstract void update(double deltaT, List<Zombie> zombies, List<Human> humans);

@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
-    private final int N;
-    private final double deltaT;
+    private final Config config;
     private List<Person> persons;
     private List<Human> humans;
     private List<Zombie> zombies;
@@ -18,8 +17,7 @@ public class Room {
     private final static double maxRadius = 0.3;
 
     public Room(final Config config) {
-        this.N = config.getN();
-        this.deltaT = config.getDeltaT();
+        this.config = config;
         this.humans = new ArrayList<>();
         this.zombies = new ArrayList<>();
         this.persons = new ArrayList<>();
@@ -37,10 +35,10 @@ public class Room {
     private void handleState(Person p) {
         switch (p.getState()) {
             case WALKING:
-                p.update(deltaT, zombies, humans);
+                p.update(config.getDeltaT(), zombies, humans);
                 break;
             case CONVERTING:
-                p.reduceTimeLeft(deltaT);
+                p.reduceTimeLeft(config.getDeltaT());
                 if (p instanceof Human) {
                     updateLists((Human) p);
                 }
@@ -50,7 +48,7 @@ public class Room {
 
     private void updateLists(Human h) {
         if (h.getTimeLeft() <= 0) {
-            Zombie z = new Zombie(h.getId(), h.pos.x, h.pos.y);
+            Zombie z = new Zombie(h.getId(), h.pos.x, h.pos.y, config);
             humans.remove(h);
             persons.remove(h);
             zombies.add(z);
@@ -60,10 +58,10 @@ public class Room {
 
     public void fillRoom() {
         // Add zombie
-        zombies.add(new Zombie(String.valueOf(0),0,0));
+        zombies.add(new Zombie(String.valueOf(0),0,0, config));
 
         // Add humans
-        for (int i = 1; i < N; i++) {
+        for (int i = 1; i < config.getN(); i++) {
             humans.add(createHuman(i));
         }
 
@@ -91,15 +89,6 @@ public class Room {
 
     private boolean hasContactWithHumans(Human human) {
         return humans.stream().anyMatch(h -> h.isColliding(human));
-    }
-
-    private boolean hasContactWithZombie(Human h) {
-        for (Zombie z : zombies) {
-            if (z.isColliding(h)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void savePersons(int iteration) {

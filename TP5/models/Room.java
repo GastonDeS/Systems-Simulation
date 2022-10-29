@@ -8,6 +8,8 @@ import java.util.List;
 
 public class Room {
     private final int N;
+    private final double deltaT;
+    private List<Person> persons;
     private List<Human> humans;
     private List<Zombie> zombies;
     private final static double wallRadius = 11; // fixed value
@@ -17,18 +19,56 @@ public class Room {
 
     public Room(final Config config) {
         this.N = config.getN();
+        this.deltaT = config.getDeltaT();
         this.humans = new ArrayList<>();
         this.zombies = new ArrayList<>();
+        this.persons = new ArrayList<>();
+    }
+
+    public void update() {
+        for (Human h : humans) {
+            handleState(h);
+        }
+        for (Zombie z : zombies) {
+            handleState(z);
+        }
+    }
+
+    private void handleState(Person p) {
+        switch (p.getState()) {
+            case WALKING:
+                p.update(deltaT, zombies, humans);
+                break;
+            case CONVERTING:
+                p.reduceTimeLeft(deltaT);
+                if (p instanceof Human) {
+                    updateLists((Human) p);
+                }
+                break;
+        }
+    }
+
+    private void updateLists(Human h) {
+        if (h.getTimeLeft() <= 0) {
+            Zombie z = new Zombie(h.id, h.pos.x, h.pos.y);
+            humans.remove(h);
+            persons.remove(h);
+            zombies.add(z);
+            persons.add(z);
+        }
     }
 
     public void fillRoom() {
         // Add zombie
-        zombies.add(new Zombie(String.valueOf(0),0,0, getRandomRadius()));
+        zombies.add(new Zombie(String.valueOf(0),0,0));
 
         // Add humans
         for (int i = 1; i < N; i++) {
             humans.add(createHuman(i));
         }
+
+        persons.addAll(zombies);
+        persons.addAll(humans);
     }
 
     private Human createHuman(int i) {
@@ -38,8 +78,7 @@ public class Room {
         Human human = new Human(
                 String.valueOf(i),
                 Math.cos(angle) * distance,
-                Math.sin(angle) * distance,
-                getRandomRadius()
+                Math.sin(angle) * distance
         );
 
         if (hasContactWithHumans(human)) return createHuman(i);

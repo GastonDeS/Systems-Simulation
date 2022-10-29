@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 public class Human extends Person {
 
-    private static double vd = 4;
     private static final double beta = 0.5; // TODO definir
     private static final double ve = 0.5; // TODO definir
     private static final double tau = 3.14; // TODO definir
@@ -16,6 +15,7 @@ public class Human extends Person {
         super(id, positionX, positionY);
         deltaAngle = Math.PI / 4; // angulo de vision
         limitVision = 6; // largo de vision
+        desiredSpeed = 4;
     }
 
     @Override
@@ -35,18 +35,23 @@ public class Human extends Person {
             radius += Rmax / (tau / deltaT);
         }
 
-        if (!humansColliding.isEmpty()) {
+        if (isTouchingCircularWall(Room.getWallRadius())) {
+            double newVelAngle = Math.atan(vel.y / vel.x) + Math.PI /3;
+            vel.x = Math.cos(newVelAngle) * desiredSpeed;
+            vel.y = Math.sin(newVelAngle) * desiredSpeed;
+        } else if (!humansColliding.isEmpty()) {
             Point2D.Double eij = getEij(humansColliding);
             vel.x = ve * eij.x;
             vel.y = ve * eij.y;
             radius = Rmin;
-        } else if (maybeGoal.isPresent()) {
-            vel.x = vd * Math.pow((radius-Rmin)/(Rmax-Rmin), beta);
-            vel.y = vd * Math.pow((radius-Rmin)/(Rmax-Rmin), beta);
-        } else if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = Math.atan(vel.y / vel.x) + Math.PI /3;
-            vel.x = Math.cos(newVelAngle) * vd;
-            vel.y = Math.sin(newVelAngle) * vd;
+        } else { // TODO change for PRES7 30/31
+            double intensity = (desiredSpeed * Math.pow((radius-Rmin)/(Rmax-Rmin), beta));
+            double newAngle = Math.atan(vel.y / vel.x);
+            if (maybeGoal.isPresent()) {
+                newAngle = Math.tan(maybeGoal.get().y - pos.y / maybeGoal.get().x - pos.x);
+            }
+            vel.x = intensity * Math.cos(newAngle);
+            vel.y = intensity * Math.sin(newAngle);
         }
     }
 

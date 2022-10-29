@@ -10,7 +10,7 @@ public class Room {
     private final int N;
     private List<Human> humans;
     private List<Zombie> zombies;
-    private final static double wallRadius = 11; // its fixed
+    private final static double wallRadius = 11; // fixed value
 
     public Room(final Config config) {
         this.N = config.getN();
@@ -20,7 +20,7 @@ public class Room {
 
     public void fillRoom() {
         // Add zombie
-        zombies.add(new Zombie(String.valueOf(0), 0, 0,0,0));
+        zombies.add(new Zombie(String.valueOf(0),0,0));
 
         // Add humans
         for (int i = 1; i < N; i++) {
@@ -34,8 +34,6 @@ public class Room {
         double distance = (Math.random() * (wallRadius - 1 - 2 * Person.getRadius())) + 1 + 2 * Person.getRadius();
         Human human = new Human(
                 String.valueOf(i),
-                0,
-                0,
                 Math.cos(angle) * distance,
                 Math.sin(angle) * distance
         );

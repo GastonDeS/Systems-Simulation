@@ -2,7 +2,12 @@ package models;
 
 public class Human extends Person {
 
-    public Human(String id, double speed, double angle, double positionX, double positionY) {
-        super(id, speed, angle, positionX, positionY, false);
+    public Human(String id, double positionX, double positionY) {
+        super(id, positionX, positionY, false);
+    }
+
+    @Override
+    protected void update(double deltaT) {
+
     }
 }

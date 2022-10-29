@@ -30,7 +30,8 @@ public class ZombieEpidemic {
 
     private static Person createPerson(int i, List<Person> persons) {
         double angle = Math.random() * 2 * Math.PI;
-        double distance = (Math.random() * 9.7) + 1; // 10 - radius | (0-1) * radius - zombie initial area
+        // 11 - 1 (radio de lejania inicial al zombie) - 2 * radius (radio de la persona y el zombie estan considerados)
+        double distance = (Math.random() * (11 - 1 - 2 * Person.getRadius())) + 1 + 2 * Person.getRadius();
         Person person = new Person(
                 String.valueOf(i),
                 0,

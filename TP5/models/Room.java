@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.util.List;
 
 public class Room {
-    List<Person> persons;
+    private List<Person> persons;
+    private final static double wallRadius = 11; // its fixed
 
     public Room(List<Person> persons) {
         this.persons = persons;
     }
-
-
 
 
     public void savePersons(int iteration) {
@@ -20,7 +19,7 @@ public class Room {
             File positions = new File(String.format("TP5/position/positions%d.xyz", iteration));
             FileWriter positionsFile = new FileWriter(positions);
 
-            positionsFile.write((1+persons.size()) + "\n" +
+            positionsFile.write((1 + persons.size()) + "\n" +
                     "Lattice=\"1 0.0 0.0 0.0 1 0.0 0.0 0.0 1\"" +
                     "\n");
             positionsFile.write("-1 0 0 11 Background\n");

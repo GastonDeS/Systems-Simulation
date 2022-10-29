@@ -6,7 +6,7 @@ public class Person {
     private double angle;
     private double positionX;
     private double positionY;
-    private double radius = 0.3; // its fixed
+    private final static double radius = 0.15; // its fixed
     private boolean isInfected;
 
     public Person(String id, double speed, double angle, double positionX, double positionY, boolean isInfected) {
@@ -24,11 +24,15 @@ public class Person {
 
     public boolean isContact(Person person) {
         double distance = Math.sqrt(Math.pow(this.positionX - person.positionX, 2) + Math.pow(this.positionY - person.positionY, 2));
-        return distance <= this.radius + person.radius;
+        return distance <= 2 * radius ;
     }
 
-    public boolean isTouchingCircularWall() {
-        return Math.sqrt(Math.pow(this.positionX, 2) + Math.pow(this.positionY, 2)) >= 11 - this.radius;
+    public boolean isTouchingCircularWall(double wallRadius) {
+        return Math.sqrt(Math.pow(this.positionX, 2) + Math.pow(this.positionY, 2)) >= wallRadius - radius;
+    }
+
+    public static double getRadius() {
+        return radius;
     }
 
     @Override

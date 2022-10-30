@@ -22,7 +22,6 @@ public abstract class Person {
     protected double limitVision;
     protected double Ap;
     protected double Bp;
-
     private final double tau;
     protected final double ApWall;
     protected final double BpWall;
@@ -37,6 +36,14 @@ public abstract class Person {
         this.tau = config.getTau();
         this.ApWall = config.getApWall();
         this.BpWall = config.getBpWall();
+    }
+
+    protected double getDirection() {
+        if (vel.x == 0.0) {
+            return vel.y > 0 ? Math.PI / 2 : -Math.PI / 2;
+        } else {
+            return Math.atan(vel.y / vel.x);
+        }
     }
     
     protected boolean isColliding(Person person) {
@@ -74,7 +81,7 @@ public abstract class Person {
 
 
     protected Optional<Point> getNearestWallOnSight() {
-        double angle = Math.atan(vel.y / vel.x); // m
+        double angle = getDirection(); // m
         double angleMax = angle + deltaAngle; // m + delta
         double angleMin = angle - deltaAngle; // m - delta
 

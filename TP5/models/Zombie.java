@@ -50,7 +50,7 @@ public class Zombie extends Person {
         Optional<Point> Ve = Optional.empty();
 
         if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = Math.atan(vel.y / vel.x) + Math.PI/3;
+            double newVelAngle = getDirection() + Math.PI/3;
             Ve = Optional.of(new Point(
                     Math.cos(newVelAngle) * desiredSpeed,
                     Math.sin(newVelAngle) * desiredSpeed

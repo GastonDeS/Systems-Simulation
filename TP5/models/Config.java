@@ -5,7 +5,12 @@ public class Config {
     private double deltaT;
     private double Vdz;
     private double tau;
-
+    private double ApHuman;
+    private double BpHuman;
+    private double ApZombie;
+    private double BpZombie;
+    private double ApWall;
+    private double BpWall;
 
     public Config withN(int n) {
         this.N = n;
@@ -27,6 +32,36 @@ public class Config {
         return this;
     }
 
+    public Config withApHuman(double Ap) {
+        this.ApHuman = Ap;
+        return this;
+    }
+
+    public Config withBpHuman(double Bp) {
+        this.BpHuman = Bp;
+        return this;
+    }
+
+    public Config withApZombie(double Ap) {
+        this.ApZombie = Ap;
+        return this;
+    }
+
+    public Config withBpZombie(double Bp) {
+        this.BpZombie = Bp;
+        return this;
+    }
+
+    public Config withApWall(double Ap) {
+        this.ApWall = Ap;
+        return this;
+    }
+
+    public Config withBpWall(double Bp) {
+        this.BpWall = Bp;
+        return this;
+    }
+
     /*
         GETTERS
      */
@@ -45,5 +80,29 @@ public class Config {
 
     public double getTau() {
         return tau;
+    }
+
+    public double getApHuman() {
+        return ApHuman;
+    }
+
+    public double getBpHuman() {
+        return BpHuman;
+    }
+
+    public double getApZombie() {
+        return ApZombie;
+    }
+
+    public double getBpZombie() {
+        return BpZombie;
+    }
+
+    public double getApWall() {
+        return ApWall;
+    }
+
+    public double getBpWall() {
+        return BpWall;
     }
 }

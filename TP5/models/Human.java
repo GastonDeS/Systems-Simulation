@@ -10,9 +10,11 @@ public class Human extends Person {
 
     public Human(String id, double positionX, double positionY, Config config) {
         super(id, positionX, positionY, config);
-        deltaAngle = Math.PI / 4;
-        limitVision = 6;
-        desiredSpeed = 4;
+        this.deltaAngle = Math.PI / 4;
+        this.limitVision = 6;
+        this.desiredSpeed = 4;
+        this.Ap = config.getApHuman();
+        this.Bp = config.getBpHuman();
     }
 
     /*
@@ -73,8 +75,27 @@ public class Human extends Person {
     }
 
     @Override
-    protected Point2D.Double handleAvoidance(List<Human> humans) {
-        return null;
+    protected Optional<Point2D.Double> handleAvoidance(List<Human> humans, List<Zombie> zombies) {
+        Optional<Point2D.Double> nc = Optional.empty();
+
+        Optional<Human> nearestHuman = getNearestEntity(humans);
+        if (nearestHuman.isPresent()) {
+            Human human = nearestHuman.get();
+            nc = Optional.of(calculateHij(calculateEij(human), dist(human), human.Ap, human.Bp));
+        }
+
+        Optional<Zombie> nearestZombie = getNearestEntity(zombies);
+        if (nearestZombie.isPresent()) {
+            Zombie zombie = nearestZombie.get();
+            if (nc.isPresent()) {
+                Point2D.Double nearPos = calculateHij(calculateEij(zombie), dist(zombie), zombie.Ap, zombie.Bp);
+                nc = Optional.of(new Point2D.Double(nc.get().x + nearPos.x, nc.get().y + nearPos.y));
+            } else {
+                nc = Optional.of(calculateHij(calculateEij(zombie), dist(zombie), zombie.Ap, zombie.Bp));
+            }
+        }
+
+        return nc;
     }
 
     @Override
@@ -82,7 +103,7 @@ public class Human extends Person {
         double angle = Math.atan(vel.y/ vel.x);
 
         List<Double> zombieAngles = zombies.stream()
-                .filter(z -> this.isOnVision(z, angle, deltaAngle, limitVision))
+                .filter(z -> this.isOnVision(z, angle))
                 .map(z -> Math.atan((z.pos.y - pos.y) / (z.pos.x - pos.x)))
                 .collect(Collectors.toList());
 

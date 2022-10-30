@@ -23,22 +23,22 @@ public class Room {
         this.persons = new ArrayList<>();
     }
 
-    public void update() {
+    public void update(double deltaT) {
         for (Human h : humans) {
-            handleState(h);
+            handleState(h, deltaT);
         }
         for (Zombie z : zombies) {
-            handleState(z);
+            handleState(z, deltaT);
         }
     }
 
-    private void handleState(Person p) {
+    private void handleState(Person p, double deltaT) {
         switch (p.getState()) {
             case WALKING:
-                p.update(config.getDeltaT(), zombies, humans);
+                p.update(deltaT, zombies, humans);
                 break;
             case CONVERTING:
-                p.reduceTimeLeft(config.getDeltaT());
+                p.reduceTimeLeft(deltaT);
                 if (p instanceof Human) {
                     updateLists((Human) p);
                 }

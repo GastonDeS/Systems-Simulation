@@ -15,6 +15,8 @@ public class Zombie extends Person {
         this.deltaAngle = Math.PI / 8;
         this.limitVision = 4;
         this.Vdz = config.getVdz();
+        this.Ap = config.getApZombie();
+        this.Bp = config.getBpZombie();
     }
 
     /*
@@ -46,7 +48,7 @@ public class Zombie extends Person {
     protected  <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> humans) {
         double angle = Math.atan(vel.y/ vel.x);
         nearestHumans = (List<Human>) humans.stream()
-                .filter(h -> this.isOnVision(h, angle, deltaAngle, limitVision))
+                .filter(h -> this.isOnVision(h, angle))
                 .collect(Collectors.toList());
 
         return nearestHumans.stream()
@@ -68,14 +70,12 @@ public class Zombie extends Person {
                     Math.sin(newVelAngle) * desiredSpeed
             ));
         }
-
-        // TODO: should we check collision with other zombies??
         return Ve;
     }
 
     @Override
-    protected Point2D.Double handleAvoidance(List<Human> humans) {
-        return null;
+    protected Optional<Point2D.Double> handleAvoidance(List<Human> humans, List<Zombie> zombies) {
+        return Optional.empty();
     }
 
     /*

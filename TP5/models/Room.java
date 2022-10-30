@@ -60,6 +60,8 @@ public class Room {
         for (int i = 1; i < config.getN(); i++) {
             humans.add(createHuman(i));
         }
+
+        humans.forEach(System.out::println);
     }
 
     private Human createHuman(int i) {
@@ -83,7 +85,7 @@ public class Room {
 
     public void savePersons(int iteration) {
         try {
-            File positions = new File(String.format("TP5/position/positions%d.xyz", iteration));
+            File positions = new File(String.format("TP5/../../position/positions%d.xyz", iteration));
             FileWriter positionsFile = new FileWriter(positions);
 
             positionsFile.write((1 + zombies.size() + humans.size()) + "\n" +

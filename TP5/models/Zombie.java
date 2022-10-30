@@ -10,7 +10,7 @@ public class Zombie extends Person {
     private List<Human> nearestHumans;
 
     public Zombie(String id, double positionX, double positionY, Config config) {
-        super(id, positionX, positionY, config);
+        super(id, positionX, positionY, 0,0, config);
         this.deltaAngle = Math.PI / 8;
         this.limitVision = 4;
         this.Vdz = config.getVdz();
@@ -32,7 +32,7 @@ public class Zombie extends Person {
     @SuppressWarnings("unchecked")
     @Override
     protected  <T extends Person> Optional<Point> getGoalPosition(List<T> humans) {
-        double angle = Math.atan(vel.y/ vel.x);
+        double angle = getDirection();
         nearestHumans = (List<Human>) humans.stream()
                 .filter(h -> this.isOnVision(h.pos, angle))
                 .collect(Collectors.toList());
@@ -76,5 +76,10 @@ public class Zombie extends Person {
             this.desiredSpeed = INACTIVE_SPEED;
             this.desiredPos = getRandomPos();
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +" "+ "Zombie";
     }
 }

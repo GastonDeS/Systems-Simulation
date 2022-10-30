@@ -1,6 +1,5 @@
 package models;
 
-import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +8,7 @@ public class Human extends Person {
     private static final double Vdh = 4; // TODO: check if Vdh is escape velocity magnitude
 
     public Human(String id, double positionX, double positionY, Config config) {
-        super(id, positionX, positionY, config);
+        super(id, positionX, positionY, 1, 1,config);
         this.deltaAngle = Math.PI / 4;
         this.limitVision = 6;
         this.desiredSpeed = 4;
@@ -25,7 +24,7 @@ public class Human extends Person {
     protected void getDesiredPos(List<Zombie> zombies, List<Human> humans) {
         // Get desired target if human is threatened
         Optional<Point> maybeGoal = getGoalPosition(zombies);
-        desiredPos.setLocation(maybeGoal.orElseGet(() -> pos));
+        desiredPos = maybeGoal.orElseGet(() -> pos);
     }
 
     @Override
@@ -37,25 +36,24 @@ public class Human extends Person {
         Optional<Point> Ve = Optional.empty();
 
         if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = getDirection() + Math.PI/3;
+            double newVelAngle = getDirection() + Math.PI / 3;
             Ve = Optional.of(new Point(
                     Math.cos(newVelAngle) * desiredSpeed,
                     Math.sin(newVelAngle) * desiredSpeed
             ));
         } else if (!humansColliding.isEmpty()) {
-            Point2D.Double eij = getEij(humansColliding);
+            Point eij = getEij(humansColliding);
             Ve = Optional.of(new Point(
                     Vdh * eij.x,
                     Vdh * eij.y
             ));
         }
-
         return Ve;
     }
 
     @Override
     protected Point handleAvoidance(List<Human> humans, List<Zombie> zombies) {
-        double angle = Math.atan(vel.y/ vel.x);
+        double angle = getDirection();
 
         Optional<Point> ncWall = handleAvoidNearestWall();
         Optional<Point> ncHuman = handleAvoidNearestHuman(angle, humans);
@@ -77,7 +75,7 @@ public class Human extends Person {
 
     @Override
     protected <T extends Person> Optional<Point> getGoalPosition(List<T> zombies) {
-        double angle = Math.atan(vel.y/ vel.x);
+        double angle = getDirection();
 
         List<Double> zombieAngles = zombies.stream()
                 .filter(z -> this.isOnVision(z.pos, angle))
@@ -129,7 +127,7 @@ public class Human extends Person {
         List<Zombie> zombiesOnSight = zombies.stream()
                 .filter(h -> this.isOnVision(h.pos, angle))
                 .collect(Collectors.toList());
-        if (zombiesOnSight.size() > 0) {
+        if (zombiesOnSight.size() > 1) {
             Zombie zombie = getNearestEntity(zombiesOnSight);
             nc = Optional.of(calculateHij(calculateEij(zombie.pos), zombie.Ap, zombie.Bp));
         }
@@ -137,28 +135,31 @@ public class Human extends Person {
         return nc;
     }
 
-    private Point2D.Double getEij(List<Human> humansColliding) {
-        List<Point2D.Double> IJs = getEijs(humansColliding);
-        Point2D.Double IJ = new Point2D.Double(0, 0);
-        for (Point2D.Double IJi : IJs) {
+    private Point getEij(List<Human> humansColliding) {
+        List<Point> IJs = getEijs(humansColliding);
+        Point IJ = new Point(0, 0);
+        for (Point IJi : IJs) {
             IJ.x += IJi.x;
             IJ.y += IJi.y;
         } // TODO confirmar que esto es correcto
-        double norm = Math.sqrt(Math.pow(IJ.x, 2) + Math.pow(IJ.y, 2));
-        IJ.x /= norm;
-        IJ.y /= norm;
-        return IJ;
+//        double norm = Math.sqrt(Math.pow(IJ.x, 2) + Math.pow(IJ.y, 2));
+        return IJ.normalize();
     }
 
-    private List<Point2D.Double> getEijs(List<Human> humansColliding) {
+    private List<Point> getEijs(List<Human> humansColliding) {
         return humansColliding.stream()
                 .map(h -> {
-                    Point2D.Double eij = new Point2D.Double((h.pos.x - pos.x) , (h.pos.y - pos.y));
+                    Point eij = new Point((h.pos.x - pos.x) , (h.pos.y - pos.y));
                     double norm = Math.sqrt(Math.pow(eij.x, 2) + Math.pow(eij.y, 2));
                     eij.x /= norm;
                     eij.y /= norm;
                     return eij;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +" "+ "Human";
     }
 }

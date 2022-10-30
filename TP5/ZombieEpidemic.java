@@ -10,6 +10,7 @@ public class ZombieEpidemic {
         double t = 0.0;
         int iter = 1;
         double deltaT = config.getDeltaT();
+        room.savePersons(0);
 
         while (t < config.getMaxTime() || room.getHumans().size() == 0) {
             room.update(deltaT);
@@ -19,6 +20,7 @@ public class ZombieEpidemic {
             }
 
             t += deltaT;
+            iter++;
         }
 
     }
@@ -36,6 +38,6 @@ public class ZombieEpidemic {
                 .withApWall(0.1)
                 .withBpWall(100)
                 .withMaxTime(300)
-                .withSteps(5);
+                .withSteps(1);
     }
 }

@@ -26,10 +26,11 @@ public abstract class Person {
     protected final double ApWall;
     protected final double BpWall;
 
-    public Person(String id, double positionX, double positionY, Config config) {
+    public Person(String id, double positionX, double positionY, double speedX, double speedY, Config config) {
         this.id = id;
         this.vel = new Point(0 ,0);
         this.pos = new Point(positionX, positionY);
+        this.vel = new Point(speedX, speedY);
         this.radius = Rmin;
         this.timeLeft = CONVERSION_TIME;
         this.state = PersonState.WALKING;
@@ -47,7 +48,7 @@ public abstract class Person {
     }
     
     protected boolean isColliding(Person person) {
-        return pos.dist(person.pos) <= radius + person.radius;
+        return !this.equals(person) && pos.dist(person.pos) <= radius + person.radius;
     }
 
     protected boolean isTouchingCircularWall(double wallRadius) {
@@ -202,8 +203,11 @@ public abstract class Person {
             updateVelocityForAvoidance(nc);
         }
 
+//        System.out.println(vel);
+
         // Update position
-        pos.setLocation(vel.prod(deltaT));
+        pos.x  += vel.prod(deltaT).x;
+        pos.y  += vel.prod(deltaT).y;
     }
 
     /**

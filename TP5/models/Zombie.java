@@ -24,9 +24,6 @@ public class Zombie extends Person {
 
     @Override
     protected void update(double deltaT, List<Zombie> zombies, List<Human> humans) {
-        // Update position
-        pos.setLocation(vel.x * deltaT, vel.y * deltaT);
-
         // Get desired target if human is near
         Optional<Point> maybeGoal = getGoalPosition(humans);
         handleConversion(maybeGoal);
@@ -41,6 +38,9 @@ public class Zombie extends Person {
             updateRadius(deltaT);
             updateVelocityForAvoidance(new Point(0,0));
         }
+
+        // Update position
+        pos.setLocation(vel.prod(deltaT));
     }
 
     @SuppressWarnings("unchecked")

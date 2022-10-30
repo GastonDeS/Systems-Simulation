@@ -23,9 +23,6 @@ public class Human extends Person {
 
     @Override
     protected void update(double deltaT, List<Zombie> zombies, List<Human> humans) {
-        // Update position
-        pos.setLocation(vel.x * deltaT, vel.y * deltaT);
-
         // Get desired target if human is threatened
         Optional<Point> maybeGoal = getGoalPosition(zombies);
         desiredPos.setLocation(maybeGoal.orElseGet(() -> pos));
@@ -41,6 +38,9 @@ public class Human extends Person {
             Optional<Point> maybeNc = handleAvoidance(humans, zombies);
             maybeNc.ifPresent(this::updateVelocityForAvoidance);
         }
+
+        // Update position
+        pos.setLocation(vel.prod(deltaT));
     }
 
     @Override

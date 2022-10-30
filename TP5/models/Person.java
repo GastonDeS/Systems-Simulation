@@ -1,9 +1,7 @@
 package models;
 
-import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public abstract class Person {
     // TODO: check values

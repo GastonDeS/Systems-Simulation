@@ -3,8 +3,6 @@ import models.Room;
 
 public class ZombieEpidemic {
 
-    private static final int N = 30;
-
     public static void main(String[] args) {
         final Config config = setConfig();
         Room room = new Room(config);
@@ -27,6 +25,17 @@ public class ZombieEpidemic {
 
     private static Config setConfig() {
         return new Config()
-                .withN(N);
+                .withN(30)
+                .withDeltaT(0.0125)
+                .withVdz(3)
+                .withTau(0.5)
+                .withApHuman(0.1)
+                .withBpHuman(500)
+                .withApZombie(0.1)
+                .withBpZombie(1000)
+                .withApWall(0.1)
+                .withBpWall(100)
+                .withMaxTime(300)
+                .withSteps(5);
     }
 }

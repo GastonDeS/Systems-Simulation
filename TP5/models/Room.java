@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Room {
     private final Config config;
-    private List<Human> humans;
-    private List<Zombie> zombies;
+    private final List<Human> humans;
+    private final List<Zombie> zombies;
     private final static double wallRadius = 11; // fixed value
 
     private final static double minRadius = 0.1;
@@ -75,10 +75,6 @@ public class Room {
 
         if (hasContactWithHumans(human)) return createHuman(i);
         return human;
-    }
-
-    private double getRandomRadius() {
-        return Math.random() * (maxRadius - minRadius) + minRadius;
     }
 
     private boolean hasContactWithHumans(Human human) {

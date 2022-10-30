@@ -24,6 +24,8 @@ public abstract class Person {
     protected double Bp;
 
     private final double tau;
+    protected final double ApWall;
+    protected final double BpWall;
 
     public Person(String id, double positionX, double positionY, Config config) {
         this.id = id;
@@ -33,6 +35,8 @@ public abstract class Person {
         this.timeLeft = CONVERSION_TIME;
         this.state = PersonState.WALKING;
         this.tau = config.getTau();
+        this.ApWall = config.getApWall();
+        this.BpWall = config.getBpWall();
     }
     
     protected boolean isColliding(Person person) {
@@ -166,8 +170,8 @@ public abstract class Person {
         return new Point(Eij.x * mul, Eij.y * mul);
     }
 
-    protected Optional<Point> handleAvoidance(List<Human> humans, List<Zombie> zombies) {
-        return Optional.of(new Point(0,0));
+    protected Point handleAvoidance(List<Human> humans, List<Zombie> zombies) {
+        return new Point(0,0);
     }
 
     /**
@@ -187,8 +191,8 @@ public abstract class Person {
             radius = Rmin;
         } else  {
             updateRadius(deltaT);
-            Optional<Point> maybeNc = handleAvoidance(humans, zombies);
-            maybeNc.ifPresent(this::updateVelocityForAvoidance);
+            Point nc = handleAvoidance(humans, zombies);
+            updateVelocityForAvoidance(nc);
         }
 
         // Update position

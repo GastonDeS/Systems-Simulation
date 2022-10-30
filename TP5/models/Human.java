@@ -54,18 +54,22 @@ public class Human extends Person {
     }
 
     @Override
-    protected Optional<Point> handleAvoidance(List<Human> humans, List<Zombie> zombies) {
+    protected Point handleAvoidance(List<Human> humans, List<Zombie> zombies) {
         double angle = Math.atan(vel.y/ vel.x);
 
+        Optional<Point> ncWall = handleAvoidNearestWall();
         Optional<Point> ncHuman = handleAvoidNearestHuman(angle, humans);
         Optional<Point> ncZombie = handleAvoidNearestZombie(angle, zombies);
 
-        Optional<Point> nc = Optional.empty();
+        Point nc = new Point(0,0);
+        if (ncWall.isPresent()) {
+            nc = nc.add(ncWall.get());
+        }
         if (ncHuman.isPresent()) {
-            nc = ncHuman;
+            nc = nc.add(ncHuman.get());
         }
         if (ncZombie.isPresent()) {
-            nc = nc.map(point -> Optional.of(point.add(ncZombie.get()))).orElse(ncZombie);
+            nc = nc.add(ncZombie.get());
         }
 
         return nc;
@@ -93,6 +97,17 @@ public class Human extends Person {
     /*
         UTILS
      */
+
+    private Optional<Point> handleAvoidNearestWall() {
+        Optional<Point> nc = Optional.empty();
+
+        Optional<Point> maybeWall = getNearestWallOnSight();
+        if (maybeWall.isPresent()) {
+            nc = Optional.of(calculateHij(calculateEij(maybeWall.get()), ApWall, BpWall));
+        }
+
+        return nc;
+    }
 
     private Optional<Point> handleAvoidNearestHuman(double angle, List<Human> humans) {
         Optional<Point> nc = Optional.empty();

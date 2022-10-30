@@ -13,12 +13,12 @@ public abstract class Person {
     protected static final double beta = 0.5;
 
     private final String id;
-    protected Point2D.Double vel;
-    protected Point2D.Double pos;
+    protected Point vel;
+    protected Point pos;
     protected double radius;
     protected PersonState state;
     private double timeLeft;
-    protected Point2D.Double desiredPos;
+    protected Point desiredPos;
     protected double desiredSpeed;
     protected double deltaAngle; // Limit angle of vision
     protected double limitVision;
@@ -29,25 +29,16 @@ public abstract class Person {
 
     public Person(String id, double positionX, double positionY, Config config) {
         this.id = id;
-        this.vel = new Point2D.Double(0 ,0);
-        this.pos = new Point2D.Double(positionX, positionY);
+        this.vel = new Point(0 ,0);
+        this.pos = new Point(positionX, positionY);
         this.radius = Rmin;
         this.timeLeft = CONVERSION_TIME;
         this.state = PersonState.WALKING;
         this.tau = config.getTau();
     }
 
-    protected double dist(Person p) {
-        return Math.sqrt(Math.pow(pos.x - p.pos.x, 2) + Math.pow(pos.y - p.pos.y, 2));
-    }
-
-    protected double norm() {
-        return Math.sqrt(Math.pow(pos.x, 2) + Math.pow(pos.y, 2));
-    }
-
     protected boolean isColliding(Person person) {
-        double distance = Math.sqrt(Math.pow(pos.x - person.pos.x, 2) + Math.pow(pos.y - person.pos.y, 2));
-        return distance <= radius + person.radius;
+        return pos.dist(person.pos) <= radius + person.radius;
     }
 
     protected boolean isTouchingCircularWall(double wallRadius) {
@@ -66,9 +57,9 @@ public abstract class Person {
         }
     }
 
-    protected Point2D.Double getRandomPos() {
+    protected Point getRandomPos() {
         double angle = Math.random() * 2 * Math.PI;
-        return new Point2D.Double(Math.cos(angle) * desiredSpeed, Math.sin(angle) * desiredSpeed);
+        return new Point(Math.cos(angle) * desiredSpeed, Math.sin(angle) * desiredSpeed);
     }
 
     protected boolean isOnVision(Person person, double angle) {
@@ -87,33 +78,37 @@ public abstract class Person {
         }
     }
 
-    protected <T extends Person> Optional<T> getNearestEntity(List<T> entities) {
-        double angle = Math.atan(vel.y/ vel.x);
-        List<T> entitiesOnSight = entities.stream()
-                .filter(h -> h != this && this.isOnVision(h, angle))
-                .collect(Collectors.toList());
+    protected void updateVelocityForAvoidance(Point nc) {
+        Point eit = desiredPos.sub(pos).normalize();
+        Point eia = nc.add(eit).normalize();
+        double magnitude = desiredSpeed * Math.pow((radius - Rmin)/(Rmax - Rmin), beta);
+        vel.setLocation(eia.prod(magnitude));
+    }
 
-        Optional<T> nearest = Optional.empty();
-        double minDist = Double.MAX_VALUE;
-        for (T entity : entitiesOnSight) {
-            double dist = dist(entity);
+    protected <T extends Person> T getNearestEntity(List<T> entities) {
+        T nearest = entities.get(0);
+        double minDist = pos.dist(nearest.pos);
+        for (T entity : entities) {
+            double dist = pos.dist(entity.pos);
             if (dist < minDist) {
                 minDist = dist;
-                nearest = Optional.of(entity);
+                nearest = entity;
             }
         }
         return nearest;
     }
 
-    protected <T extends Person> Point2D.Double calculateEij(T entity) {
-        entity.pos.setLocation(pos.x - entity.pos.x, pos.y - entity.pos.y);
-        double norm = entity.norm();
-        return new Point2D.Double(entity.pos.x/norm, entity.pos.y/norm);
+    protected Point calculateEij(Point obstacle) {
+        return pos.sub(obstacle).normalize();
     }
 
-    protected Point2D.Double calculateHij(Point2D.Double Eij, double distance, double Ap, double Bp) {
-        double mul = Ap * Math.exp(-distance/Bp);
-        return new Point2D.Double(Eij.x * mul, Eij.y * mul);
+    protected Point calculateHij(Point Eij, double Ap, double Bp) {
+        double mul = Ap * Math.exp(-pos.dist(Eij)/Bp);
+        return new Point(Eij.x * mul, Eij.y * mul);
+    }
+
+    protected Optional<Point> handleAvoidance(List<Human> humans, List<Zombie> zombies) {
+        return Optional.empty();
     }
 
     /**
@@ -129,11 +124,9 @@ public abstract class Person {
      *               if the person is a human, the list has to be zombies
      * @return the goal position of the person
      */
-    protected abstract <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> persons);
+    protected abstract <T extends Person> Optional<Point> getGoalPosition(List<T> persons);
 
-    protected abstract Optional<Point2D.Double> handleCollisions(List<Human> humans);
-
-    protected abstract Optional<Point2D.Double> handleAvoidance(List<Human> humans, List<Zombie> zombies);
+    protected abstract Optional<Point> handleCollisions(List<Human> humans);
 
     @Override
     public String toString() {

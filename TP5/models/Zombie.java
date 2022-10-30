@@ -1,6 +1,5 @@
 package models;
 
-import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,23 +28,24 @@ public class Zombie extends Person {
         pos.setLocation(vel.x * deltaT, vel.y * deltaT);
 
         // Get desired target if human is near
-        Optional<Point2D.Double> maybeGoal = getGoalPosition(humans);
+        Optional<Point> maybeGoal = getGoalPosition(humans);
         handleConversion(maybeGoal);
 
         // Check if there are collisions and get escape velocity
-        Optional<Point2D.Double> Ve = handleCollisions(humans);
+        Optional<Point> Ve = handleCollisions(humans);
 
         if (Ve.isPresent()) {
             vel.setLocation(Ve.get());
             radius = Rmin;
         } else  {
-            // TODO: handle avoidance
+            updateRadius(deltaT);
+            updateVelocityForAvoidance(new Point(0,0));
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected  <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> humans) {
+    protected  <T extends Person> Optional<Point> getGoalPosition(List<T> humans) {
         double angle = Math.atan(vel.y/ vel.x);
         nearestHumans = (List<Human>) humans.stream()
                 .filter(h -> this.isOnVision(h, angle))
@@ -60,12 +60,12 @@ public class Zombie extends Person {
     }
 
     @Override
-    protected Optional<Point2D.Double> handleCollisions(List<Human> humans) {
-        Optional<Point2D.Double> Ve = Optional.empty();
+    protected Optional<Point> handleCollisions(List<Human> humans) {
+        Optional<Point> Ve = Optional.empty();
 
         if (isTouchingCircularWall(Room.getWallRadius())) {
             double newVelAngle = Math.atan(vel.y / vel.x) + Math.PI/3;
-            Ve = Optional.of(new Point2D.Double(
+            Ve = Optional.of(new Point(
                     Math.cos(newVelAngle) * desiredSpeed,
                     Math.sin(newVelAngle) * desiredSpeed
             ));
@@ -73,32 +73,13 @@ public class Zombie extends Person {
         return Ve;
     }
 
-    @Override
-    protected Optional<Point2D.Double> handleAvoidance(List<Human> humans, List<Zombie> zombies) {
-        return Optional.empty();
-    }
-
     /*
         UTILS
      */
 
-    private Human getNearestHuman() {
-        Human nearestHuman = nearestHumans.get(0);
-        double minDist = dist(nearestHuman);
-
-        for (Human h : nearestHumans) {
-            if (dist(h) < minDist) {
-                minDist = dist(h);
-                nearestHuman = h;
-            }
-        }
-
-        return nearestHuman;
-    }
-
-    private void handleConversion(Optional<Point2D.Double> maybeGoal) {
+    private void handleConversion(Optional<Point> maybeGoal) {
         if (maybeGoal.isPresent()) {
-            Human nearestHuman = getNearestHuman();
+            Human nearestHuman = getNearestEntity(nearestHumans);
             if (isColliding(nearestHuman)) {
                 startConversion();
                 nearestHuman.startConversion();

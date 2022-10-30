@@ -5,9 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class Person {
-    protected final static double TO_ZOMBIE_TIME = 7.0;
+    // TODO: check values
+    protected final static double Ap = 500; // TODO: should Ap and Bp change for each entity?
+    protected final static double Bp = 500;
+    protected final static double CONVERSION_TIME = 7.0;
     protected final static double Rmin = 0.1;
     protected final static double Rmax = 0.3;
+    protected static final double beta = 0.5;
+
     private final String id;
     protected Point2D.Double vel;
     protected Point2D.Double pos;
@@ -16,16 +21,19 @@ public abstract class Person {
     private double timeLeft;
     protected Point2D.Double desiredPos;
     protected double desiredSpeed;
-    protected double deltaAngle;
+    protected double deltaAngle; // Limit angle of vision
     protected double limitVision;
 
-    public Person(String id, double positionX, double positionY) {
+    private final double tau;
+
+    public Person(String id, double positionX, double positionY, Config config) {
         this.id = id;
         this.vel = new Point2D.Double(0 ,0);
         this.pos = new Point2D.Double(positionX, positionY);
         this.radius = Rmin;
-        this.timeLeft = TO_ZOMBIE_TIME;
+        this.timeLeft = CONVERSION_TIME;
         this.state = PersonState.WALKING;
+        this.tau = config.getTau();
     }
 
     protected double dist(Person p) {
@@ -41,21 +49,6 @@ public abstract class Person {
         return Math.sqrt(Math.pow(pos.x, 2) + Math.pow(pos.y, 2)) >= wallRadius - radius;
     }
 
-    protected Optional<Zombie> getNearestZombie(List<Zombie> zombies) {
-        Optional<Zombie> nearestZombie = Optional.empty();
-        double minDist = Double.MAX_VALUE;
-
-        for (Zombie z : zombies) {
-            if (z == this) continue;
-            double dist = dist(z);
-            if (dist < minDist) {
-                minDist = dist;
-                nearestZombie = Optional.of(z);
-            }
-        }
-        return nearestZombie;
-    }
-
     protected void startConversion() {
         this.state = PersonState.CONVERTING;
     }
@@ -64,7 +57,7 @@ public abstract class Person {
         this.timeLeft -= deltaT;
         if (this.timeLeft <= 0) {
             this.state = PersonState.WALKING;
-            this.timeLeft = TO_ZOMBIE_TIME;
+            this.timeLeft = CONVERSION_TIME;
         }
     }
 
@@ -73,8 +66,6 @@ public abstract class Person {
         return new Point2D.Double(Math.cos(angle) * desiredSpeed, Math.sin(angle) * desiredSpeed);
     }
 
-    protected abstract void update(double deltaT, List<Zombie> zombies, List<Human> humans);
-
     protected boolean isOnVision(Person human, double angle, double deltaAngle, double limitVision) {
         double angleBetweenHumanAndZombie = Math.atan((human.pos.y - pos.y) / (human.pos.x - pos.x));
         return (angleBetweenHumanAndZombie <= angle + deltaAngle
@@ -82,20 +73,30 @@ public abstract class Person {
                 && (Math.sqrt(Math.pow(human.pos.x - pos.x, 2) + Math.pow(human.pos.y - pos.y, 2)) <= limitVision);
     }
 
+    protected void updateRadius(double deltaT) {
+        if (radius < Rmax) {
+            radius += Rmax / (tau / deltaT);
+        }
+    }
+
+    /**
+     * Update position and velocity of humans and zombies
+     * @param deltaT
+     * @param zombies
+     * @param humans
+     */
+    protected abstract void update(double deltaT, List<Zombie> zombies, List<Human> humans);
+
     /**
      * @param persons if the person is a zombie, the list has to be humans,
      *               if the person is a human, the list has to be zombies
      * @return the goal position of the person
      */
-    public abstract  <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> persons);
+    protected abstract <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> persons);
 
-    public Point2D.Double getVel() {
-        return vel;
-    }
+    protected abstract Optional<Point2D.Double> handleCollisions(List<Human> humans);
 
-    public void setVel(Point2D.Double vel) {
-        this.vel = vel;
-    }
+    protected abstract Point2D.Double handleAvoidance(List<Human> humans);
 
     @Override
     public String toString() {

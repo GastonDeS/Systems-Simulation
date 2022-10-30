@@ -76,7 +76,8 @@ public class Room {
         Human human = new Human(
                 String.valueOf(i),
                 Math.cos(angle) * distance,
-                Math.sin(angle) * distance
+                Math.sin(angle) * distance,
+                config
         );
 
         if (hasContactWithHumans(human)) return createHuman(i);

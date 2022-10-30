@@ -4,6 +4,8 @@ public class Config {
     private int N;
     private double deltaT;
     private double Vdz;
+    private double tau;
+
 
     public Config withN(int n) {
         this.N = n;
@@ -17,6 +19,11 @@ public class Config {
 
     public Config withVdz(double Vdz) {
         this.Vdz = Vdz;
+        return this;
+    }
+
+    public Config withTau(double tau) {
+        this.tau = tau;
         return this;
     }
 
@@ -34,5 +41,9 @@ public class Config {
 
     public double getVdz() {
         return Vdz;
+    }
+
+    public double getTau() {
+        return tau;
     }
 }

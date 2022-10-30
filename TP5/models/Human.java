@@ -6,45 +6,37 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Human extends Person {
+    private static final double Vdh = 4; // TODO: check if Vdh is escape velocity magnitude
 
-    private static final double beta = 0.5; // TODO definir
-    private static final double ve = 0.5; // TODO definir
-    private static final double tau = 3.14; // TODO definir
-
-    public Human(String id, double positionX, double positionY) {
-        super(id, positionX, positionY);
-        deltaAngle = Math.PI / 4; // angulo de vision
-        limitVision = 6; // largo de vision
+    public Human(String id, double positionX, double positionY, Config config) {
+        super(id, positionX, positionY, config);
+        deltaAngle = Math.PI / 4;
+        limitVision = 6;
         desiredSpeed = 4;
     }
 
+    /*
+        ABSTRACT METHODS
+     */
+
     @Override
     protected void update(double deltaT, List<Zombie> zombies, List<Human> humans) {
-        // update position
-        pos.x += vel.x * deltaT;
-        pos.y += vel.y * deltaT;
+        // Update position
+        pos.setLocation(vel.x * deltaT, vel.y * deltaT);
 
-        // update velocity
+        // Get desired target if human is threatened
         Optional<Point2D.Double> maybeGoal = getGoalPosition(zombies);
+        desiredPos.setLocation(maybeGoal.orElseGet(() -> pos));
 
-        List<Human> humansColliding = humans.stream()
-                .filter(this::isColliding)
-                .collect(Collectors.toList());
+        // Check if there are collisions and get escape velocity
+        Optional<Point2D.Double> Ve = handleCollisions(humans);
 
-        if (radius < Rmax) {
-            radius += Rmax / (tau / deltaT);
-        }
-
-        if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = Math.atan(vel.y / vel.x) + Math.PI /3;
-            vel.x = Math.cos(newVelAngle) * desiredSpeed;
-            vel.y = Math.sin(newVelAngle) * desiredSpeed;
-        } else if (!humansColliding.isEmpty()) {
-            Point2D.Double eij = getEij(humansColliding);
-            vel.x = ve * eij.x;
-            vel.y = ve * eij.y;
+        if (Ve.isPresent()) {
+            vel.setLocation(Ve.get());
             radius = Rmin;
-        } else { // TODO change for PRES7 30/31
+        } else {
+            updateRadius(deltaT);
+            // TODO change for PPT7 30/31
             double intensity = (desiredSpeed * Math.pow((radius-Rmin)/(Rmax-Rmin), beta));
             double newAngle = Math.atan(vel.y / vel.x);
             if (maybeGoal.isPresent()) {
@@ -54,6 +46,59 @@ public class Human extends Person {
             vel.y = intensity * Math.sin(newAngle);
         }
     }
+
+    @Override
+    protected Optional<Point2D.Double> handleCollisions(List<Human> humans) {
+        List<Human> humansColliding = humans.stream()
+                .filter(this::isColliding)
+                .collect(Collectors.toList());
+
+        Optional<Point2D.Double> Ve = Optional.empty();
+
+        if (isTouchingCircularWall(Room.getWallRadius())) {
+            double newVelAngle = Math.atan(vel.y / vel.x) + Math.PI/3;
+            Ve = Optional.of(new Point2D.Double(
+                    Math.cos(newVelAngle) * desiredSpeed,
+                    Math.sin(newVelAngle) * desiredSpeed
+            ));
+        } else if (!humansColliding.isEmpty()) {
+            Point2D.Double eij = getEij(humansColliding);
+            Ve = Optional.of(new Point2D.Double(
+                    Vdh * eij.x,
+                    Vdh * eij.y
+            ));
+        }
+
+        return Ve;
+    }
+
+    @Override
+    protected Point2D.Double handleAvoidance(List<Human> humans) {
+        return null;
+    }
+
+    @Override
+    protected <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> zombies) {
+        double angle = Math.atan(vel.y/ vel.x);
+
+        List<Double> zombieAngles = zombies.stream()
+                .filter(z -> this.isOnVision(z, angle, deltaAngle, limitVision))
+                .map(z -> Math.atan((z.pos.y - pos.y) / (z.pos.x - pos.x)))
+                .collect(Collectors.toList());
+
+        if (zombieAngles.isEmpty()) return Optional.empty();
+
+        double desiredAngle = Math.PI + zombieAngles.stream().reduce(Double::sum).get() / zombieAngles.size();
+
+        return Optional.of(
+                new Point2D.Double(
+                        Math.cos(desiredAngle) * Room.getWallRadius() + pos.x, // TODO analize if it is better to pass
+                        Math.sin(desiredAngle) * Room.getWallRadius() + pos.y)); // TODO the wall radius instead of this
+    }
+
+    /*
+        UTILS
+     */
 
     private Point2D.Double getEij(List<Human> humansColliding) {
         List<Point2D.Double> IJs = getEijs(humansColliding);
@@ -78,24 +123,5 @@ public class Human extends Person {
                     return eij;
                 })
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public <T extends Person> Optional<Point2D.Double> getGoalPosition(List<T> zombies) {
-        double angle = Math.atan(vel.y/ vel.x);
-
-        List<Double> zombieAngles = zombies.stream()
-                .filter(z -> this.isOnVision(z, angle, deltaAngle, limitVision))
-                .map(z -> Math.atan((z.pos.y - pos.y) / (z.pos.x - pos.x)))
-                .collect(Collectors.toList());
-
-        if (zombieAngles.isEmpty()) return Optional.empty();
-
-        double desiredAngle = Math.PI + zombieAngles.stream().reduce(Double::sum).get() / zombieAngles.size();
-
-        return Optional.of(
-                new Point2D.Double(
-                        Math.cos(desiredAngle) * Room.getWallRadius() + pos.x, // TODO analize if it is better to pass
-                        Math.sin(desiredAngle) * Room.getWallRadius() + pos.y)); // TODO the wall radius instead of this
     }
 }

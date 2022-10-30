@@ -33,6 +33,10 @@ public class Point extends Point2D.Double {
         return Math.sqrt(Math.pow(x - p.x, 2) + Math.pow(y - p.y, 2));
     }
 
+    public double dotProduct(Point p) {
+        return p.x * x + p.y * y;
+    }
+
     @Override
     public double getX() {
         return x;

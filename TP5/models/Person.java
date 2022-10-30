@@ -173,8 +173,10 @@ public abstract class Person {
     }
 
     protected Point calculateHij(Point Eij, double Ap, double Bp) {
-        double mul = Ap * Math.exp(-pos.dist(Eij)/Bp);
-        return new Point(Eij.x * mul, Eij.y * mul);
+        double dist = pos.dist(Eij);
+        Point desired = desiredPos.sub(pos).normalize();
+        double mul = Ap * Math.exp(-dist/Bp) * desired.dotProduct(Eij);
+        return Eij.prod(-mul);
     }
 
     protected Point handleAvoidance(List<Human> humans, List<Zombie> zombies) {

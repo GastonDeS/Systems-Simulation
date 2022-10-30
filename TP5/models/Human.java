@@ -91,7 +91,7 @@ public class Human extends Person {
         double angle = Math.atan(vel.y/ vel.x);
 
         List<Double> zombieAngles = zombies.stream()
-                .filter(z -> this.isOnVision(z, angle))
+                .filter(z -> this.isOnVision(z.pos, angle))
                 .map(z -> Math.atan((z.pos.y - pos.y) / (z.pos.x - pos.x)))
                 .collect(Collectors.toList());
 
@@ -113,7 +113,7 @@ public class Human extends Person {
         Optional<Point> nc = Optional.empty();
 
         List<Human> humansOnSight = humans.stream()
-                .filter(h -> h != this && this.isOnVision(h, angle))
+                .filter(h -> h != this && this.isOnVision(h.pos, angle))
                 .collect(Collectors.toList());
         if (humansOnSight.size() > 0) {
             Human human = getNearestEntity(humansOnSight);
@@ -127,7 +127,7 @@ public class Human extends Person {
         Optional<Point> nc = Optional.empty();
 
         List<Zombie> zombiesOnSight = zombies.stream()
-                .filter(h -> this.isOnVision(h, angle))
+                .filter(h -> this.isOnVision(h.pos, angle))
                 .collect(Collectors.toList());
         if (zombiesOnSight.size() > 0) {
             Zombie zombie = getNearestEntity(zombiesOnSight);

@@ -34,7 +34,7 @@ public abstract class Person {
         this.state = PersonState.WALKING;
         this.tau = config.getTau();
     }
-
+    
     protected boolean isColliding(Person person) {
         return pos.dist(person.pos) <= radius + person.radius;
     }
@@ -60,12 +60,72 @@ public abstract class Person {
         return new Point(Math.cos(angle) * desiredSpeed, Math.sin(angle) * desiredSpeed);
     }
 
-    protected boolean isOnVision(Person person, double angle) {
-        double angleBetweenEntities = Math.atan((person.pos.y - pos.y) / (person.pos.x - pos.x));
+    protected boolean isOnVision(Point pos2, double angle) {
+        double angleBetweenEntities = Math.atan((pos2.y - pos.y) / (pos2.x - pos.x));
 
         return (angleBetweenEntities <= angle + deltaAngle
                 && angleBetweenEntities >= angle - deltaAngle)
-                && (Math.sqrt(Math.pow(person.pos.x - pos.x, 2) + Math.pow(person.pos.y - pos.y, 2)) <= limitVision);
+                && (Math.sqrt(Math.pow(pos2.x - pos.x, 2) + Math.pow(pos2.y - pos.y, 2)) <= limitVision);
+    }
+
+
+    protected Optional<Point> getNearestWallOnSight() {
+        double angle = Math.atan(vel.y / vel.x); // m
+        double angleMax = angle + deltaAngle; // m + delta
+        double angleMin = angle - deltaAngle; // m - delta
+
+        Point distNormalized = pos.normalize();
+        distNormalized.x *= Room.getWallRadius();
+        distNormalized.y *= Room.getWallRadius();
+
+        // Si es el mas cercano lo devuelvo
+        if (isOnVision(distNormalized, angle)) return Optional.of(distNormalized);
+
+        // Obtengo los dos puntos de vision en los bordes de la vision
+        Optional<Point> minPoint = getWallPoint(angleMin);
+        Optional<Point> maxPoint = getWallPoint(angleMax);
+
+        // si los dos existen devuelvo el mas cercano
+        if (minPoint.isPresent() && maxPoint.isPresent()) {
+            return pos.dist(minPoint.get()) < pos.dist(maxPoint.get()) ? minPoint : maxPoint;
+        }
+
+        // si solo uno existe devuelvo ese
+        if (minPoint.isPresent()) return minPoint;
+
+        // si no existe va en Optional.nullable si no se devuelve el propio max point
+        return maxPoint;
+    }
+
+    // (m^2 +1) X^2 + 2mb * X + b^2 + R^2 = 0
+    private Optional<Point> getWallPoint(double angle) {
+        double m = angle < Math.PI /2 ? Math.tan(angle) : Math.tan(angle - Math.PI);
+        double b = pos.y - m * pos.x; // ordenada al origen
+        double R = Room.getWallRadius(); // R de la circunferencia
+
+        Point xSol = solveQuadraticEquation(Math.pow(m,2) + 1, 2 * m * b, Math.pow(b,2) - Math.pow(R,2));
+        
+        // De las dos soluciones devuelvo la que este a mi vista
+        Point firstSol = getYOnLine(xSol.x, m, b);
+        double angleFirstSol = Math.atan((firstSol.y - pos.y) / (firstSol.x - pos.x));
+        if (angleFirstSol == angle && isOnVision(firstSol, angle)) {
+            return Optional.of(firstSol);
+        }
+        Point secondSol = getYOnLine(xSol.y, m, b);
+        double angleSecondSol = Math.atan((secondSol.y - pos.y) / (secondSol.x - pos.x));
+        if (angleSecondSol == angle && isOnVision(secondSol, angle)) {
+            return Optional.of(secondSol);
+        }
+        return Optional.empty();
+    }
+
+    private Point getYOnLine(double x, double m, double b) {
+        return new Point(x, m * x + b);
+    }
+
+    private Point solveQuadraticEquation(double a, double b, double c) {
+        return new Point((-b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a),
+                (-b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a));
     }
 
     protected void updateRadius(double deltaT) {
@@ -88,6 +148,7 @@ public abstract class Person {
         double minDist = pos.dist(nearest.pos);
         for (T entity : entities) {
             double dist = pos.dist(entity.pos);
+
             if (dist < minDist) {
                 minDist = dist;
                 nearest = entity;

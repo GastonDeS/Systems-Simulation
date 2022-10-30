@@ -48,7 +48,7 @@ public class Zombie extends Person {
     protected  <T extends Person> Optional<Point> getGoalPosition(List<T> humans) {
         double angle = Math.atan(vel.y/ vel.x);
         nearestHumans = (List<Human>) humans.stream()
-                .filter(h -> this.isOnVision(h, angle))
+                .filter(h -> this.isOnVision(h.pos, angle))
                 .collect(Collectors.toList());
 
         return nearestHumans.stream()

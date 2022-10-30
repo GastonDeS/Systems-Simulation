@@ -167,7 +167,7 @@ public abstract class Person {
     }
 
     protected Optional<Point> handleAvoidance(List<Human> humans, List<Zombie> zombies) {
-        return Optional.empty();
+        return Optional.of(new Point(0,0));
     }
 
     /**
@@ -176,7 +176,24 @@ public abstract class Person {
      * @param zombies
      * @param humans
      */
-    protected abstract void update(double deltaT, List<Zombie> zombies, List<Human> humans);
+    protected void update(double deltaT, List<Zombie> zombies, List<Human> humans) {
+        getDesiredPos(zombies, humans);
+
+        // Check if there are collisions and get escape velocity
+        Optional<Point> Ve = handleCollisions(humans);
+
+        if (Ve.isPresent()) {
+            vel.setLocation(Ve.get());
+            radius = Rmin;
+        } else  {
+            updateRadius(deltaT);
+            Optional<Point> maybeNc = handleAvoidance(humans, zombies);
+            maybeNc.ifPresent(this::updateVelocityForAvoidance);
+        }
+
+        // Update position
+        pos.setLocation(vel.prod(deltaT));
+    }
 
     /**
      * @param persons if the person is a zombie, the list has to be humans,
@@ -186,6 +203,8 @@ public abstract class Person {
     protected abstract <T extends Person> Optional<Point> getGoalPosition(List<T> persons);
 
     protected abstract Optional<Point> handleCollisions(List<Human> humans);
+
+    protected abstract void getDesiredPos(List<Zombie> zombies, List<Human> humans);
 
     @Override
     public String toString() {

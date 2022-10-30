@@ -11,6 +11,8 @@ public class Config {
     private double BpZombie;
     private double ApWall;
     private double BpWall;
+    private double maxTime;
+    private int steps;
 
     public Config withN(int n) {
         this.N = n;
@@ -62,6 +64,16 @@ public class Config {
         return this;
     }
 
+    public Config withMaxTime(double maxTime) {
+        this.maxTime = maxTime;
+        return this;
+    }
+
+    public Config withSteps(int steps) {
+        this.steps = steps;
+        return this;
+    }
+
     /*
         GETTERS
      */
@@ -104,5 +116,13 @@ public class Config {
 
     public double getBpWall() {
         return BpWall;
+    }
+
+    public double getMaxTime() {
+        return maxTime;
+    }
+
+    public int getSteps() {
+        return steps;
     }
 }

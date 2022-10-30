@@ -8,7 +8,6 @@ import java.util.List;
 
 public class Room {
     private final Config config;
-    private List<Person> persons;
     private List<Human> humans;
     private List<Zombie> zombies;
     private final static double wallRadius = 11; // fixed value
@@ -20,7 +19,6 @@ public class Room {
         this.config = config;
         this.humans = new ArrayList<>();
         this.zombies = new ArrayList<>();
-        this.persons = new ArrayList<>();
     }
 
     public void update(double deltaT) {
@@ -50,9 +48,7 @@ public class Room {
         if (h.getTimeLeft() <= 0) {
             Zombie z = new Zombie(h.getId(), h.pos.x, h.pos.y, config);
             humans.remove(h);
-            persons.remove(h);
             zombies.add(z);
-            persons.add(z);
         }
     }
 
@@ -64,9 +60,6 @@ public class Room {
         for (int i = 1; i < config.getN(); i++) {
             humans.add(createHuman(i));
         }
-
-        persons.addAll(zombies);
-        persons.addAll(humans);
     }
 
     private Human createHuman(int i) {
@@ -116,5 +109,9 @@ public class Room {
 
     public static double getWallRadius() {
         return wallRadius;
+    }
+
+    public List<Human> getHumans() {
+        return humans;
     }
 }

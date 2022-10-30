@@ -22,25 +22,10 @@ public class Human extends Person {
      */
 
     @Override
-    protected void update(double deltaT, List<Zombie> zombies, List<Human> humans) {
+    protected void getDesiredPos(List<Zombie> zombies, List<Human> humans) {
         // Get desired target if human is threatened
         Optional<Point> maybeGoal = getGoalPosition(zombies);
         desiredPos.setLocation(maybeGoal.orElseGet(() -> pos));
-
-        // Check if there are collisions and get escape velocity
-        Optional<Point> Ve = handleCollisions(humans);
-
-        if (Ve.isPresent()) {
-            vel.setLocation(Ve.get());
-            radius = Rmin;
-        } else {
-            updateRadius(deltaT);
-            Optional<Point> maybeNc = handleAvoidance(humans, zombies);
-            maybeNc.ifPresent(this::updateVelocityForAvoidance);
-        }
-
-        // Update position
-        pos.setLocation(vel.prod(deltaT));
     }
 
     @Override

@@ -22,15 +22,25 @@ public class Room {
     }
 
     public void update(double deltaT) {
-        for (Human h : humans) {
-            handleState(h, deltaT);
+        for (int i = 0; i < humans.size(); i++) {
+            Human h = humans.get(i);
+            if (handleState(h, deltaT)) {
+                i--;
+            }
         }
-        for (Zombie z : zombies) {
+        for (int i = 0; i < zombies.size(); i++) {
+            Zombie z = zombies.get(i);
             handleState(z, deltaT);
         }
     }
 
-    private void handleState(Person p, double deltaT) {
+    /**
+     *
+     * @param p
+     * @param deltaT
+     * @return returns true if the person has changed to a zombie
+     */
+    private boolean handleState(Person p, double deltaT) {
         switch (p.getState()) {
             case WALKING:
                 p.update(deltaT, zombies, humans);
@@ -38,18 +48,21 @@ public class Room {
             case CONVERTING:
                 p.reduceTimeLeft(deltaT);
                 if (p instanceof Human) {
-                    updateLists((Human) p);
+                    return updateLists((Human) p);
                 }
                 break;
         }
+        return false;
     }
 
-    private void updateLists(Human h) {
+    private boolean updateLists(Human h) {
         if (h.getTimeLeft() <= 0) {
             Zombie z = new Zombie(h.getId(), h.pos.x, h.pos.y, config);
             humans.remove(h);
             zombies.add(z);
+            return true;
         }
+        return false;
     }
 
     public void fillRoom() {

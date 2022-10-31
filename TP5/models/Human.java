@@ -44,8 +44,8 @@ public class Human extends Person {
         } else if (!humansColliding.isEmpty()) {
             Point eij = getEij(humansColliding);
             Ve = Optional.of(new Point(
-                    Vdh * eij.x,
-                    Vdh * eij.y
+                    -Vdh * eij.x,
+                    -Vdh * eij.y
             ));
         }
         return Ve;

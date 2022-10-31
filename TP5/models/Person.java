@@ -66,11 +66,11 @@ public abstract class Person {
     }
 
     protected void reduceTimeLeft(double deltaT) {
-        this.timeLeft -= deltaT;
         if (this.timeLeft <= 0) {
             this.state = PersonState.WALKING;
             this.timeLeft = CONVERSION_TIME;
         }
+        this.timeLeft -= deltaT;
     }
 
     protected Point getRandomPos() {

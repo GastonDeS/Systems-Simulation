@@ -10,6 +10,7 @@ public class Point extends Point2D.Double {
 
     public Point normalize() {
         double norm = this.norm();
+        if (norm == 0) new Point(x, y);
         return new Point(x/norm, y/norm);
     }
 

@@ -10,7 +10,7 @@ public class Zombie extends Person {
     private List<Human> nearestHumans;
 
     public Zombie(String id, double positionX, double positionY, Config config) {
-        super(id, positionX, positionY, 0,0, config);
+        super(id, positionX, positionY, 1,0, config);
         this.deltaAngle = Math.PI / 8;
         this.limitVision = 4;
         this.Vdz = config.getVdz();

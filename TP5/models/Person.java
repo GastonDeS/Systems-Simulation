@@ -39,13 +39,17 @@ public abstract class Person {
         this.BpWall = config.getBpWall();
     }
 
-    protected double getDirection() {
-        if (vel.x == 0.0) {
-            return vel.y > 0 ? Math.PI / 2 : -Math.PI / 2;
+    protected double getDirectionForSpeed() {
+        return getDirection(vel.x, vel.y);
+    }
+
+    protected double getDirection(double x, double y) {
+        if (x == 0.0) {
+            return y > 0 ? Math.PI / 2 : -Math.PI / 2;
         } else {
-            if (vel.y > 0 && vel.x > 0) return Math.atan(vel.y / vel.x);
-            if (vel.x < 0) return Math.atan(vel.y / vel.x) + Math.PI;
-            else return Math.atan(vel.y / vel.x) + 2 * Math.PI;
+            if (y > 0 && x > 0) return Math.atan(y / x);
+            if (x < 0) return Math.atan(y / x) + Math.PI;
+            else return Math.atan(y / x) + 2 * Math.PI;
         }
     }
     
@@ -75,7 +79,7 @@ public abstract class Person {
     }
 
     protected boolean isOnVision(Point pos2, double angle) {
-        double angleBetweenEntities = Math.atan((pos2.y - pos.y) / (pos2.x - pos.x));
+        double angleBetweenEntities = getDirection((pos2.y - pos.y) , (pos2.x - pos.x));
 
         return (angleBetweenEntities <= angle + deltaAngle
                 && angleBetweenEntities >= angle - deltaAngle)
@@ -84,7 +88,7 @@ public abstract class Person {
 
 
     protected Optional<Point> getNearestWallOnSight() {
-        double angle = getDirection(); // m
+        double angle = getDirectionForSpeed(); // m
         double angleMax = angle + deltaAngle; // m + delta
         double angleMin = angle - deltaAngle; // m - delta
 
@@ -121,12 +125,12 @@ public abstract class Person {
         
         // De las dos soluciones devuelvo la que este a mi vista
         Point firstSol = getYOnLine(xSol.x, m, b);
-        double angleFirstSol = Math.atan((firstSol.y - pos.y) / (firstSol.x - pos.x));
+        double angleFirstSol = getDirection((firstSol.y - pos.y), (firstSol.x - pos.x));
         if (angleFirstSol == angle && isOnVision(firstSol, angle)) {
             return Optional.of(firstSol);
         }
         Point secondSol = getYOnLine(xSol.y, m, b);
-        double angleSecondSol = Math.atan((secondSol.y - pos.y) / (secondSol.x - pos.x));
+        double angleSecondSol = getDirection((secondSol.y - pos.y), (secondSol.x - pos.x));
         if (angleSecondSol == angle && isOnVision(secondSol, angle)) {
             return Optional.of(secondSol);
         }

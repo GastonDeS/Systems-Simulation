@@ -32,7 +32,7 @@ public class Zombie extends Person {
     @SuppressWarnings("unchecked")
     @Override
     protected  <T extends Person> Optional<Point> getGoalPosition(List<T> humans) {
-        double angle = getDirection();
+        double angle = getDirectionForSpeed();
         nearestHumans = (List<Human>) humans.stream()
                 .filter(h -> this.isOnVision(h.pos, angle))
                 .collect(Collectors.toList());
@@ -50,7 +50,7 @@ public class Zombie extends Person {
         Optional<Point> Ve = Optional.empty();
 
         if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = getDirection() + Math.PI/3;
+            double newVelAngle = getDirectionForSpeed() + Math.PI/3;
             Ve = Optional.of(new Point(
                     Math.cos(newVelAngle) * desiredSpeed,
                     Math.sin(newVelAngle) * desiredSpeed

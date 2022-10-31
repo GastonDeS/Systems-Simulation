@@ -36,7 +36,7 @@ public class Human extends Person {
         Optional<Point> Ve = Optional.empty();
 
         if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = getDirection() + Math.PI / 3;
+            double newVelAngle = getDirectionForSpeed() + Math.PI / 3;
             Ve = Optional.of(new Point(
                     Math.cos(newVelAngle) * desiredSpeed,
                     Math.sin(newVelAngle) * desiredSpeed
@@ -53,7 +53,7 @@ public class Human extends Person {
 
     @Override
     protected Point handleAvoidance(List<Human> humans, List<Zombie> zombies) {
-        double angle = getDirection();
+        double angle = getDirectionForSpeed();
 
         Optional<Point> ncWall = handleAvoidNearestWall();
         Optional<Point> ncHuman = handleAvoidNearestHuman(angle, humans);
@@ -75,11 +75,11 @@ public class Human extends Person {
 
     @Override
     protected <T extends Person> Optional<Point> getGoalPosition(List<T> zombies) {
-        double angle = getDirection();
+        double angle = getDirectionForSpeed();
 
         List<Double> zombieAngles = zombies.stream()
                 .filter(z -> this.isOnVision(z.pos, angle))
-                .map(z -> Math.atan((z.pos.y - pos.y) / (z.pos.x - pos.x)))
+                .map(z -> getDirection((z.pos.y - pos.y), (z.pos.x - pos.x)))
                 .collect(Collectors.toList());
 
         if (zombieAngles.isEmpty()) return Optional.empty();

@@ -43,7 +43,9 @@ public abstract class Person {
         if (vel.x == 0.0) {
             return vel.y > 0 ? Math.PI / 2 : -Math.PI / 2;
         } else {
-            return Math.atan(vel.y / vel.x);
+            if (vel.y > 0 && vel.x > 0) return Math.atan(vel.y / vel.x);
+            if (vel.x < 0) return Math.atan(vel.y / vel.x) + Math.PI;
+            else return Math.atan(vel.y / vel.x) + 2 * Math.PI;
         }
     }
     

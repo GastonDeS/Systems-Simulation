@@ -63,6 +63,8 @@ public class Zombie extends Person {
         UTILS
      */
 
+
+    // TODO why nearest Entity, why not check with vision
     private void handleConversion(Optional<Point> maybeGoal) {
         if (maybeGoal.isPresent()) {
             Human nearestHuman = getNearestEntity(nearestHumans);

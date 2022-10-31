@@ -45,7 +45,7 @@ public abstract class Person {
 
     protected double getDirection(double x, double y) {
         if (x == 0.0) {
-            return y > 0 ? Math.PI / 2 : -Math.PI / 2;
+            return y > 0 ? Math.PI / 2 : Math.PI * 3 / 2;
         } else {
             if (y > 0 && x > 0) return Math.atan(y / x);
             if (x < 0) return Math.atan(y / x) + Math.PI;
@@ -79,8 +79,10 @@ public abstract class Person {
     }
 
     protected boolean isOnVision(Point pos2, double angle) {
-        double angleBetweenEntities = getDirection((pos2.y - pos.y) , (pos2.x - pos.x));
-
+        double yDiff = pos2.y - pos.y;
+        double xDiff = pos2.x - pos.x;
+        double angleBetweenEntities = getDirection((pos2.x - pos.x), (pos2.y - pos.y));
+        // angle between entities is that but y need to think it more
         return (angleBetweenEntities <= angle + deltaAngle
                 && angleBetweenEntities >= angle - deltaAngle)
                 && (Math.sqrt(Math.pow(pos2.x - pos.x, 2) + Math.pow(pos2.y - pos.y, 2)) <= limitVision);
@@ -125,12 +127,12 @@ public abstract class Person {
         
         // De las dos soluciones devuelvo la que este a mi vista
         Point firstSol = getYOnLine(xSol.x, m, b);
-        double angleFirstSol = getDirection((firstSol.y - pos.y), (firstSol.x - pos.x));
+        double angleFirstSol = getDirection((firstSol.x - pos.x), (firstSol.y - pos.y));
         if (angleFirstSol == angle && isOnVision(firstSol, angle)) {
             return Optional.of(firstSol);
         }
         Point secondSol = getYOnLine(xSol.y, m, b);
-        double angleSecondSol = getDirection((secondSol.y - pos.y), (secondSol.x - pos.x));
+        double angleSecondSol = getDirection((secondSol.x - pos.x), (secondSol.y - pos.y));
         if (angleSecondSol == angle && isOnVision(secondSol, angle)) {
             return Optional.of(secondSol);
         }

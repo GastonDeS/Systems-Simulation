@@ -79,7 +79,7 @@ public class Human extends Person {
 
         List<Double> zombieAngles = zombies.stream()
                 .filter(z -> this.isOnVision(z.pos, angle))
-                .map(z -> getDirection((z.pos.y - pos.y), (z.pos.x - pos.x)))
+                .map(z -> getDirection((z.pos.x - pos.x), (z.pos.y - pos.y)))
                 .collect(Collectors.toList());
 
         if (zombieAngles.isEmpty()) return Optional.empty();

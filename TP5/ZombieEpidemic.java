@@ -12,7 +12,7 @@ public class ZombieEpidemic {
         double deltaT = config.getDeltaT();
         room.savePersons(0);
 
-        while (t < config.getMaxTime() || room.getHumans().size() == 0) {
+        while (t < config.getMaxTime() && room.getHumans().size() != 0) {
             room.update(deltaT);
 
             if (iter % config.getSteps() == 0) {
@@ -21,6 +21,7 @@ public class ZombieEpidemic {
 
             t += deltaT;
             iter++;
+            System.out.println(iter);
         }
 
     }

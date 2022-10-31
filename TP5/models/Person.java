@@ -75,7 +75,7 @@ public abstract class Person {
 
     protected Point getRandomPos() {
         double angle = Math.random() * 2 * Math.PI;
-        return new Point(Math.cos(angle) * desiredSpeed, Math.sin(angle) * desiredSpeed);
+        return new Point(Math.cos(angle) * Room.getWallRadius() , Math.sin(angle) * Room.getWallRadius());
     }
 
     protected boolean isOnVision(Point pos2, double angle) {

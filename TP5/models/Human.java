@@ -39,7 +39,7 @@ public class Human extends Person {
     protected Point handleAvoidance(List<Human> humans, List<Zombie> zombies) {
         double angle = getDirectionForSpeed();
 
-        Optional<Point> ncWall = handleAvoidNearestWall();
+        Optional<Point> ncWall = handleAvoidNearestWall(); // TODO esquivar para un lado o el otro
         Optional<Point> ncHuman = handleAvoidNearestHuman(angle, humans);
         Optional<Point> ncZombie = handleAvoidNearestZombie(angle, zombies);
 
@@ -72,8 +72,8 @@ public class Human extends Person {
 
         return Optional.of(
                 new Point(
-                        Math.cos(desiredAngle) * Room.getWallRadius() + pos.x, // TODO analize if it is better to pass
-                        Math.sin(desiredAngle) * Room.getWallRadius() + pos.y)); // TODO the wall radius instead of this
+                        Math.cos(desiredAngle) + pos.x,
+                        Math.sin(desiredAngle) + pos.y));
     }
 
     /*

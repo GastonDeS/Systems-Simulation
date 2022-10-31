@@ -46,17 +46,11 @@ public class Zombie extends Person {
     }
 
     @Override
-    protected Optional<Point> handleCollisions(List<Human> humans) {
-        Optional<Point> Ve = Optional.empty();
-
-        if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = getDirectionForSpeed() + Math.PI/3;
-            Ve = Optional.of(new Point(
-                    Math.cos(newVelAngle) * desiredSpeed,
-                    Math.sin(newVelAngle) * desiredSpeed
-            ));
-        }
-        return Ve;
+    protected Point getVeFromEij(Point eij) {
+        return new Point(
+                -Vdz * eij.x,
+                -Vdz * eij.y
+        );
     }
 
     /*

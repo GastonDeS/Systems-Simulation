@@ -28,27 +28,11 @@ public class Human extends Person {
     }
 
     @Override
-    protected Optional<Point> handleCollisions(List<Human> humans) {
-        List<Human> humansColliding = humans.stream()
-                .filter(this::isColliding)
-                .collect(Collectors.toList());
-
-        Optional<Point> Ve = Optional.empty();
-
-        if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = getDirectionForSpeed() + Math.PI / 3;
-            Ve = Optional.of(new Point(
-                    Math.cos(newVelAngle) * desiredSpeed,
-                    Math.sin(newVelAngle) * desiredSpeed
-            ));
-        } else if (!humansColliding.isEmpty()) {
-            Point eij = getEij(humansColliding);
-            Ve = Optional.of(new Point(
-                    -Vdh * eij.x,
-                    -Vdh * eij.y
-            ));
-        }
-        return Ve;
+    protected Point getVeFromEij(Point eij) {
+        return new Point(
+                -Vdh * eij.x,
+                -Vdh * eij.y
+        );
     }
 
     @Override
@@ -133,29 +117,6 @@ public class Human extends Person {
         }
 
         return nc;
-    }
-
-    private Point getEij(List<Human> humansColliding) {
-        List<Point> IJs = getEijs(humansColliding);
-        Point IJ = new Point(0, 0);
-        for (Point IJi : IJs) {
-            IJ.x += IJi.x;
-            IJ.y += IJi.y;
-        } // TODO confirmar que esto es correcto
-//        double norm = Math.sqrt(Math.pow(IJ.x, 2) + Math.pow(IJ.y, 2));
-        return IJ.normalize();
-    }
-
-    private List<Point> getEijs(List<Human> humansColliding) {
-        return humansColliding.stream()
-                .map(h -> {
-                    Point eij = new Point((h.pos.x - pos.x) , (h.pos.y - pos.y));
-                    double norm = Math.sqrt(Math.pow(eij.x, 2) + Math.pow(eij.y, 2));
-                    eij.x /= norm;
-                    eij.y /= norm;
-                    return eij;
-                })
-                .collect(Collectors.toList());
     }
 
     @Override

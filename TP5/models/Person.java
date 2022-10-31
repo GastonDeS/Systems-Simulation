@@ -2,6 +2,7 @@ package models;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class Person {
     // TODO: check values
@@ -202,7 +203,9 @@ public abstract class Person {
         getDesiredPos(zombies, humans);
 
         // Check if there are collisions and get escape velocity
-        Optional<Point> Ve = handleCollisions(humans);
+        Optional<Point> Ve;
+        if (this instanceof Human) Ve = handleCollisions(humans);
+        else Ve = handleCollisions(zombies);
 
         if (Ve.isPresent()) {
             vel.setLocation(Ve.get());
@@ -227,7 +230,49 @@ public abstract class Person {
      */
     protected abstract <T extends Person> Optional<Point> getGoalPosition(List<T> persons);
 
-    protected abstract Optional<Point> handleCollisions(List<Human> humans);
+    protected <T extends Person>Optional<Point> handleCollisions(List<T> persons) {
+        List<T> personsColliding = persons.stream()
+                .filter(this::isColliding)
+                .collect(Collectors.toList());
+
+        Optional<Point> Ve = Optional.empty();
+
+        if (isTouchingCircularWall(Room.getWallRadius())) {
+            double newVelAngle = getDirectionForSpeed() + Math.PI/3;
+            Ve = Optional.of(new Point(
+                    Math.cos(newVelAngle) * desiredSpeed,
+                    Math.sin(newVelAngle) * desiredSpeed
+            ));
+        } else if (!personsColliding.isEmpty()) {
+            Point eij = getEij(personsColliding);
+            Ve = Optional.of(getVeFromEij(eij));
+        }
+        return Ve;
+    };
+
+    protected abstract Point getVeFromEij(Point eij);
+
+    protected <T extends Person> Point getEij(List<T> humansColliding) {
+        List<Point> IJs = getEijs(humansColliding);
+        Point IJ = new Point(0, 0);
+        for (Point IJi : IJs) {
+            IJ.x += IJi.x;
+            IJ.y += IJi.y;
+        }
+        return IJ.normalize();
+    }
+
+    private <T extends Person> List<Point> getEijs(List<T> humansColliding) {
+        return humansColliding.stream()
+                .map(h -> {
+                    Point eij = new Point((h.pos.x - pos.x) , (h.pos.y - pos.y));
+                    double norm = Math.sqrt(Math.pow(eij.x, 2) + Math.pow(eij.y, 2));
+                    eij.x /= norm;
+                    eij.y /= norm;
+                    return eij;
+                })
+                .collect(Collectors.toList());
+    }
 
     protected abstract void getDesiredPos(List<Zombie> zombies, List<Human> humans);
 

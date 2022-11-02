@@ -84,20 +84,20 @@ public class ZombieEpidemic {
         }
     }
 
-    private static void setConfig() {
-        config
-            .withVdz(1)
-            .withNh(200)
-            .withDeltaT(0.0125)
-            .withTau(0.5)
-            .withApHuman(0.1)
-            .withBpHuman(500)
-            .withApZombie(0.1)
-            .withBpZombie(1000)
-            .withApWall(0.1)
-            .withBpWall(100)
-            .withMaxTime(300)
-            .withSteps(1);
+    private static Config setConfig() {
+        return new Config()
+                .withNh(50)
+                .withDeltaT(0.0125)
+                .withVdz(3)
+                .withTau(0.5)
+                .withApHuman(0.1)
+                .withBpHuman(500)
+                .withApZombie(0.1)
+                .withBpZombie(1000)
+                .withApWall(0.1)
+                .withBpWall(500)
+                .withMaxTime(300)
+                .withSteps(1);
     }
 
     private enum Variable {

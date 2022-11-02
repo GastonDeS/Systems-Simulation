@@ -10,7 +10,7 @@ public class Human extends Person {
     public Human(String id, double positionX, double positionY, Config config) {
         super(id, positionX, positionY, 1, 1,config);
         this.deltaAngle = Math.PI / 4;
-        this.limitVision = 6;
+        this.limitVision = 2;
         this.desiredSpeed = 4;
         this.Ap = config.getApHuman();
         this.Bp = config.getBpHuman();
@@ -54,7 +54,7 @@ public class Human extends Person {
             nc = nc.add(ncZombie.get());
         }
 
-        return nc;
+        return nc.normalize();
     }
 
     @Override
@@ -72,8 +72,8 @@ public class Human extends Person {
 
         return Optional.of(
                 new Point(
-                        Math.cos(desiredAngle) + pos.x,
-                        Math.sin(desiredAngle) + pos.y));
+                        Math.cos(desiredAngle) *2 + pos.x,
+                        Math.sin(desiredAngle) *2+ pos.y));
     }
 
     /*
@@ -111,7 +111,7 @@ public class Human extends Person {
         List<Zombie> zombiesOnSight = zombies.stream()
                 .filter(h -> this.isOnVision(h.pos, angle))
                 .collect(Collectors.toList());
-        if (zombiesOnSight.size() > 1) {
+        if (zombiesOnSight.size() > 0) {
             Zombie zombie = getNearestEntity(zombiesOnSight);
             nc = Optional.of(calculateHij(calculateEij(zombie.pos), zombie.Ap, zombie.Bp));
         }

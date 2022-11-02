@@ -12,7 +12,7 @@ public class Zombie extends Person {
     public Zombie(String id, double positionX, double positionY, Config config) {
         super(id, positionX, positionY, 1,0, config);
         this.deltaAngle = Math.PI / 8;
-        this.limitVision = 4;
+        this.limitVision = 2;
         this.Vdz = config.getVdz();
         this.Ap = config.getApZombie();
         this.Bp = config.getBpZombie();
@@ -58,7 +58,6 @@ public class Zombie extends Person {
      */
 
 
-    // TODO why nearest Entity, why not check with vision
     private void handleConversion(Optional<Point> maybeGoal) {
         if (maybeGoal.isPresent()) {
             Human nearestHuman = getNearestEntity(nearestHumans);

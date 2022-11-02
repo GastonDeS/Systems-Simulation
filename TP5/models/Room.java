@@ -32,6 +32,8 @@ public class Room {
             Zombie z = zombies.get(i);
             handleState(z, deltaT);
         }
+        humans.forEach(p -> p.updateRadiusAndPosition(deltaT));
+        zombies.forEach(p -> p.updateRadiusAndPosition(deltaT));
     }
 
     /**
@@ -80,7 +82,7 @@ public class Room {
     private Human createHuman(int i) {
         double angle = Math.random() * 2 * Math.PI;
         // 11 - 1 (radio de lejania inicial al zombie) - 2 * radius (radio de la persona y el zombie estan considerados)
-        double distance = (Math.random() * (wallRadius - 1 - 2 * minRadius)) + 1 + 2 * minRadius; // TODO min radius or max radius?
+        double distance = (Math.random() * (wallRadius - 2)) + 1;
         Human human = new Human(
                 String.valueOf(i),
                 Math.cos(angle) * distance,

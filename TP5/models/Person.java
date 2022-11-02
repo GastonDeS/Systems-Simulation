@@ -27,6 +27,8 @@ public abstract class Person {
     protected final double ApWall;
     protected final double BpWall;
 
+    private boolean crashedFlag = false;
+
     public Person(String id, double positionX, double positionY, double speedX, double speedY, Config config) {
         this.id = id;
         this.vel = new Point(0 ,0);
@@ -76,12 +78,10 @@ public abstract class Person {
 
     protected Point getRandomPos() {
         double angle = Math.random() * 2 * Math.PI;
-        return new Point(Math.cos(angle) * Room.getWallRadius() , Math.sin(angle) * Room.getWallRadius());
+        return new Point(Math.cos(angle) * (Room.getWallRadius() - Rmax) , Math.sin(angle) * (Room.getWallRadius() - Rmax));
     }
 
     protected boolean isOnVision(Point pos2, double angle) {
-        double yDiff = pos2.y - pos.y;
-        double xDiff = pos2.x - pos.x;
         double angleBetweenEntities = getDirection((pos2.x - pos.x), (pos2.y - pos.y));
         // angle between entities is that but y need to think it more
         return (angleBetweenEntities <= angle + deltaAngle
@@ -193,6 +193,18 @@ public abstract class Person {
         return new Point(0,0);
     }
 
+    public void updateRadiusAndPosition(double deltaT) {
+        if (state == PersonState.CONVERTING) return;
+        if (crashedFlag) {
+            this.radius = Rmin;
+            this.crashedFlag = false;
+        }
+
+        // Update position
+        pos.x  += vel.prod(deltaT).x;
+        pos.y  += vel.prod(deltaT).y;
+    }
+
     /**
      * Update position and velocity of humans and zombies
      * @param deltaT
@@ -209,7 +221,8 @@ public abstract class Person {
 
         if (Ve.isPresent()) {
             vel.setLocation(Ve.get());
-            radius = Rmin;
+            this.crashedFlag = true;
+//            radius = Rmin;
         } else  {
             updateRadius(deltaT);
             Point nc = handleAvoidance(humans, zombies);
@@ -218,9 +231,7 @@ public abstract class Person {
 
 //        System.out.println(vel);
 
-        // Update position
-        pos.x  += vel.prod(deltaT).x;
-        pos.y  += vel.prod(deltaT).y;
+
     }
 
     /**
@@ -238,7 +249,7 @@ public abstract class Person {
         Optional<Point> Ve = Optional.empty();
 
         if (isTouchingCircularWall(Room.getWallRadius())) {
-            double newVelAngle = getDirectionForSpeed() + Math.PI/3;
+            double newVelAngle = getDirectionForSpeed() + Math.PI/4;
             Ve = Optional.of(new Point(
                     Math.cos(newVelAngle) * desiredSpeed,
                     Math.sin(newVelAngle) * desiredSpeed
@@ -248,7 +259,7 @@ public abstract class Person {
             Ve = Optional.of(getVeFromEij(eij));
         }
         return Ve;
-    };
+    }
 
     protected abstract Point getVeFromEij(Point eij);
 

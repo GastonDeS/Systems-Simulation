@@ -1,44 +1,114 @@
 import models.Config;
+import models.FileLog;
 import models.Room;
 
 public class ZombieEpidemic {
+    private static final Config config                = new Config();
+    private static final Variable variable            = Variable.NH;
+    private static final SimulationType simulationType = SimulationType.INFECTION_SPEED;
 
     public static void main(String[] args) {
-        final Config config = setConfig();
+        setConfig();
+
+        switch (variable) {
+            case NH:
+                simulationWithNhVariable();
+                break;
+            case VDZ:
+                simulationWithVdzVariable();
+                break;
+            case NO_VARIABLE:
+                mainSimulation(null);
+                break;
+        }
+    }
+
+    private static void mainSimulation(FileLog fileLog) {
         Room room = new Room(config);
         room.fillRoom();
         double t = 0.0;
         int iter = 1;
         double deltaT = config.getDeltaT();
         room.savePersons(0);
+        int prevNz = 0;
 
         while (t < config.getMaxTime() && room.getHumans().size() != 0) {
             room.update(deltaT);
 
             if (iter % config.getSteps() == 0) {
-                room.savePersons(iter);
+                switch (simulationType) {
+                    case MAIN:
+                        room.savePersons(iter);
+                        break;
+                    case HUMAN_ZOMBIE_RATIO:
+                        double ratio = room.getHumanZombieRatio();
+                        fileLog.write(t + " " + ratio + "\n");
+                        break;
+                    case INFECTION_SPEED:
+                        System.out.println(room.getZombieCount() + " " + prevNz);
+                        double vel = (double) (room.getZombieCount() - prevNz) / config.getSteps();
+                        prevNz = room.getZombieCount();
+                        fileLog.write(t + " " + vel + "\n");
+                        break;
+                }
             }
 
             t += deltaT;
             iter++;
-            System.out.println(iter);
         }
 
+        if (fileLog != null) {
+            fileLog.close();
+        }
     }
 
-    private static Config setConfig() {
-        return new Config()
-                .withN(30)
-                .withDeltaT(0.0125)
-                .withVdz(3)
-                .withTau(0.5)
-                .withApHuman(0.1)
-                .withBpHuman(500)
-                .withApZombie(0.1)
-                .withBpZombie(1000)
-                .withApWall(0.1)
-                .withBpWall(100)
-                .withMaxTime(300)
-                .withSteps(1);
+    private static void simulationWithNhVariable() {
+        config.withVdz(0.3);
+        int[] Nhs = new int[]{2, 10, 40, 80, 140, 200, 260, 320, 380};
+        for (int Nh : Nhs) {
+            config.withNh(Nh);
+            String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedNh" : "ratios/ratioNh";
+            FileLog fileLog = new FileLog("TP5/" + fileName + Nh + ".txt");
+            mainSimulation(fileLog);
+        }
+    }
+
+    private static void simulationWithVdzVariable() {
+        config.withNh(200);
+        double[] Vdzs = new double[]{1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
+        for (double Vdz : Vdzs) {
+            config.withVdz(Vdz);
+            String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedVdz" : "ratios/ratioVdz";
+            FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + ".txt");
+            mainSimulation(fileLog);
+        }
+    }
+
+    private static void setConfig() {
+        config
+            .withVdz(1)
+            .withNh(200)
+            .withDeltaT(0.0125)
+            .withTau(0.5)
+            .withApHuman(0.1)
+            .withBpHuman(500)
+            .withApZombie(0.1)
+            .withBpZombie(1000)
+            .withApWall(0.1)
+            .withBpWall(100)
+            .withMaxTime(300)
+            .withSteps(1);
+    }
+
+    private enum Variable {
+        NH,
+        VDZ,
+        NO_VARIABLE
+    }
+
+    private enum SimulationType {
+        HUMAN_ZOMBIE_RATIO,
+        INFECTION_SPEED,
+        MAIN
     }
 }

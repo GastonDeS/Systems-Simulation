@@ -70,11 +70,11 @@ public class Room {
         zombies.add(new Zombie(String.valueOf(0),0,0, config));
 
         // Add humans
-        for (int i = 1; i < config.getN(); i++) {
+        for (int i = 1; i < config.getNh(); i++) {
             humans.add(createHuman(i));
         }
 
-        humans.forEach(System.out::println);
+        //humans.forEach(System.out::println);
     }
 
     private Human createHuman(int i) {
@@ -94,6 +94,14 @@ public class Room {
 
     private boolean hasContactWithHumans(Human human) {
         return humans.stream().anyMatch(h -> h.isColliding(human));
+    }
+
+    public double getHumanZombieRatio() {
+        return (double) zombies.size() / (zombies.size() + humans.size());
+    }
+
+    public int getZombieCount() {
+        return zombies.size();
     }
 
     public void savePersons(int iteration) {

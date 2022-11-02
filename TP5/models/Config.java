@@ -1,7 +1,7 @@
 package models;
 
 public class Config {
-    private int N;
+    private int Nh;
     private double deltaT;
     private double Vdz;
     private double tau;
@@ -14,8 +14,8 @@ public class Config {
     private double maxTime;
     private int steps;
 
-    public Config withN(int n) {
-        this.N = n;
+    public Config withNh(int n) {
+        this.Nh = n;
         return this;
     }
 
@@ -78,8 +78,8 @@ public class Config {
         GETTERS
      */
 
-    public int getN() {
-        return N;
+    public int getNh() {
+        return Nh;
     }
 
     public double getDeltaT() {

@@ -78,7 +78,6 @@ public class Room {
             humans.add(createHuman(i));
         }
 
-        //humans.forEach(System.out::println);
     }
 
     private Human createHuman(int i) {

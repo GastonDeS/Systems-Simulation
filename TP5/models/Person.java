@@ -158,7 +158,6 @@ public abstract class Person {
     }
 
     protected void updateVelocityForAvoidance(Point nc) {
-        System.out.println(this.toString() + desiredPos);
         Point eit = desiredPos.sub(pos).normalize();
         Point eia = nc.add(eit).normalize();
         double magnitude = desiredSpeed * Math.pow((radius - Rmin)/(Rmax - Rmin), beta);
@@ -223,14 +222,12 @@ public abstract class Person {
         if (Ve.isPresent()) {
             vel.setLocation(Ve.get());
             this.crashedFlag = true;
-//            radius = Rmin;
         } else  {
             updateRadius(deltaT);
             Point nc = handleAvoidance(humans, zombies);
             updateVelocityForAvoidance(nc);
         }
 
-//        System.out.println(vel);
 
 
     }

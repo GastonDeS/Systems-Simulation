@@ -3,13 +3,11 @@ import models.FileLog;
 import models.Room;
 
 public class ZombieEpidemic {
-    private static final Config config                = new Config();
-    private static final Variable variable            = Variable.NH;
-    private static final SimulationType simulationType = SimulationType.INFECTION_SPEED;
+    private static final Config config                = setConfig();
+    private static final Variable variable            = Variable.NO_VARIABLE;
+    private static final SimulationType simulationType = SimulationType.MAIN;
 
     public static void main(String[] args) {
-        setConfig();
-
         switch (variable) {
             case NH:
                 simulationWithNhVariable();

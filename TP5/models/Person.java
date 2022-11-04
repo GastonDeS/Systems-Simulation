@@ -158,6 +158,7 @@ public abstract class Person {
     }
 
     protected void updateVelocityForAvoidance(Point nc) {
+        System.out.println(this.toString() + desiredPos);
         Point eit = desiredPos.sub(pos).normalize();
         Point eia = nc.add(eit).normalize();
         double magnitude = desiredSpeed * Math.pow((radius - Rmin)/(Rmax - Rmin), beta);
@@ -186,7 +187,7 @@ public abstract class Person {
         double dist = pos.dist(Eij);
         Point desired = desiredPos.sub(pos).normalize();
         double mul = Ap * Math.exp(-dist/Bp) * desired.dotProduct(Eij);
-        return Eij.prod(-mul);
+        return Eij.prod(mul);
     }
 
     protected Point handleAvoidance(List<Human> humans, List<Zombie> zombies) {

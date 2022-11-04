@@ -59,7 +59,7 @@ public class Room {
 
     private boolean updateLists(Human h) {
         if (h.getTimeLeft() <= 0) {
-            Zombie z = new Zombie(h.getId(), h.pos.x, h.pos.y, config);
+            Zombie z = new Zombie(h.getId(), h.pos.x, h.pos.y, h.vel.x, h.vel.y,config);
             humans.remove(h);
             zombies.add(z);
             return true;
@@ -69,7 +69,9 @@ public class Room {
 
     public void fillRoom() {
         // Add zombie
-        zombies.add(new Zombie(String.valueOf(0),0,0, config));
+        double angle = Math.random() * 2 * Math.PI;
+        double speed = 0.3;
+        zombies.add(new Zombie(String.valueOf(0),0,0, Math.cos(angle) * speed, Math.sin(angle) * speed, config));
 
         // Add humans
         for (int i = 1; i < config.getNh(); i++) {
@@ -87,6 +89,8 @@ public class Room {
                 String.valueOf(i),
                 Math.cos(angle) * distance,
                 Math.sin(angle) * distance,
+                Math.sin(angle) * distance, // puesto al revez para hacerlo distinto pq si
+                Math.cos(angle) * distance,
                 config
         );
 

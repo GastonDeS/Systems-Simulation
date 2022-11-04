@@ -9,8 +9,8 @@ public class Zombie extends Person {
     private final double Vdz;
     private List<Human> nearestHumans;
 
-    public Zombie(String id, double positionX, double positionY, Config config) {
-        super(id, positionX, positionY, 1,0, config);
+    public Zombie(String id, double positionX, double positionY, double velX, double velY,Config config) {
+        super(id, positionX, positionY, velX,velY, config);
         this.deltaAngle = Math.PI / 8;
         this.limitVision = 2;
         this.Vdz = config.getVdz();
@@ -69,7 +69,8 @@ public class Zombie extends Person {
             this.desiredSpeed = Vdz;
         } else {
             this.desiredSpeed = INACTIVE_SPEED;
-            this.desiredPos = getRandomPos();
+            if (pos == null || !pos.equals(desiredPos))
+                this.desiredPos = getRandomPos();
         }
     }
 

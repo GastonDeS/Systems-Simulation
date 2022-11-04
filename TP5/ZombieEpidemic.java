@@ -88,14 +88,14 @@ public class ZombieEpidemic {
                 .withDeltaT(0.0125)
                 .withVdz(3)
                 .withTau(0.5)
-                .withApHuman(0.1)
+                .withApHuman(1)
                 .withBpHuman(500)
-                .withApZombie(0.1)
+                .withApZombie(5)
                 .withBpZombie(1000)
-                .withApWall(0.1)
-                .withBpWall(500)
+                .withApWall(4)
+                .withBpWall(1000)
                 .withMaxTime(300)
-                .withSteps(1);
+                .withSteps(5);
     }
 
     private enum Variable {

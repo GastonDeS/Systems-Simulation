@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 public class Human extends Person {
     private static final double Vdh = 4; // TODO: check if Vdh is escape velocity magnitude
 
-    public Human(String id, double positionX, double positionY, Config config) {
-        super(id, positionX, positionY, 1, 1,config);
+    public Human(String id, double positionX, double positionY, double velX, double velY, Config config) {
+        super(id, positionX, positionY, velX, velY,config);
         this.deltaAngle = Math.PI / 4;
         this.limitVision = 2;
         this.desiredSpeed = 4;
@@ -45,16 +45,16 @@ public class Human extends Person {
 
         Point nc = new Point(0,0);
         if (ncWall.isPresent()) {
-            nc = nc.add(ncWall.get());
+            nc = nc.sub(ncWall.get());
         }
         if (ncHuman.isPresent()) {
-            nc = nc.add(ncHuman.get());
+            nc = nc.sub(ncHuman.get());
         }
         if (ncZombie.isPresent()) {
             nc = nc.add(ncZombie.get());
         }
 
-        return nc.normalize();
+        return nc;
     }
 
     @Override

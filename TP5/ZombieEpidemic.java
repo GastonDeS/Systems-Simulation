@@ -84,7 +84,7 @@ public class ZombieEpidemic {
 
     private static Config setConfig() {
         return new Config()
-                .withNh(50)
+                .withNh(100)
                 .withDeltaT(0.0125)
                 .withVdz(3)
                 .withTau(0.5)

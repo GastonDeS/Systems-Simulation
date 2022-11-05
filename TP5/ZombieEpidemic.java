@@ -65,9 +65,11 @@ public class ZombieEpidemic {
         int[] Nhs = new int[]{2, 10, 40, 80, 140, 200, 260, 320, 380};
         for (int Nh : Nhs) {
             config.withNh(Nh);
-            String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedNh" : "ratios/ratioNh";
-            FileLog fileLog = new FileLog("TP5/" + fileName + Nh + ".txt");
-            mainSimulation(fileLog);
+            for (int i = 0; i < 10; i++) {
+                String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedNh" : "ratios/ratioNh";
+                FileLog fileLog = new FileLog("TP5/" + fileName + Nh + "_" + i + ".txt");
+                mainSimulation(fileLog);
+            }
         }
     }
 
@@ -76,9 +78,11 @@ public class ZombieEpidemic {
         double[] Vdzs = new double[]{1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
         for (double Vdz : Vdzs) {
             config.withVdz(Vdz);
-            String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedVdz" : "ratios/ratioVdz";
-            FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + ".txt");
-            mainSimulation(fileLog);
+            for (int i = 0; i < 10; i++) {
+                String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedVdz" : "ratios/ratioVdz";
+                FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + "_" + i + ".txt");
+                mainSimulation(fileLog);
+            }
         }
     }
 

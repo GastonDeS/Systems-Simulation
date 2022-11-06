@@ -3,9 +3,9 @@ import models.FileLog;
 import models.Room;
 
 public class ZombieEpidemic {
-    private static final Config config                = setConfig();
-    private static final Variable variable            = Variable.NO_VARIABLE;
-    private static final SimulationType simulationType = SimulationType.MAIN;
+    private static final Config config                 = setConfig();
+    private static final Variable variable             = Variable.NH;
+    private static final SimulationType simulationType = SimulationType.TIME_TO_FULL_INFECTION;
 
     public static void main(String[] args) {
         switch (variable) {
@@ -27,7 +27,9 @@ public class ZombieEpidemic {
         double t = 0.0;
         int iter = 1;
         double deltaT = config.getDeltaT();
-        room.savePersons(0);
+        if (simulationType == SimulationType.MAIN) {
+            room.savePersons(0);
+        }
         int prevNz = 0;
 
         while (t < config.getMaxTime() && room.getHumans().size() != 0) {
@@ -55,8 +57,13 @@ public class ZombieEpidemic {
             iter++;
         }
 
-        if (fileLog != null) {
-            fileLog.close();
+        if (simulationType == SimulationType.TIME_TO_FULL_INFECTION) {
+            String data = room.getHumans().size() != 0 ? "" : Double.toString(t);
+            fileLog.write(data + "\n");
+        } else {
+            if (fileLog != null) {
+                fileLog.close();
+            }
         }
     }
 
@@ -65,10 +72,19 @@ public class ZombieEpidemic {
         int[] Nhs = new int[]{2, 10, 40, 80, 140, 200, 260, 320, 380};
         for (int Nh : Nhs) {
             config.withNh(Nh);
-            for (int i = 0; i < 10; i++) {
-                String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedNh" : "ratios/ratioNh";
-                FileLog fileLog = new FileLog("TP5/" + fileName + Nh + "_" + i + ".txt");
-                mainSimulation(fileLog);
+            if (simulationType != SimulationType.TIME_TO_FULL_INFECTION) {
+                for (int i = 0; i < 10; i++) {
+                    String fileName = getStringName("Nh");
+                    FileLog fileLog = new FileLog("TP5/" + fileName + Nh + "_" + i + ".txt");
+                    mainSimulation(fileLog);
+                }
+            } else {
+                String fileName = getStringName("Nh");
+                FileLog fileLog = new FileLog("TP5/" + fileName + Nh + ".txt");
+                for (int i = 0; i < 10; i++) {
+                    mainSimulation(fileLog);
+                }
+                fileLog.close();
             }
         }
     }
@@ -78,12 +94,33 @@ public class ZombieEpidemic {
         double[] Vdzs = new double[]{1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
         for (double Vdz : Vdzs) {
             config.withVdz(Vdz);
-            for (int i = 0; i < 10; i++) {
-                String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedVdz" : "ratios/ratioVdz";
-                FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + "_" + i + ".txt");
-                mainSimulation(fileLog);
+            if (simulationType != SimulationType.TIME_TO_FULL_INFECTION) {
+                for (int i = 0; i < 10; i++) {
+                    String fileName = getStringName("Vdz");
+                    FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + "_" + i + ".txt");
+                    mainSimulation(fileLog);
+                }
+            } else {
+                String fileName = getStringName("Vdz");
+                FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + ".txt");
+                for (int i = 0; i < 10; i++) {
+                    mainSimulation(fileLog);
+                }
+                fileLog.close();
             }
         }
+    }
+
+    private static String getStringName(String variable) {
+        switch (simulationType) {
+            case HUMAN_ZOMBIE_RATIO:
+                return "ratios/ratio" + variable;
+            case INFECTION_SPEED:
+                return "speeds/speed" + variable;
+            case TIME_TO_FULL_INFECTION:
+                return "times/time" + variable;
+        }
+        return null;
     }
 
     private static Config setConfig() {
@@ -98,7 +135,7 @@ public class ZombieEpidemic {
                 .withBpZombie(1000)
                 .withApWall(2) // 2 ideal
                 .withBpWall(1000)
-                .withMaxTime(300)
+                .withMaxTime(600)
                 .withSteps(5);
     }
 
@@ -111,6 +148,7 @@ public class ZombieEpidemic {
     private enum SimulationType {
         HUMAN_ZOMBIE_RATIO,
         INFECTION_SPEED,
+        TIME_TO_FULL_INFECTION,
         MAIN
     }
 }

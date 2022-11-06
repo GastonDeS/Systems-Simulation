@@ -207,12 +207,13 @@ public abstract class Person {
 
     /**
      * Update position and velocity of humans and zombies
-     * @param deltaT
-     * @param zombies
-     * @param humans
+     * @param deltaT     simulation time for update
+     * @param zombies    list of current zombies
+     * @param humans     list of current humans
+     * @param converting list of current humans converting
      */
-    protected void update(double deltaT, List<Zombie> zombies, List<Human> humans) {
-        getDesiredPos(zombies, humans);
+    protected void update(double deltaT, List<Zombie> zombies, List<Human> humans, List<Human> converting) {
+        getDesiredPos(zombies, humans, converting);
 
         // Check if there are collisions and get escape velocity
         Optional<Point> Ve;
@@ -290,7 +291,7 @@ public abstract class Person {
                 .collect(Collectors.toList());
     }
 
-    protected abstract void getDesiredPos(List<Zombie> zombies, List<Human> humans);
+    protected abstract void getDesiredPos(List<Zombie> zombies, List<Human> humans, List<Human> converting);
 
     @Override
     public String toString() {

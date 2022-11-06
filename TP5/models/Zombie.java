@@ -23,10 +23,10 @@ public class Zombie extends Person {
      */
 
     @Override
-    protected void getDesiredPos(List<Zombie> zombies, List<Human> humans) {
+    protected void getDesiredPos(List<Zombie> zombies, List<Human> humans, List<Human> converting) {
         // Get desired target if human is near
         Optional<Point> maybeGoal = getGoalPosition(humans);
-        handleConversion(maybeGoal);
+        handleConversion(maybeGoal, converting);
     }
 
     @SuppressWarnings("unchecked")
@@ -58,12 +58,13 @@ public class Zombie extends Person {
      */
 
 
-    private void handleConversion(Optional<Point> maybeGoal) {
+    private void handleConversion(Optional<Point> maybeGoal, List<Human> converting) {
         if (maybeGoal.isPresent()) {
             Human nearestHuman = getNearestEntity(nearestHumans);
             if (isColliding(nearestHuman)) {
                 startConversion();
                 nearestHuman.startConversion();
+                converting.add(nearestHuman);
             }
             this.desiredPos = nearestHuman.pos;
             this.desiredSpeed = Vdz;

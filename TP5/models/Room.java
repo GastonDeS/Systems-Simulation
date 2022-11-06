@@ -10,6 +10,7 @@ public class Room {
     private final Config config;
     private final List<Human> humans;
     private final List<Zombie> zombies;
+    private final List<Human> converting;
     private final static double wallRadius = 11; // fixed value
 
     private final static double minRadius = 0.1;
@@ -19,6 +20,7 @@ public class Room {
         this.config = config;
         this.humans = new ArrayList<>();
         this.zombies = new ArrayList<>();
+        this.converting = new ArrayList<>();
     }
 
     public void update(double deltaT) {
@@ -28,8 +30,7 @@ public class Room {
                 i--;
             }
         }
-        for (int i = 0; i < zombies.size(); i++) {
-            Zombie z = zombies.get(i);
+        for (Zombie z : zombies) {
             handleState(z, deltaT);
         }
         humans.forEach(p -> p.updateRadiusAndPosition(deltaT));
@@ -38,14 +39,14 @@ public class Room {
 
     /**
      *
-     * @param p
-     * @param deltaT
+     * @param p      current person
+     * @param deltaT simulation time for update
      * @return returns true if the person has changed to a zombie
      */
     private boolean handleState(Person p, double deltaT) {
         switch (p.getState()) {
             case WALKING:
-                p.update(deltaT, zombies, humans);
+                p.update(deltaT, zombies, humans, converting);
                 break;
             case CONVERTING:
                 p.reduceTimeLeft(deltaT);
@@ -61,6 +62,7 @@ public class Room {
         if (h.getTimeLeft() <= 0) {
             Zombie z = new Zombie(h.getId(), h.pos.x, h.pos.y, h.vel.x, h.vel.y,config);
             humans.remove(h);
+            converting.remove(h);
             zombies.add(z);
             return true;
         }
@@ -102,7 +104,7 @@ public class Room {
     }
 
     public double getHumanZombieRatio() {
-        return (double) zombies.size() / (zombies.size() + humans.size());
+        return (double) (zombies.size() + converting.size()) / (zombies.size() + humans.size());
     }
 
     public int getZombieCount() {

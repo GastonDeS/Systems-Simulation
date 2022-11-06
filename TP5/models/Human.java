@@ -21,7 +21,7 @@ public class Human extends Person {
      */
 
     @Override
-    protected void getDesiredPos(List<Zombie> zombies, List<Human> humans) {
+    protected void getDesiredPos(List<Zombie> zombies, List<Human> humans, List<Human> converting) {
         // Get desired target if human is threatened
         Optional<Point> maybeGoal = getGoalPosition(zombies);
         desiredPos = maybeGoal.orElseGet(() -> pos.add(vel));

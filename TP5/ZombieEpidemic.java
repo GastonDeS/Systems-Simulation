@@ -4,7 +4,7 @@ import models.Room;
 
 public class ZombieEpidemic {
     private static final Config config                 = setConfig();
-    private static final Variable variable             = Variable.NH;
+    private static final Variable variable             = Variable.VDZ;
     private static final SimulationType simulationType = SimulationType.TIME_TO_FULL_INFECTION;
 
     public static void main(String[] args) {
@@ -30,12 +30,12 @@ public class ZombieEpidemic {
         if (simulationType == SimulationType.MAIN) {
             room.savePersons(0);
         }
-        int prevNz = 0;
+        int prevNz = 1;
 
         while (t < config.getMaxTime() && room.getHumans().size() != 0) {
             room.update(deltaT);
 
-            if (iter % config.getSteps() == 0) {
+            if (iter % 800 == 0) {
                 switch (simulationType) {
                     case MAIN:
                         room.savePersons(iter);
@@ -45,8 +45,8 @@ public class ZombieEpidemic {
                         fileLog.write(t + " " + ratio + "\n");
                         break;
                     case INFECTION_SPEED:
-                        System.out.println(room.getZombieCount() + " " + prevNz);
-                        double vel = (double) (room.getZombieCount() - prevNz) / config.getSteps();
+//                        System.out.println(room.getZombieCount() + " " + prevNz);
+                        double vel = (double) (room.getZombieCount() - prevNz) / 10;
                         prevNz = room.getZombieCount();
                         fileLog.write(t + " " + vel + "\n");
                         break;
@@ -68,8 +68,8 @@ public class ZombieEpidemic {
     }
 
     private static void simulationWithNhVariable() {
-        config.withVdz(0.3);
-        int[] Nhs = new int[]{2, 10, 40, 80, 140, 200, 260, 320, 380};
+        config.withVdz(3);
+        int[] Nhs = new int[]{30, 60, 90, 120, 150, 180, 210, 240, 270};
         for (int Nh : Nhs) {
             config.withNh(Nh);
             if (simulationType != SimulationType.TIME_TO_FULL_INFECTION) {
@@ -90,7 +90,7 @@ public class ZombieEpidemic {
     }
 
     private static void simulationWithVdzVariable() {
-        config.withNh(200);
+        config.withNh(201);
         double[] Vdzs = new double[]{1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
         for (double Vdz : Vdzs) {
             config.withVdz(Vdz);

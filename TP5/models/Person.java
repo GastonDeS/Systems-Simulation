@@ -78,7 +78,7 @@ public abstract class Person {
 
     protected Point getRandomPos() {
         double angle = Math.random() * 2 * Math.PI;
-        return new Point(Math.cos(angle) * Math.random() * (Room.getWallRadius() - Rmax) , Math.sin(angle) * Math.random() * (Room.getWallRadius() - Rmax));
+        return new Point(Math.cos(angle) * Math.random() * (Room.getWallRadius() - 1) , Math.sin(angle) * Math.random() * (Room.getWallRadius() - 1));
     }
 
     protected boolean isOnVision(Point pos2, double angle) {
@@ -248,7 +248,8 @@ public abstract class Person {
 
         if (isTouchingCircularWall(Room.getWallRadius())) {
             Point wallDir = pos.normalize();
-            double newVelAngle = getDirectionForSpeed() + (getDirectionForSpeed() - getDirection(wallDir.getX(), wallDir.getY()));
+            boolean hourlyRotation = Math.abs(Math.atan(vel.y/vel.x)) < Math.PI/4;
+            double newVelAngle = hourlyRotation ? getDirection(wallDir.x, wallDir.y) + Math.PI/2 + Math.PI / 10: getDirection(-wallDir.x, -wallDir.y) - Math.PI/2 + Math.PI / 10;
             Ve = Optional.of(new Point(
                     Math.cos(newVelAngle) * desiredSpeed,
                     Math.sin(newVelAngle) * desiredSpeed

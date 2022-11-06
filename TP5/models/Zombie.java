@@ -69,7 +69,7 @@ public class Zombie extends Person {
             this.desiredSpeed = Vdz;
         } else {
             this.desiredSpeed = INACTIVE_SPEED;
-            if (desiredPos == null || pos.equals(desiredPos))
+            if (desiredPos == null || pos.dist(desiredPos) < 0.01)
                 this.desiredPos = getRandomPos();
         }
     }

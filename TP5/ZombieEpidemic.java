@@ -4,8 +4,8 @@ import models.Room;
 
 public class ZombieEpidemic {
     private static final Config config                = setConfig();
-    private static final Variable variable            = Variable.NO_VARIABLE;
-    private static final SimulationType simulationType = SimulationType.MAIN;
+    private static final Variable variable            = Variable.NH;
+    private static final SimulationType simulationType = SimulationType.HUMAN_ZOMBIE_RATIO;
 
     public static void main(String[] args) {
         switch (variable) {
@@ -32,7 +32,6 @@ public class ZombieEpidemic {
 
         while (t < config.getMaxTime() && room.getHumans().size() != 0) {
             room.update(deltaT);
-
             if (iter % config.getSteps() == 0) {
                 switch (simulationType) {
                     case MAIN:
@@ -65,11 +64,9 @@ public class ZombieEpidemic {
         int[] Nhs = new int[]{2, 10, 40, 80, 140, 200, 260, 320, 380};
         for (int Nh : Nhs) {
             config.withNh(Nh);
-            for (int i = 0; i < 10; i++) {
-                String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedNh" : "ratios/ratioNh";
-                FileLog fileLog = new FileLog("TP5/" + fileName + Nh + "_" + i + ".txt");
-                mainSimulation(fileLog);
-            }
+            String fileName = simulationType == SimulationType.INFECTION_SPEED ? "speeds/speedNh" : "ratios/ratioNh";
+            FileLog fileLog = new FileLog("TP5/" + fileName + Nh + ".txt");
+            mainSimulation(fileLog);
         }
     }
 
@@ -88,16 +85,16 @@ public class ZombieEpidemic {
 
     private static Config setConfig() {
         return new Config()
-                .withNh(100)
+                .withNh(5)
                 .withDeltaT(0.0125)
                 .withVdz(3)
                 .withTau(0.5)
-                .withApHuman(1)
-                .withBpHuman(500)
-                .withApZombie(5)
+                .withApHuman(600)
+                .withBpHuman(0.7)
+                .withApZombie(0.6)
                 .withBpZombie(1000)
-                .withApWall(4)
-                .withBpWall(1000)
+                .withApWall(1200) // 2 ideal
+                .withBpWall(0.7)
                 .withMaxTime(300)
                 .withSteps(5);
     }

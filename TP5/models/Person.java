@@ -248,8 +248,13 @@ public abstract class Person {
 
         if (isTouchingCircularWall(Room.getWallRadius())) {
             Point wallDir = pos.normalize();
-            boolean hourlyRotation = Math.abs(Math.atan(vel.y/vel.x)) < Math.PI/4;
-            double newVelAngle = hourlyRotation ? getDirection(wallDir.x, wallDir.y) + Math.PI/2 + Math.PI / 10: getDirection(-wallDir.x, -wallDir.y) - Math.PI/2 + Math.PI / 10;
+            double wallAngle = getDirection(wallDir.x, wallDir.y) + Math.PI / 2;
+            Point wallDir2 = new Point(Math.cos(wallAngle), Math.sin(wallAngle));
+
+            double velWallAngle = vel.dotProduct(wallDir2)/(vel.norm() * wallDir2.norm());
+            boolean hourlyRotation = velWallAngle < Math.PI /2 && velWallAngle >= 0;
+
+            double newVelAngle = hourlyRotation ? wallAngle + Math.PI/6: wallAngle - Math.PI/6 + Math.PI;
             Ve = Optional.of(new Point(
                     Math.cos(newVelAngle) * desiredSpeed,
                     Math.sin(newVelAngle) * desiredSpeed

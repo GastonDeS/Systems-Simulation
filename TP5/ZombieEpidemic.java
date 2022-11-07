@@ -45,7 +45,6 @@ public class ZombieEpidemic {
                         fileLog.write(t + " " + ratio + "\n");
                         break;
                     case INFECTION_SPEED:
-//                        System.out.println(room.getZombieCount() + " " + prevNz);
                         double vel = (double) (room.getZombieCount() - prevNz) / 10;
                         prevNz = room.getZombieCount();
                         fileLog.write(t + " " + vel + "\n");
@@ -77,12 +76,12 @@ public class ZombieEpidemic {
             if (simulationType != SimulationType.TIME_TO_FULL_INFECTION && simulationType != SimulationType.MEAN_TIME) {
                 for (int i = 0; i < 10; i++) {
                     String fileName = getStringName("Nh");
-                    FileLog fileLog = new FileLog("TP5/" + fileName + Nh + "_" + i + ".txt");
+                    FileLog fileLog = new FileLog(fileName + Nh + "_" + i + ".txt");
                     mainSimulation(fileLog);
                 }
             } else {
                 String fileName = getStringName("Nh");
-                FileLog fileLog = new FileLog("TP5/" + fileName + Nh + ".txt");
+                FileLog fileLog = new FileLog(fileName + Nh + ".txt");
                 for (int i = 0; i < 10; i++) {
                     mainSimulation(fileLog);
                 }
@@ -99,12 +98,12 @@ public class ZombieEpidemic {
             if (simulationType != SimulationType.TIME_TO_FULL_INFECTION && simulationType != SimulationType.MEAN_TIME) {
                 for (int i = 0; i < 10; i++) {
                     String fileName = getStringName("Vdz");
-                    FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + "_" + i + ".txt");
+                    FileLog fileLog = new FileLog(fileName + Vdz + "_" + i + ".txt");
                     mainSimulation(fileLog);
                 }
             } else {
                 String fileName = getStringName("Vdz");
-                FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + ".txt");
+                FileLog fileLog = new FileLog(fileName + Vdz + ".txt");
                 for (int i = 0; i < 10; i++) {
                     mainSimulation(fileLog);
                 }

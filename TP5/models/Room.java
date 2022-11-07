@@ -113,7 +113,7 @@ public class Room {
 
     public void savePersons(int iteration) {
         try {
-            File positions = new File(String.format("TP5/../../position/positions%d.xyz", iteration));
+            File positions = new File(String.format("position/positions%d.xyz", iteration));
             FileWriter positionsFile = new FileWriter(positions);
 
             positionsFile.write((1 + zombies.size() + humans.size()) + "\n" +

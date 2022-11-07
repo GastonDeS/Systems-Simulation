@@ -4,8 +4,8 @@ import models.Room;
 
 public class ZombieEpidemic {
     private static final Config config                 = setConfig();
-    private static final Variable variable             = Variable.VDZ;
-    private static final SimulationType simulationType = SimulationType.TIME_TO_FULL_INFECTION;
+    private static final Variable variable             = Variable.NO_VARIABLE;
+    private static final SimulationType simulationType = SimulationType.MAIN;
 
     public static void main(String[] args) {
         switch (variable) {
@@ -35,7 +35,7 @@ public class ZombieEpidemic {
         while (t < config.getMaxTime() && room.getHumans().size() != 0) {
             room.update(deltaT);
 
-            if (iter % 800 == 0) {
+            if (iter % config.getSteps() == 0) {
                 switch (simulationType) {
                     case MAIN:
                         room.savePersons(iter);
@@ -125,7 +125,7 @@ public class ZombieEpidemic {
 
     private static Config setConfig() {
         return new Config()
-                .withNh(5)
+                .withNh(60)
                 .withDeltaT(0.0125)
                 .withVdz(3)
                 .withTau(0.5)

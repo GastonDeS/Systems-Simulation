@@ -5,7 +5,7 @@ import models.Room;
 public class ZombieEpidemic {
     private static final Config config                 = setConfig();
     private static final Variable variable             = Variable.NO_VARIABLE;
-    private static final SimulationType simulationType = SimulationType.MAIN;
+    private static final SimulationType simulationType = SimulationType.MEAN_TIME;
 
     public static void main(String[] args) {
         switch (variable) {
@@ -60,6 +60,8 @@ public class ZombieEpidemic {
         if (simulationType == SimulationType.TIME_TO_FULL_INFECTION) {
             String data = room.getHumans().size() != 0 ? "" : Double.toString(t);
             fileLog.write(data + "\n");
+        } else if (simulationType == SimulationType.MEAN_TIME) {
+            fileLog.write(room.getZombieCount() + " " + t + " " + "\n");
         } else {
             if (fileLog != null) {
                 fileLog.close();
@@ -72,7 +74,7 @@ public class ZombieEpidemic {
         int[] Nhs = new int[]{30, 60, 90, 120, 150, 180, 210, 240, 270};
         for (int Nh : Nhs) {
             config.withNh(Nh);
-            if (simulationType != SimulationType.TIME_TO_FULL_INFECTION) {
+            if (simulationType != SimulationType.TIME_TO_FULL_INFECTION && simulationType != SimulationType.MEAN_TIME) {
                 for (int i = 0; i < 10; i++) {
                     String fileName = getStringName("Nh");
                     FileLog fileLog = new FileLog("TP5/" + fileName + Nh + "_" + i + ".txt");
@@ -94,7 +96,7 @@ public class ZombieEpidemic {
         double[] Vdzs = new double[]{1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
         for (double Vdz : Vdzs) {
             config.withVdz(Vdz);
-            if (simulationType != SimulationType.TIME_TO_FULL_INFECTION) {
+            if (simulationType != SimulationType.TIME_TO_FULL_INFECTION && simulationType != SimulationType.MEAN_TIME) {
                 for (int i = 0; i < 10; i++) {
                     String fileName = getStringName("Vdz");
                     FileLog fileLog = new FileLog("TP5/" + fileName + Vdz + "_" + i + ".txt");
@@ -119,6 +121,8 @@ public class ZombieEpidemic {
                 return "speeds/speed" + variable;
             case TIME_TO_FULL_INFECTION:
                 return "times/time" + variable;
+            case MEAN_TIME:
+                return "means/mean" + variable;
         }
         return null;
     }
@@ -149,6 +153,7 @@ public class ZombieEpidemic {
         HUMAN_ZOMBIE_RATIO,
         INFECTION_SPEED,
         TIME_TO_FULL_INFECTION,
+        MEAN_TIME,
         MAIN
     }
 }
